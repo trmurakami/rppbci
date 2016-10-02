@@ -10,6 +10,11 @@
     <body>
         <div class="uk-container uk-container-center uk-margin-large-top">
             <h1>RPPBCI</h1>
+            
+            <?php echo contar_registros($server); ?>
+            
+            <?php ultimos_registros($server); ?>
+            
         </div>
     </body>
 </html>

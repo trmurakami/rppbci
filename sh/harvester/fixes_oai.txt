@@ -1,0 +1,24 @@
+add_field("references_ok","false");
+split_field("subject.*",";");
+set_array("tipo","Artigo de periódico");
+set_array("instituicao");
+set_array("autor");
+copy_field("publisher.*","editor");
+copy_field("source.3","ISSN");
+copy_field("identifier.0","url_principal");
+array("url_principal");
+array("doi");
+copy_field("identifier.1","doi");
+flatten(subject);
+flatten(language);
+trim("subject.*")
+copy_field("creator","creator_total");
+count("creator_total");
+replace_all("creator.*",";","%")
+copy_field("date","year");
+substring("year.0",0,4);
+move_field("_id","rppbci_id");
+move_field("_datestamp","datestamp");
+move_field("_setSpec","setSpec");
+move_field("_status","status");
+vacuum();
