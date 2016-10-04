@@ -11,8 +11,10 @@ array("doi");
 copy_field("identifier.1","doi");
 flatten(subject);
 flatten(language);
+lookup('language.*','language.csv',-sep_char=>',')
 trim("subject.*")
 copy_field("creator","creator_total");
+copy_field("creator","autores_original");
 count("creator_total");
 replace_all("creator.*",";","%")
 copy_field("date","year");

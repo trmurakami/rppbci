@@ -11,6 +11,25 @@
         <div class="uk-container uk-container-center uk-margin-large-top">
             <h1>RPPBCI</h1>
             
+            <form class="uk-form" action="result.php" method="get">
+
+                <fieldset data-uk-margin>
+                    <legend>Faça uma busca</legend>
+                    <input type="text" placeholder="" name="search_index">
+                    <!--
+                    <select>
+                        <option>Títulos e autores</option>
+                        <option>Referências</option>
+                    </select>
+                    -->
+                    <button class="uk-button">Pesquisar</button>
+                    <!--
+                    <label><input type="checkbox"> Somente com altmetrics</label>
+                    -->
+                </fieldset>
+
+            </form>
+            
             <?php echo contar_registros($server); ?>
             
             <?php ultimos_registros($server); ?>

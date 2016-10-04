@@ -1,0 +1,116 @@
+PUT /rppbci/journals/_mapping
+{
+     "journals": {
+        "properties": {
+           "ISSN": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "_identifier": {
+              "type": "string"
+           },
+           "autores_original": {
+              "type": "string"
+           },
+           "contributor": {
+              "type": "string"
+           },
+           "coverage": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "creator": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "creator_total": {
+              "type": "long"
+           },
+           "date": {
+              "type": "date",
+              "format": "strict_date_optional_time||epoch_millis"
+           },
+           "datestamp": {
+              "type": "date",
+              "format": "strict_date_optional_time||epoch_millis"
+           },
+           "description": {
+              "type": "string"
+           },
+           "doi": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "editor": {
+              "type": "string"
+           },
+           "format": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "identifier": {
+              "type": "string"
+           },
+           "journalci_title": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "language": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "publisher": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "qualis2014": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "references_ok": {
+              "type": "string"
+           },
+           "relation": {
+              "type": "string"
+           },
+           "rights": {
+              "type": "string"
+           },
+           "rppbci_id": {
+              "type": "string"
+           },
+           "setSpec": {
+              "type": "string"
+           },
+           "source": {
+              "type": "string"
+           },
+           "status": {
+              "type": "string"
+           },
+           "subject": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "tipo": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "title": {
+              "type": "string"
+           },
+           "type": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "url_principal": {
+              "type": "string",
+              "index": "not_analyzed"
+           },
+           "year": {
+              "type": "string",
+              "index": "not_analyzed"
+           }
+        }
+     }
+}
