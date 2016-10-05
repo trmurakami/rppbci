@@ -257,7 +257,7 @@
                                             </ul>
                                             <ul>
                                                 <li>
-                                                    <?php facebook_altmetrics($r["_source"]['url_principal']); ?>
+                                                    <?php facebook_altmetrics($r["_source"]['url_principal'],$facebook_token); ?>
                                                 </li>
                                             </ul>
                                         </li>

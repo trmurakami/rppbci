@@ -572,8 +572,9 @@ function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orie
 };
 
 /*Facebook Altmetrics*/
-function facebook_altmetrics($url) {
-    $query_facebook = 'https://graph.facebook.com/?fields=og_object{likes.limit(10).summary(true)},share&ids='.$url.'';     
+function facebook_altmetrics($url,$facebook_token) {
+    
+        $query_facebook = 'https://graph.facebook.com/v2.7?fields=og_object{reactions.type(LIKE).limit(0).summary(total_count).as(reactions_like),reactions.type(LOVE).limit(0).summary(total_count).as(reactions_love),reactions.type(WOW).limit(0).summary(total_count).as(reactions_wow),reactions.type(HAHA).limit(0).summary(total_count).as(reactions_haha),reactions.type(SAD).limit(0).summary(total_count).as(reactions_sad),reactions.type(ANGRY).limit(0).summary(total_count).as(reactions_angry)},share&ids='.$url.'&access_token='.$facebook_token.'';     
     
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $query_facebook);
@@ -582,7 +583,24 @@ function facebook_altmetrics($url) {
     curl_close($ch);
 
     $altmetrics = json_decode($output, true);
-    print_r($altmetrics);  
+    
+    if (!empty($altmetrics[''.$url.'']['og_object'])) {
+        //print_r($altmetrics[''.$url.'']);
+        echo '<p>Facebook: <br/>';
+        echo 'Likes: '.$altmetrics[''.$url.'']['og_object']['reactions_like']['summary']['total_count'].'<br/>';
+        echo 'Love: '.$altmetrics[''.$url.'']['og_object']['reactions_love']['summary']['total_count'].'<br/>';
+        echo 'Wow: '.$altmetrics[''.$url.'']['og_object']['reactions_wow']['summary']['total_count'].'<br/>';
+        echo 'Haha: '.$altmetrics[''.$url.'']['og_object']['reactions_haha']['summary']['total_count'].'<br/>';
+        echo 'Sad: '.$altmetrics[''.$url.'']['og_object']['reactions_sad']['summary']['total_count'].'<br/>';
+        echo 'Angry: '.$altmetrics[''.$url.'']['og_object']['reactions_angry']['summary']['total_count'].'<br/>';
+        echo 'Compartilhamentos: '.$altmetrics[''.$url.'']['share']['share_count'].'<br/>';
+        echo '</p>';
+    } else {
+        echo '<p>Facebook: 0</p>';
+    }
+    
+    
+    
 }
 
 
