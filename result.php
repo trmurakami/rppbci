@@ -116,7 +116,7 @@
                 
                     
                         <?php $ano_bar = generateDataGraphBar($server, $url, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
-
+                    
                         <div id="ano_chart" class="uk-visible-large"></div>
                         <script type="application/javascript">
                             var graphdef = {
@@ -255,7 +255,11 @@
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                             </ul>
-                                            <?php //print_r($r["_source"]); ?>
+                                            <ul>
+                                                <li>
+                                                    <?php facebook_altmetrics($r["_source"]['url_principal']); ?>
+                                                </li>
+                                            </ul>
                                         </li>
                                         <a href="#" data-uk-toggle="{target:'#citacao<?php echo $conta_cit;?>'}">Citar</a>                                        
                                         <div id="citacao<?php echo $conta_cit;?>" class="uk-hidden">
@@ -269,28 +273,7 @@
                                                         $data = gera_consulta_citacao($r["_source"]);
                                                         print_r($citeproc_abnt->render($data, $mode));
                                                     ?>
-                                                </li>
-                                                <li class="uk-margin-top">
-                                                    <p><strong>APA</strong></p>
-                                                    <?php
-                                                        $data = gera_consulta_citacao($r["_source"]);
-                                                        print_r($citeproc_apa->render($data, $mode));
-                                                    ?>
-                                                </li>
-                                                <li class="uk-margin-top">
-                                                    <p><strong>NLM</strong></p>
-                                                    <?php
-                                                        $data = gera_consulta_citacao($r["_source"]);
-                                                        print_r($citeproc_nlm->render($data, $mode));
-                                                    ?>
-                                                </li>
-                                                <li class="uk-margin-top">
-                                                    <p><strong>Vancouver</strong></p>
-                                                    <?php
-                                                        $data = gera_consulta_citacao($r["_source"]);
-                                                        print_r($citeproc_vancouver->render($data, $mode));
-                                                    ?>
-                                                </li>                                                 
+                                                </li>                                               
                                             </ul>                                              
                                         </li>
                                         </div>

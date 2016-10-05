@@ -571,5 +571,19 @@ function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orie
     return $comma_separated;
 };
 
+/*Facebook Altmetrics*/
+function facebook_altmetrics($url) {
+    $query_facebook = 'https://graph.facebook.com/?fields=og_object{likes.limit(10).summary(true)},share&ids='.$url.'';     
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $query_facebook);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $output = curl_exec($ch);
+    curl_close($ch);
+
+    $altmetrics = json_decode($output, true);
+    print_r($altmetrics);  
+}
+
 
 ?>
