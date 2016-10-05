@@ -183,11 +183,11 @@ function analisa_get($get) {
                   "must": {
                     '.$search_term.'
                   },
-                  "filter":[
-                    '.$filter_query.'
-                    ]
-                  }
-                },
+                  "must_not" : {
+                    "term": {"status":"deleted"}
+                    }
+                }
+            },
         ';
         
     } elseif (!empty($get['search_index'])) {
@@ -383,7 +383,7 @@ function gerar_faceta($consulta,$url,$server,$campo,$tamanho,$nome_do_campo,$sor
         }
     $query = '
     {
-        "size": 0,
+        "size": 0,        
         '.$consulta.'
         "aggregations": {
           "counts": {
@@ -430,7 +430,7 @@ function gerar_faceta($consulta,$url,$server,$campo,$tamanho,$nome_do_campo,$sor
 function gera_consulta_citacao($citacao) {
     $type = get_type($citacao["tipo"]);
     $author_array = array();
-    foreach ($citacao["authors"] as $autor_citation){
+    foreach ($citacao["creator"] as $autor_citation){
         $array_authors = explode(',', $autor_citation);
         $author_array[] = '{"family":"'.$array_authors[0].'","given":"'.$array_authors[1].'"}';
     };
@@ -441,12 +441,12 @@ function gera_consulta_citacao($citacao) {
         $container = "";
     };
     if (!empty($citacao["doi"])) {
-        $doi = '"DOI": "'.$citacao["doi"][0].'",';
+        $doi = '"DOI": "'.$citacao["doi"].'",';
     } else {
         $doi = "";
     };
-    if (!empty($citacao["url"])) {
-        $url = '"URL": "'.$citacao["url"][0].'",';
+    if (!empty($citacao["url_principal"])) {
+        $url = '"URL": "'.$citacao["url_principal"].'",';
     } else {
         $url = "";
     };
@@ -475,7 +475,7 @@ function gera_consulta_citacao($citacao) {
         }
     }
     $data = json_decode('{
-    "title": "'.$citacao["title"].'",
+    "title": "'.$citacao["title"][0].'",
     "type": "'.$type.'",
     '.$container.'
     '.$doi.'
@@ -533,6 +533,43 @@ function get_type($material_type){
       break;          
   }
 }
+
+/* Function to generate Graph Bar */
+function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orientation, $facet_display_name, $tamanho,$server) {
+    if (!empty($sort)){
+        $sort_query = '"order" : { "'.$sort.'" : "'.$sort_orientation.'" },';  
+    }
+    $query = '
+    {
+        "size": 0,
+        '.$consulta.'
+        "aggregations": {
+          "counts": {
+            "terms": {
+              "field": "'.$campo.'",
+              '.$sort_query.'
+              "size":'.$tamanho.'
+            }
+          }
+        }
+     }
+     ';
+    
+    $facet = query_elastic($query,$server);    
+    
+    $data_array= array();
+    foreach ($facet['aggregations']['counts']['buckets'] as $facets) {
+        array_push($data_array,'{"name":"'.$facets['key'].'","value":'.$facets['doc_count'].'}');
+    };
+    
+    if ($campo == "year" ) {
+        $data_array_inverse = array_reverse($data_array);
+        $comma_separated = implode(",", $data_array_inverse);
+    } else {
+        $comma_separated = implode(",", $data_array);
+    }
+    return $comma_separated;
+};
 
 
 ?>

@@ -13,6 +13,7 @@ flatten(subject);
 flatten(language);
 lookup('language.*','language.csv',-sep_char=>',')
 trim("subject.*")
+copy_field("subject","subject_original");
 copy_field("creator","creator_total");
 copy_field("creator","autores_original");
 count("creator_total");

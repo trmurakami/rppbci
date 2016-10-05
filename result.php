@@ -32,7 +32,7 @@
         <?php
             include('inc/meta-header.php'); 
         ?>        
-        <title>BDPI USP - Resultado da busca</title>
+        <title>RPPBCI - Resultado da busca</title>
         <script src="inc/uikit/js/components/accordion.min.js"></script>
         <script src="inc/uikit/js/components/pagination.min.js"></script>
         <script src="inc/uikit/js/components/datepicker.min.js"></script>
@@ -75,19 +75,7 @@
                 <label>Consulta: <?php echo $result_get['termo_consulta']; ?></label>
                 <input type="checkbox" checked="checked"  name="search_index" value="<?php echo $result_get['termo_consulta']; ?>">
             </div>
-        <?php endif; ?>
-        <?php if (!empty($result_get['data_inicio'])): ?>
-            <div class="uk-form-row">
-                <label>Data inicial: <?php echo $result_get['data_inicio']; ?></label>
-                <input type="checkbox" checked="checked"  name="date_init" value="<?php echo $result_get['data_inicio']; ?>">
-            </div>
-        <?php endif; ?>
-        <?php if (!empty($result_get['data_fim'])): ?>
-            <div class="uk-form-row">
-                <label>Data final: <?php echo $result_get['data_fim']; ?></label>
-                <input type="checkbox" checked="checked"  name="date_end" value="<?php echo $result_get['data_fim']; ?>">
-            </div>
-        <?php endif; ?>         
+        <?php endif; ?>      
         <div class="uk-form-row"><button type="submit" class="uk-button-primary">Retirar filtros</button></div>
     </fieldset>        
     </form>    
@@ -113,61 +101,7 @@
         
     </ul>
 
-    <hr>
-    <form class="uk-form">
-    <fieldset>
-        <legend>Limitar datas</legend>
-        <div class="uk-form-row">
-            <label>Ano inicial</label>
-            <input type="text" placeholder="Ano inicial" name="date_init">
-        </div>
-        <div class="uk-form-row">
-            <label>Ano final</label>
-            <input type="text" placeholder="Ano final" name="date_end">
-        </div>
-        <?php foreach ($new_get as $key => $value) : ?>
-            <div class="uk-form-row">
-                <input type="hidden" checked="checked"  name="<?php echo $key; ?>[]" value="<?php echo implode(",",$value); ?>">
-            </div>
-        <?php endforeach;?>
-        <?php if (!empty($result_get['termo_consulta'])): ?>
-            <div class="uk-form-row">
-                <input type="hidden" checked="checked"  name="search_index" value="<?php echo $result_get['termo_consulta']; ?>">
-            </div>
-        <?php endif; ?>
-        <div class="uk-form-row"><button class="uk-button-primary">Limitar datas</button></div>
-    </fieldset>        
-    </form>
-    <hr>
-    <?php if(!empty($_SESSION['oauthuserdata'])): ?>
-        <form class="uk-form" method="get" action="report.php">
-            <fieldset>
-                <legend>Gerar relatório</legend>
-                <?php foreach ($new_get as $key => $value) : ?>
-                    <div class="uk-form-row">
-                        <input type="hidden" checked="checked"  name="<?php echo $key; ?>[]" value="<?php echo implode(",",$value); ?>">
-                    </div>
-                <?php endforeach;?>
-                <?php if (!empty($result_get['termo_consulta'])): ?>
-                    <div class="uk-form-row">
-                        <input type="hidden" checked="checked"  name="search_index" value="<?php echo $result_get['termo_consulta']; ?>">
-                    </div>
-                <?php endif; ?>
-                <?php if (!empty($result_get['data_inicio'])): ?>
-                    <div class="uk-form-row">
-                        <input type="hidden" checked="checked"  name="date_init" value="<?php echo $result_get['data_inicio']; ?>">
-                    </div>
-                <?php endif; ?>
-                <?php if (!empty($result_get['data_fim'])): ?>
-                    <div class="uk-form-row">
-                        <input type="hidden" checked="checked"  name="date_end" value="<?php echo $result_get['data_fim']; ?>">
-                    </div>
-                <?php endif; ?>         
-                <div class="uk-form-row"><button type="submit" class="uk-button-primary">Gerar relatório</button>
-                </div>
-            </fieldset>        
-        </form>
-    <?php endif; ?>                
+    <hr>            
             
 </div>
     
@@ -180,42 +114,36 @@
                 <div class="uk-alert" data-uk-alert>
                     <a href="" class="uk-alert-close uk-close"></a>
                 
-<!--                    
-                < ?php $ano_bar = generateDataGraphBar($server, $url, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
-
-                <div id="ano_chart" class="uk-visible-large"></div>
-                <script type="application/javascript">
-                    var graphdef = {
-                        categories : ['Ano'],
-                        dataset : {
-                            'Ano' : [<?= $ano_bar; ?>]
-                        }
-                    }
-                    var chart = uv.chart ('Bar', graphdef, {
-                        meta : {
-                            position: '#ano_chart',
-                            caption : 'Ano de publicação',
-                            hlabel : 'Ano',
-                            vlabel : 'Registros'
-                        },
-                        graph : {
-                            orientation : "Vertical"
-                        },
-                        dimension : {
-                            width: 600,
-                            height: 140
-                        }
-                    })
-                </script>                        
-                    </div>
                     
-                < ?php if (isset($_REQUEST["assunto"])) : ?>    
-                   <div class="uk-alert" data-uk-alert>
-                       <a href="" class="uk-alert-close uk-close"></a>
-                       < ?php consultar_vcusp($_REQUEST["assunto"]); ?>
-                   </div>
-                < ?php endif; ?>
--->                    
+                        <?php $ano_bar = generateDataGraphBar($server, $url, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
+
+                        <div id="ano_chart" class="uk-visible-large"></div>
+                        <script type="application/javascript">
+                            var graphdef = {
+                                categories : ['Ano'],
+                                dataset : {
+                                    'Ano' : [<?= $ano_bar; ?>]
+                                }
+                            }
+                            var chart = uv.chart ('Bar', graphdef, {
+                                meta : {
+                                    position: '#ano_chart',
+                                    caption : 'Ano de publicação',
+                                    hlabel : 'Ano',
+                                    vlabel : 'Registros'
+                                },
+                                graph : {
+                                    orientation : "Vertical"
+                                },
+                                dimension : {
+                                    width: 600,
+                                    height: 140
+                                }
+                            })
+                        </script>                        
+                 </div>                 
+
+                    
                     <div class="uk-grid uk-margin-top">
                         <div class="uk-width-1-3">                        
                         <ul class="uk-subnav uk-nav-parent-icon uk-subnav-pill">
@@ -247,16 +175,10 @@
                     
                     <hr class="uk-grid-divider">
                     <div class="uk-width-1-1 uk-margin-top uk-description-list-line">
-                    <ul class="uk-list uk-list-line">   
+                    <ul class="uk-list uk-list-line">
+                    <?php $conta_cit = 1; ?>    
                     <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
-                    
-                    <!--    
-                        
-                    < ?php if (!empty($r["_source"]['issn_part'][0])) : ?>
-                            < ?php $issn_info = get_title_elsevier(str_replace("-","",$r["_source"]['issn_part'][0]),$api_elsevier); ?>
-                    < ?php endif; ?>
-                    -->
-                        
+                                        
                         <li>                        
                             <div class="uk-grid uk-flex-middle" data-uk-grid-   margin="">
                                 <div class="uk-width-medium-2-10 uk-row-first">
@@ -335,8 +257,9 @@
                                             </ul>
                                             <?php //print_r($r["_source"]); ?>
                                         </li>
-                                        <a href="#" data-uk-toggle="{target:'#citacao<?php echo  $r['_id'];?>'}">Citar</a>
-                                        <div id="citacao<?php echo  $r['_id'];?>" class="uk-hidden">
+                                        <a href="#" data-uk-toggle="{target:'#citacao<?php echo $conta_cit;?>'}">Citar</a>                                        
+                                        <div id="citacao<?php echo $conta_cit;?>" class="uk-hidden">
+                                            <?php $conta_cit++; ?>
                                         <li class="uk-h6 uk-margin-top">
                                             <div class="uk-alert uk-alert-danger">A citação é gerada automaticamente e pode não estar totalmente de acordo com as normas</div>
                                             <ul>
