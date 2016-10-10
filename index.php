@@ -29,10 +29,15 @@
                 </fieldset>
 
             </form>
+            <br/><br/>
+            Quantidade de registros: <?php echo contar_registros($server); ?><br/><br/><br/><br/>
             
-            <?php echo contar_registros($server); ?>
+            <?php facetas_inicio($server,"journalci_title"); ?>  <br/><br/><br/><br/>  
             
             <?php ultimos_registros($server); ?>
+            
+                
+
             
         </div>
     </body>

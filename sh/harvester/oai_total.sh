@@ -9,4 +9,9 @@ catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Bibl
 sleep 2
 
 # Ciência da Informação em Revista - CIR
-catmandu import OAI --fix fixes.txt --fix 'set_array("journalci_title","Ciencia da Informacao em Revista")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.seer.ufal.br/index.php/cir/oai --metadataPrefix oai_dc  to rppbci --bag journals --verbose
+catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Ciencia da Informacao em Revista")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.seer.ufal.br/index.php/cir/oai --metadataPrefix oai_dc to rppbci --bag journals --verbose
+sleep 2
+
+curl -XDELETE 'http://localhost:9200/rppbci/journals/_query' -d '{ "query": { "term": { "status": "deleted" } } }'
+                
+

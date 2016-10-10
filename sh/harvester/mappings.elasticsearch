@@ -13,7 +13,8 @@ PUT /rppbci/journals/_mapping
               "type": "string"
            },
            "contributor": {
-              "type": "string"
+              "type": "string",
+              "index": "not_analyzed"
            },
            "coverage": {
               "type": "string",
@@ -83,7 +84,8 @@ PUT /rppbci/journals/_mapping
               "type": "string"
            },
            "source": {
-              "type": "string"
+              "type": "string",
+              "index": "not_analyzed"
            },
            "status": {
               "type": "string"

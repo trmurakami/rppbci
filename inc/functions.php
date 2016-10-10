@@ -60,7 +60,7 @@ function ultimos_registros($server) {
                  },                 
                 "size": 5,
                 "sort" : [
-                    {"_uid" : {"order" : "desc"}}
+                    {"facebook.total" : {"order" : "desc"}}
                     ]
                 }';
     $data = query_elastic($query,$server);
@@ -77,7 +77,7 @@ function ultimos_registros($server) {
         if (!empty($r["_source"]['creator'])) {
             echo '<div class="uk-comment-meta";">';    
             foreach ($r["_source"]['creator'] as $autores) {
-            echo '<a href="result.php?authors[]='.$autores.'">'.$autores.'</a>, ';
+            echo '<a href="result.php?creator[]='.$autores.'">'.$autores.'</a>, ';
             }
             echo '</div>';
         }
@@ -154,8 +154,8 @@ function analisa_get($get) {
         
         $query_complete = '{
         "sort" : [
-                { "year" : {"order" : "desc"}},
-                { "_uid" : {"order" : "desc"}}
+                { "facebook.total" : {"order" : "desc"}},
+                { "year" : {"order" : "desc"}}
         ],    
         "query": {    
             "bool": {
@@ -166,14 +166,7 @@ function analisa_get($get) {
                 '.$filter_query.'        
                 ]
               }
-        },
-         "filter":{
-            "bool":{
-                "must_not" : {
-                    "term": {"status":"deleted"}
-                }
-            }
-         },         
+        },       
         "from": '.$skip.',
         "size": '.$limit.'
         }';
@@ -572,7 +565,32 @@ function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orie
 };
 
 /*Facebook Altmetrics*/
-function facebook_altmetrics($url,$facebook_token) {
+
+function facebook_altmetrics_update($server,$facebook_id,$facebook_array){    
+    $ch = curl_init();
+    $method = "POST";
+    $facebook_id_corrigido = urlencode($facebook_id);
+    $url = "http://$server/rppbci/altmetrics/$facebook_id_corrigido/_update";
+       $query = 
+             '{
+                "doc":{
+                    "facebook" : {
+                        '.implode(",",$facebook_array).'
+                    },
+                    "date":'.date("Ymd").'
+                },                    
+                "doc_as_upsert" : true
+            }';    
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_PORT, 9200);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+    $result = curl_exec($ch);
+    curl_close($ch); 
+}
+
+function facebook_altmetrics($server,$url,$facebook_token,$facebook_id) {
     
         $query_facebook = 'https://graph.facebook.com/v2.7?fields=og_object{reactions.type(LIKE).limit(0).summary(total_count).as(reactions_like),reactions.type(LOVE).limit(0).summary(total_count).as(reactions_love),reactions.type(WOW).limit(0).summary(total_count).as(reactions_wow),reactions.type(HAHA).limit(0).summary(total_count).as(reactions_haha),reactions.type(SAD).limit(0).summary(total_count).as(reactions_sad),reactions.type(ANGRY).limit(0).summary(total_count).as(reactions_angry)},share&ids='.$url.'&access_token='.$facebook_token.'';     
     
@@ -594,14 +612,102 @@ function facebook_altmetrics($url,$facebook_token) {
         echo 'Sad: '.$altmetrics[''.$url.'']['og_object']['reactions_sad']['summary']['total_count'].'<br/>';
         echo 'Angry: '.$altmetrics[''.$url.'']['og_object']['reactions_angry']['summary']['total_count'].'<br/>';
         echo 'Compartilhamentos: '.$altmetrics[''.$url.'']['share']['share_count'].'<br/>';
+        echo 'Comentários: '.$altmetrics[''.$url.'']['share']['comment_count'].'<br/>';
         echo '</p>';
+        
+                        
+        $facebook_array[] = '"reactions_like":'.$altmetrics[''.$url.'']['og_object']['reactions_like']['summary']['total_count'].'';
+        $facebook_array[] = '"reactions_love":'.$altmetrics[''.$url.'']['og_object']['reactions_love']['summary']['total_count'].'';
+        $facebook_array[] = '"reactions_wow":'.$altmetrics[''.$url.'']['og_object']['reactions_wow']['summary']['total_count'].'';
+        $facebook_array[] = '"reactions_haha":'.$altmetrics[''.$url.'']['og_object']['reactions_haha']['summary']['total_count'].'';
+        $facebook_array[] = '"reactions_sad":'.$altmetrics[''.$url.'']['og_object']['reactions_sad']['summary']['total_count'].'';
+        $facebook_array[] = '"reactions_angry":'.$altmetrics[''.$url.'']['og_object']['reactions_angry']['summary']['total_count'].'';
+        $facebook_array[] = '"share_count":'.$altmetrics[''.$url.'']['share']['share_count'].'';
+        $facebook_array[] = '"comment_count":'.$altmetrics[''.$url.'']['share']['comment_count'].'';
+        
+        $altmetrics_total+= $altmetrics[''.$url.'']['og_object']['reactions_like']['summary']['total_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['og_object']['reactions_love']['summary']['total_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['og_object']['reactions_wow']['summary']['total_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['og_object']['reactions_haha']['summary']['total_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['og_object']['reactions_sad']['summary']['total_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['og_object']['reactions_angry']['summary']['total_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['share']['share_count'];
+        $altmetrics_total+= $altmetrics[''.$url.'']['share']['comment_count'];
+        
+                
+        $facebook_array[] = '"total":'.$altmetrics_total.'';
+        
+        
+        
     } else {
         echo '<p>Facebook: 0</p>';
+        $facebook_array[] = '"reactions_like":0';
+        $facebook_array[] = '"reactions_love":0';
+        $facebook_array[] = '"reactions_wow":0';
+        $facebook_array[] = '"reactions_haha":0';
+        $facebook_array[] = '"reactions_sad":0';
+        $facebook_array[] = '"reactions_angry":0';
+        $facebook_array[] = '"share_count":0';
+        $facebook_array[] = '"comment_count":0';
+        $facebook_array[] = '"total":0';
     }
     
+   facebook_altmetrics_update($server,$facebook_id,$facebook_array);
     
     
 }
+
+
+
+/*Facetas - Página inicial*/
+
+function facetas_inicio($server,$campo) {
+    $query = '{
+        "size": 0,       
+        "aggs": {         
+            "group_by_state": {
+                "terms": {
+                    "field": "'.$campo.'",                    
+                    "size" : 100
+                }
+            }
+        }
+    }';
+    
+    $data = query_elastic($query,$server);
+    
+    foreach ($data["aggregations"]["group_by_state"]["buckets"] as $facets) {
+        echo '<li><a href="result.php?'.$campo.'[]='.$facets['key'].'">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></li>';
+    }   
+}
+
+/*Deletar Excluídos*/
+function exclude_deleted(){
+    $ch = curl_init();
+    $query = '
+                {
+                  "query": { 
+                    "term": {
+                      "status": "deleted"
+                    }
+                  }
+                }    
+    ';
+    
+    $method = "DELETE";
+    $url = "http://$server/rppbci/journals/_query";
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_PORT, 9200);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+    $result = curl_exec($ch);
+    curl_close($ch);
+    $data = json_decode($result, TRUE);
+    return $data["_indices"]["rppbci"]["deleted"];
+    
+}
+
 
 
 ?>

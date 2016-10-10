@@ -88,13 +88,15 @@
         gerar_faceta($query_aggregate,$escaped_url,$server,tipo,10,"Tipo de material");
         gerar_faceta($query_aggregate,$escaped_url,$server,journalci_title,100,"Título do periódico");                    
         gerar_faceta($query_aggregate,$escaped_url,$server,creator,120,"Autores");
-        gerar_faceta($query_aggregate,$escaped_url,$server,creator_total,100,"Quantidade de autores");        
+        gerar_faceta($query_aggregate,$escaped_url,$server,creator_total,100,"Quantidade de autores");
+        gerar_faceta($query_aggregate,$escaped_url,$server,contributor,100,"Agências de fomento"); 
         gerar_faceta($query_aggregate,$escaped_url,$server,year,120,"Ano de publicação","desc");
         gerar_faceta($query_aggregate,$escaped_url,$server,subject,100,"Assuntos");
         gerar_faceta($query_aggregate,$escaped_url,$server,language,40,"Idioma");
         gerar_faceta($query_aggregate,$escaped_url,$server,publisher,100,"Editora");
         gerar_faceta($query_aggregate,$escaped_url,$server,format,100,"Formato");
-        gerar_faceta($query_aggregate,$escaped_url,$server,ISSN,100,"ISSN");        
+        gerar_faceta($query_aggregate,$escaped_url,$server,ISSN,100,"ISSN");
+        gerar_faceta($query_aggregate,$escaped_url,$server,source,100,"Fonte"); 
         gerar_faceta($query_aggregate,$escaped_url,$server,qualis2014,200,"Qualis 2014");
         gerar_faceta($query_aggregate,$escaped_url,$server,coverage,30,"Cobertura");
     ?>
@@ -183,7 +185,7 @@
                             <div class="uk-grid uk-flex-middle" data-uk-grid-   margin="">
                                 <div class="uk-width-medium-2-10 uk-row-first">
                                     <div class="uk-panel uk-h6 uk-text-break">
-                                        <a href="result.php?type[]=<?php echo $r["_source"]['type'];?>"><?php echo ucfirst(strtolower($r["_source"]['type']));?></a>
+                                        <a href="result.php?type[]=<?php echo $r["_source"]['journalci_title'][0];?>"><?php echo $r["_source"]['journalci_title'][0];?></a>
                                     </div>
                                     <div class="uk-panel uk-h6 uk-text-break">
 
@@ -217,7 +219,7 @@
                                             <?php endif; ?>                           
                                         </li>
                                         
-                                        <?php if (!empty($r["_source"]['ispartof'])) : ?><li class="uk-h6">In: <a href="result.php?ispartof[]=<?php echo $r["_source"]['ispartof'];?>"><?php echo $r["_source"]['ispartof'];?></a></li><?php endif; ?>
+                                        <?php if (!empty($r["_source"]['journalci_title'][0])) : ?><li class="uk-h6">In: <a href="result.php?journalci_title[]=<?php echo $r["_source"]['journalci_title'][0];?>"><?php echo $r["_source"]['journalci_title'][0];?></a></li><?php endif; ?>
                             
                                         <li class="uk-h6">
                                             Assuntos:
@@ -257,7 +259,7 @@
                                             </ul>
                                             <ul>
                                                 <li>
-                                                    <?php facebook_altmetrics($r["_source"]['url_principal'],$facebook_token); ?>
+                                                    <?php facebook_altmetrics($server,$r["_source"]['url_principal'],$facebook_token,$r['_id']); ?>
                                                 </li>
                                             </ul>
                                         </li>
