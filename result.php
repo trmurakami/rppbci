@@ -259,7 +259,17 @@
                                             </ul>
                                             <ul>
                                                 <li>
-                                                    <?php facebook_altmetrics($server,$r["_source"]['url_principal'],$facebook_token,$r['_id']); ?>
+                                                    <?php
+                                                        $facebook_url_array[] = $r["_source"]['url_principal'];
+                                                        if (!empty($r["_source"]['relation'])){
+                                                             foreach ($r["_source"]['relation'] as $relation) {
+                                                               $facebook_url_array[] = $relation; 
+                                                            }                                                             
+                                                        }                                                      
+                                                        //print_r(array_filter($facebook_url_array));
+                                                        facebook_altmetrics($server,array_filter($facebook_url_array),$facebook_token,$r['_id']);
+                                                        unset($facebook_url_array);
+                                                    ?>
                                                 </li>
                                             </ul>
                                         </li>
