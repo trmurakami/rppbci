@@ -148,14 +148,14 @@ function analisa_get($get) {
         unset($get["date_end"]);
     }
     
-    if (count($get) == 0) {
+    if (count($get) == 0 ||(count($get) == 1&&!empty($get["page"]))) {
         $search_term = '"match_all": {}';
         $filter_query = '';
         
         $query_complete = '{
         "sort" : [
-                { "facebook.total" : {"order" : "desc"}},
-                { "year" : {"order" : "desc"}}
+                { "facebook.total" : "desc" },
+                { "facebook.total" : {"missing" : "_last"} }
         ],    
         "query": {    
             "bool": {
@@ -300,6 +300,8 @@ function analisa_get($get) {
         $query_complete = '
                     {
                        "sort" : [
+                            { "facebook.total" : "desc" },
+                            { "facebook.total" : {"missing" : "_last"} },
                            { "year" : "desc" }
                        ],    
                        "query" : {
@@ -570,7 +572,7 @@ function facebook_altmetrics_update($server,$facebook_id,$facebook_array){
     $ch = curl_init();
     $method = "POST";
     $facebook_id_corrigido = urlencode($facebook_id);
-    $url = "http://$server/rppbci/altmetrics/$facebook_id_corrigido/_update";
+    $url = "http://$server/rppbci/journals/$facebook_id_corrigido/_update";
        $query = 
              '{
                 "doc":{
@@ -685,6 +687,86 @@ function facebook_altmetrics($server,$url_array,$facebook_token,$facebook_id) {
 }
 
 
+function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
+    
+    foreach ($url_array as $url){
+        $string = '?id='.$url.'';
+        $request[] = $fb->request('GET',$string);
+    }
+    
+    $batch = [
+        $request
+    ];
+
+    $responses = $fb->sendBatchRequest($batch);
+
+    foreach ($responses as $key => $response) {
+      if ($response->isError()) {
+        //$e = $response->getThrownException();
+        //echo '<p>Error! Facebook SDK Said: ' . $e->getMessage() . "\n\n";
+        //echo '<p>Graph Said: ' . "\n\n";
+        //var_dump($e->getResponse());
+      } else {
+          
+          $response_json = $response->getBody();
+          $response_json_decode = json_decode($response_json);
+          
+          if (!empty($response_json_decode->{'og_object'})){
+              $fb_og_id[] = $response_json_decode->{'og_object'}->{'id'};
+              $fb_share_count+= $response_json_decode->{'share'}->{'share_count'};
+              $fb_comment_count+= $response_json_decode->{'share'}->{'comment_count'};            
+             
+          } else {
+              $fb_share_count+= 0;
+              $fb_comment_count+= 0;
+              $fb_reactions_count+= 0;
+          }
+          
+                
+        //echo "<p>(" . $key . ") HTTP status code: " . $response->getHttpStatusCode() . "<br />\n";
+        //echo "Response: " . $response->getBody() . "</p>\n\n";
+        //echo "<hr />\n\n";
+      }
+    }
+    
+    if (!empty($fb_og_id)){
+        
+        
+        foreach ($fb_og_id as $fid){
+            
+            $response = $fb->get('/'.$fid.'/reactions?summary=true');
+            $response_reaction_decode = json_decode($response->getBody());
+            //print_r($response_reaction_decode);
+            $fb_reactions_count+= $response_reaction_decode->{'summary'}->{'total_count'};
+            
+            
+        }
+        
+        
+    }
+    
+    $facebook_array[] = '"share_count":'.$fb_share_count.'';
+    $facebook_array[] = '"comment_count":'.$fb_comment_count.'';
+    $facebook_array[] = '"reactions_count":'.$fb_reactions_count.'';
+    
+    $altmetrics_total+= $fb_share_count;
+    $altmetrics_total+= $fb_comment_count;
+    $altmetrics_total+= $fb_reactions_count;
+    
+    $facebook_array[] = '"total":'.$altmetrics_total.'';
+    
+    facebook_altmetrics_update($server,$facebook_id,$facebook_array);
+    
+    echo "<hr />\n\n";
+    echo "Facebook:<br/>";
+    echo '    Reactions: '.$fb_reactions_count.'<br/>';
+    echo '    Compartilhamentos: '.$fb_share_count.'<br/>';
+    echo '    Comentários: '.$fb_comment_count.'';
+    echo "<hr />\n\n";
+    
+} 
+
+
 
 /*Facetas - Página inicial*/
 
@@ -704,9 +786,11 @@ function facetas_inicio($server,$campo) {
     
     $data = query_elastic($query,$server);
     
+        
     foreach ($data["aggregations"]["group_by_state"]["buckets"] as $facets) {
-        echo '<div data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><a href="result.php?'.$campo.'[]='.$facets['key'].'">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></div>';
-    }   
+        echo '<div class="uk-margin-left uk-margin-top" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><a href="result.php?'.$campo.'[]='.$facets['key'].'">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></div>';
+    }
+
 }
 
 /*Deletar Excluídos*/

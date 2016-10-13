@@ -267,7 +267,8 @@
                                                             }                                                             
                                                         }                                                      
                                                         //print_r(array_filter($facebook_url_array));
-                                                        facebook_altmetrics($server,array_filter($facebook_url_array),$facebook_token,$r['_id']);
+                                                        //facebook_altmetrics($server,array_filter($facebook_url_array),$facebook_token,$r['_id']);
+                                                        facebook_api_reactions($facebook_url_array,$fb,$server,$r['_id']);
                                                         unset($facebook_url_array);
                                                     ?>
                                                 </li>
