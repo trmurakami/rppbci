@@ -358,6 +358,7 @@ if (isset($new_get)){
     }  
     
     foreach ($new_get as $key => $value){
+        $novo_get="";
         $novo_get[] = ''.$key.'[]='.$value[0].'';        
     }    
     $pega_get = implode("&",$novo_get);
