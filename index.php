@@ -113,7 +113,7 @@
                 </div>
 
                 <div class="uk-width-medium-1-2">
-                    <h1>Altmétrics por periódico</h1>
+                    <h1>Altmetrics por periódico</h1>
                     <iframe src="http://bdpife2.sibi.usp.br:5601/goto/593e08eeb3cd571462b02c5f92539826" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
                 </div>
             </div>
