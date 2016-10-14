@@ -13,25 +13,7 @@
         
         <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
             
-           <nav class="uk-navbar uk-margin-small-bottom">
-                <a class="uk-navbar-brand uk-hidden-small" href="index.php">RPPBCI</a>
-                <ul class="uk-navbar-nav uk-hidden-small">
-                    <li class="uk-active">
-                        <a href="index.php">Início</a>
-                    </li>
-                    <li>
-                        <a href="statistics.php">Estatísticas</a>
-                    </li>
-                    <li>
-                        <a href="contact.php">Contato</a>
-                    </li>
-                    <li>
-                        <a href="about.php">Sobre</a>
-                    </li>
-                </ul>
-                <a href="#offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
-                <div class="uk-navbar-brand uk-navbar-center uk-visible-small">RPPBCI</div>
-            </nav>                
+            <?php include('inc/navbar.php');?>
 
 
             <div class="uk-margin uk-text-contrast uk-text-center uk-flex uk-flex-center uk-flex-middle" data-uk-parallax="{bg: '-200'}" style="height: 650px; background-image: url('inc/images/maceio3.jpg'); background-size: 1223px 612px; background-repeat: no-repeat; background-position: 50% -22.61px;">
@@ -132,7 +114,7 @@
 
                 <div class="uk-width-medium-1-2">
                     <h1>Altmétrics por periódico</h1>
-                    <iframe src="http://bdpife2.sibi.usp.br:5601/goto/593e08eeb3cd571462b02c5f92539826" height="600" width="400" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
+                    <iframe src="http://bdpife2.sibi.usp.br:5601/goto/593e08eeb3cd571462b02c5f92539826" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
                 </div>
             </div>
 
@@ -147,5 +129,6 @@
             </div>
             
         </div>
+        <?php include('inc/offcanvas.php')?>
     </body>
 </html>

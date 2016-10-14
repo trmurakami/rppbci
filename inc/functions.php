@@ -72,7 +72,7 @@ function ultimos_registros($server) {
     
         echo '<article class="uk-comment">
         <header class="uk-comment-header">';    
-        echo '<a class="ui small header" href="single.php?_id='.$r['_id'].'"><h4 class="uk-comment-title">'.$r['_source']['title'][0].' ('.$r['_source']['year'][0].')</h4></a>';
+        echo '<a class="ui small header" href="'.$r['_source']['url_principal'].'"><h4 class="uk-comment-title">'.$r['_source']['title'][0].' ('.$r['_source']['year'][0].')</h4></a>';
         echo '<div class="extra">';
         if (!empty($r["_source"]['creator'])) {
             echo '<div class="uk-comment-meta";">';    
@@ -358,7 +358,6 @@ if (isset($new_get)){
     }  
     
     foreach ($new_get as $key => $value){
-        $novo_get="";
         $novo_get[] = ''.$key.'[]='.$value[0].'';        
     }    
     $pega_get = implode("&",$novo_get);
@@ -755,6 +754,7 @@ function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
     $altmetrics_total+= $fb_reactions_count;
     
     $facebook_array[] = '"total":'.$altmetrics_total.'';
+    $facebook_array[] = '"date_altmetrics":'.date("Ymd").'';
     
     facebook_altmetrics_update($server,$facebook_id,$facebook_array);
     

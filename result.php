@@ -202,7 +202,7 @@
                                     
                                     <ul class="uk-list">
                                         <li class="uk-margin-top uk-h4">
-                                            <strong><a href="single.php?_id=<?php echo  $r['_id'];?>"><?php echo $r["_source"]['title'][0];?> (<?php echo $r["_source"]['year'][0]; ?>)</a></strong>
+                                            <strong><a href="<?php echo $r['_source']['url_principal'];?>"><?php echo $r["_source"]['title'][0];?> (<?php echo $r["_source"]['year'][0]; ?>)</a></strong>
                                         </li>
                                         <li class="uk-h6">
                                             Autores:
