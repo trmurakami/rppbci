@@ -530,7 +530,7 @@ function get_type($material_type){
 }
 
 /* Function to generate Graph Bar */
-function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orientation, $facet_display_name, $tamanho,$server) {
+function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orientation, $facet_display_name,$tamanho) {
     if (!empty($sort)){
         $sort_query = '"order" : { "'.$sort.'" : "'.$sort_orientation.'" },';  
     }
