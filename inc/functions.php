@@ -278,6 +278,51 @@ function analisa_get($get) {
                     }
                 },
             ';          
+    } elseif (!empty($get['missing'])){
+        
+
+            $query_complete = '
+            
+{
+  "sort" : [
+    { "year" : "desc" }
+  ],   
+  "query": {
+    "filtered": {
+      "query": {
+        "match_all": {}
+      },
+      "filter": {
+        "bool": {
+          "must": [{
+            "missing": {
+              "field": "facebook.total"
+            }
+          }]
+        }
+      }
+    }
+  },
+  "from": '.$skip.',
+  "size": '.$limit.'
+}
+   
+                ';
+            $query_aggregate = '
+                "query" : {
+                    "bool" : {
+                        "filter" : {
+                            "bool": {
+                              "must": [{
+                                "missing": {
+                                  "field": "facebook.total"
+                                }
+                              }]
+                            }
+                          }
+                     }
+                },
+            ';          
         
         
     } else {

@@ -53,33 +53,36 @@
     </head>
     <body>
         <?php include_once("inc/analyticstracking.php") ?>  
-        <?php include('inc/navbar.php'); ?>        
+              
         
         <div class="uk-container uk-container-center">
+            
+            <?php include('inc/navbar.php'); ?>  
+            
             <div class="uk-grid" data-uk-grid>                        
                 <div class="uk-width-small-1-2 uk-width-medium-2-6">                    
                     
 
-<div class="uk-panel uk-panel-box">
-    <form class="uk-form" method="get" action="result.php">
-    <fieldset>
-        <legend>Filtros ativos</legend>
-        <?php foreach ($new_get as $key => $value) : ?>
-            <div class="uk-form-row">
-                <label><?php echo $key; ?>: <?php echo implode(",",$value); ?></label>
-                <input type="checkbox" checked="checked"  name="<?php echo $key; ?>[]" value="<?php echo implode(",",$value); ?>">
-            </div>
-        <?php endforeach;?>
-        <?php if (!empty($result_get['termo_consulta'])): ?>
-            <div class="uk-form-row">
-                <label>Consulta: <?php echo $result_get['termo_consulta']; ?></label>
-                <input type="checkbox" checked="checked"  name="search_index" value="<?php echo $result_get['termo_consulta']; ?>">
-            </div>
-        <?php endif; ?>      
-        <div class="uk-form-row"><button type="submit" class="uk-button-primary">Retirar filtros</button></div>
-    </fieldset>        
-    </form>    
-    <hr>
+            <div class="uk-panel uk-panel-box">
+                <form class="uk-form" method="get" action="result.php">
+                    <fieldset>
+                        <legend>Filtros ativos</legend>
+                        <?php foreach ($new_get as $key => $value) : ?>
+                            <div class="uk-form-row">
+                                <label><?php echo $key; ?>: <?php echo implode(",",$value); ?></label>
+                                <input type="checkbox" checked="checked"  name="<?php echo $key; ?>[]" value="<?php echo implode(",",$value); ?>">
+                            </div>
+                        <?php endforeach;?>
+                        <?php if (!empty($result_get['termo_consulta'])): ?>
+                            <div class="uk-form-row">
+                                <label>Consulta: <?php echo $result_get['termo_consulta']; ?></label>
+                                <input type="checkbox" checked="checked"  name="search_index" value="<?php echo $result_get['termo_consulta']; ?>">
+                            </div>
+                        <?php endif; ?>      
+                        <div class="uk-form-row"><button type="submit" class="uk-button-primary">Retirar filtros</button></div>
+                    </fieldset>        
+                </form>    
+            <hr>
     <h3 class="uk-panel-title">Refinar meus resultados</h3>    
     <ul class="uk-nav uk-nav-side uk-nav-parent-icon uk-margin-top" data-uk-nav="{multiple:true}">
         <hr>
