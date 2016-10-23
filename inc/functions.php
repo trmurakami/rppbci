@@ -58,7 +58,7 @@ function ultimos_registros($server) {
                         }
                     }
                  },                 
-                "size": 5,
+                "size": 10,
                 "sort" : [
                     {"facebook.total" : {"order" : "desc"}}
                     ]
@@ -71,8 +71,9 @@ function ultimos_registros($server) {
         //var_dump($r);
     
         echo '<article class="uk-comment">
-        <header class="uk-comment-header">';    
-        echo '<a class="ui small header" href="'.$r['_source']['url_principal'].'"><h4 class="uk-comment-title">'.$r['_source']['title'][0].' ('.$r['_source']['year'][0].')</h4></a>';
+        <header class="uk-comment-header">'; 
+        //print_r($r);
+        echo '<a class="ui small header" href="'.$r['_source']['url_principal'].'"><h4 class="uk-comment-title">'.$r['_source']['facebook']['total'].' - '.$r['_source']['title'][0].' ('.$r['_source']['year'][0].' - '.$r['_source']['journalci_title'][0].')</h4></a>';
         echo '<div class="extra">';
         if (!empty($r["_source"]['creator'])) {
             echo '<div class="uk-comment-meta";">';    

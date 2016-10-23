@@ -23,14 +23,15 @@
 
                             <fieldset data-uk-margin>
                                 <legend>Faça uma busca</legend>
-                                <input type="text" placeholder="" name="search_index">
+                                
+                                <input type="text" placeholder="Busque no campo título, autor ou no resumo" name="search_index" class="uk-form-large uk-form-width-large ">
                                 <!--
                                 <select>
                                     <option>Títulos e autores</option>
                                     <option>Referências</option>
                                 </select>
                                 -->
-                                <button class="uk-button uk-button-primary uk-button-large">Pesquisar</button>
+                                <button class="uk-button uk-button-primary uk-button-large">Pesquisar <i class="uk-icon-search"></i></button>
                                 <!--
                                 <label><input type="checkbox"> Somente com altmetrics</label>
                                 -->
@@ -51,7 +52,7 @@
                 <div class="uk-grid" data-uk-grid-match data-uk-grid-margin>
 
                     <main class="uk-width-1-1">
-                        <article class="uk-article uk-text-center">
+                        <article class="uk-article">
 
     
                            <div class="uk-grid" data-uk-grid-margin>
@@ -114,7 +115,7 @@
                             
                             <div class="uk-grid" data-uk-grid-margin>
                                 <div class="uk-width-medium-1-2">
-                                    <h1>Top 5 registros com altmetrics</h1>
+                                    <h1>Top 10 registros com altmetrics</h1>
                                     <?php ultimos_registros($server); ?>
                                 </div>
 
