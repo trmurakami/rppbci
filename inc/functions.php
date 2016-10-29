@@ -172,25 +172,24 @@ function analisa_get($get) {
         
     } elseif (!empty($get['search_index'])) {
         $search_term = '
-            "query":
-            {
                 "multi_match" : {
                     "query":      "'.$get['search_index'].'",
                     "type":       "cross_fields",
                     "fields":     [ "title", "autores_original", "subject", "description" ],
                     "operator":   "and"
-                }    
-            }       
+                }          
         ';
         
         unset($get['search_index']);
+        
+        $filter = [];
         foreach ($get as $key => $value) {
            if (count($value) > 1){
                foreach ($value as $valor){
-                    $filter[] = '{"term":{"'.$key.'":"'.$valor.'"}}';
+                    $filter[] = '{"term":{"'.$key.'.keyword":"'.$valor.'"}}';
                 }               
            } else {
-               $filter[] = '{"term":{"'.$key.'":"'.$value[0].'"}}';
+               $filter[] = '{"term":{"'.$key.'.keyword":"'.$value[0].'"}}';
            }
             
         }
@@ -272,7 +271,7 @@ function analisa_get($get) {
             
 {
   "sort" : [
-    { "year" : "desc" }
+    { "year.keyword" : "desc" }
   ],   
   "query": {
     "filtered": {
@@ -314,6 +313,7 @@ function analisa_get($get) {
         
     } else {
         
+        $get_query1 = [];
         foreach ($get as $key => $value) {
             $conta_value = count($value);
             if ($conta_value > 1) {
@@ -382,7 +382,7 @@ function analisa_get($get) {
     
 if (isset($new_get)){
     
-   
+   $novo_get = [];
     if (!empty($new_get['search_index'])){
         $novo_get[] = 'search_index='.$new_get['search_index'].'';
         $termo_consulta = $new_get['search_index'];
@@ -404,6 +404,7 @@ if (isset($new_get)){
 
 
 function gerar_faceta($consulta,$url,$server,$campo,$tamanho,$nome_do_campo,$sort) {
+    $sort_query = "";
     if (!empty($sort)){
          
          $sort_query = '"order" : { "_term" : "'.$sort.'" },';  
@@ -611,7 +612,7 @@ function facebook_altmetrics_update($server,$facebook_id,$facebook_array){
                     "facebook" : {
                         '.implode(",",$facebook_array).'
                     },
-                    "date":'.date("Ymd").'
+                    "date":'.date("Y-m-d").'
                 },                    
                 "doc_as_upsert" : true
             }';    
@@ -732,6 +733,11 @@ function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
 
     $responses = $fb->sendBatchRequest($batch);
 
+    $fb_share_count = "";
+    $fb_comment_count = "";
+    $fb_reactions_count = "";
+    $altmetrics_total = "";
+    
     foreach ($responses as $key => $response) {
       if ($response->isError()) {
         //$e = $response->getThrownException();

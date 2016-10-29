@@ -52,7 +52,7 @@
         
     </head>
     <body>
-        <?php include_once("inc/analyticstracking.php") ?>  
+        <!-- < ?php include_once("inc/analyticstracking.php") ?>  -->
               
         
         <div class="uk-container uk-container-center">
@@ -88,20 +88,20 @@
         <hr>
      
     <?php 
-        gerar_faceta($query_aggregate,$escaped_url,$server,tipo,10,"Tipo de material");
-        gerar_faceta($query_aggregate,$escaped_url,$server,journalci_title,100,"Título do periódico");                    
-        gerar_faceta($query_aggregate,$escaped_url,$server,creator,120,"Autores");
-        gerar_faceta($query_aggregate,$escaped_url,$server,creator_total,100,"Quantidade de autores");
-        gerar_faceta($query_aggregate,$escaped_url,$server,contributor,100,"Agências de fomento"); 
-        gerar_faceta($query_aggregate,$escaped_url,$server,year,120,"Ano de publicação","desc");
-        gerar_faceta($query_aggregate,$escaped_url,$server,subject,100,"Assuntos");
-        gerar_faceta($query_aggregate,$escaped_url,$server,language,40,"Idioma");
-        gerar_faceta($query_aggregate,$escaped_url,$server,publisher,100,"Editora");
-        gerar_faceta($query_aggregate,$escaped_url,$server,format,100,"Formato");
-        gerar_faceta($query_aggregate,$escaped_url,$server,ISSN,100,"ISSN");
-        gerar_faceta($query_aggregate,$escaped_url,$server,source,100,"Fonte"); 
-        gerar_faceta($query_aggregate,$escaped_url,$server,qualis2014,200,"Qualis 2014");
-        gerar_faceta($query_aggregate,$escaped_url,$server,coverage,30,"Cobertura");
+        gerar_faceta($query_aggregate,$escaped_url,$server,"tipo",10,"Tipo de material",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"journalci_title",100,"Título do periódico",null);                    
+        gerar_faceta($query_aggregate,$escaped_url,$server,"creator",120,"Autores",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"creator_total",100,"Quantidade de autores",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"contributor",100,"Agências de fomento",null); 
+        gerar_faceta($query_aggregate,$escaped_url,$server,"year",120,"Ano de publicação","desc");
+        gerar_faceta($query_aggregate,$escaped_url,$server,"subject",100,"Assuntos",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"language",40,"Idioma",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"publisher",100,"Editora",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"format",100,"Formato",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"ISSN",100,"ISSN",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"source",100,"Fonte",null); 
+        gerar_faceta($query_aggregate,$escaped_url,$server,"qualis2014",200,"Qualis 2014",null);
+        gerar_faceta($query_aggregate,$escaped_url,$server,"coverage",30,"Cobertura",null);
     ?>
         
     </ul>
@@ -120,7 +120,7 @@
                     <a href="" class="uk-alert-close uk-close"></a>
                 
                     
-                        <?php $ano_bar = generateDataGraphBar($server, $url, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
+                        <?php $ano_bar = generateDataGraphBar($server, $escaped_url, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
                     
                         <div id="ano_chart" class="uk-visible-large"></div>
                         <script type="application/javascript">
@@ -252,6 +252,7 @@
                                         
                                         <li class="uk-h6 uk-margin-top">
                                             <p>Métricas:</p>
+                                             <?php if (!empty($r["_source"]['doi'])) : ?>
                                             <ul>
                                                 <li>
                                                     <div data-badge-popover="right" data-badge-type="1" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
@@ -260,6 +261,7 @@
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                             </ul>
+                                            <?php endif; ?>
                                             <ul>
                                                 <li>
                                                     <?php
@@ -313,7 +315,7 @@
                 </div>
             </div>
             <hr class="uk-grid-divider">
-<?php include('inc/footer.php'); ?>          
+<!-- < ?php include('inc/footer.php'); ?> -->         
         </div>
                 
 
