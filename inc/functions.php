@@ -21,14 +21,7 @@ function contar_registros ($server) {
     $query = '{
                 "query": {
                     "match_all": {}
-                 },
-                 "filter":{
-                    "bool":{
-                        "must_not" : {
-                            "term": {"status":"deleted"}
-                        }
-                    }
-                 },                 
+                 },                
                 "size": 0
                 }';
     
@@ -50,14 +43,7 @@ function ultimos_registros($server) {
      $query = '{
                 "query": {
                     "match_all": {}
-                 },
-                 "filter":{
-                    "bool":{
-                        "must_not" : {
-                            "term": {"status":"deleted"}
-                        }
-                    }
-                 },                 
+                 },                
                 "size": 10,
                 "sort" : [
                     {"facebook.total" : {"order" : "desc"}}
