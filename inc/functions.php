@@ -142,7 +142,8 @@ function analisa_get($get) {
         $query_complete = '{
         "sort" : [
                 { "facebook.total" : "desc" },
-                { "facebook.total" : {"missing" : "_last"} }
+                { "facebook.total" : {"missing" : "_last"} },
+                { "year" : "desc" }
         ],    
         "query": {    
             "bool": {
@@ -200,8 +201,10 @@ function analisa_get($get) {
         }
         $query_complete = '{
         "sort" : [
+                { "facebook.total" : "desc" },
+                { "facebook.total" : {"missing" : "_last"} },
                 { "year" : "desc" }
-            ],    
+        ],    
         "query": {    
         "bool": {
           "must": {
@@ -239,19 +242,21 @@ function analisa_get($get) {
             $query_part = '{"'.$key.'":["'.implode('","',$value_array[0]).'"]}';
             $query_complete = '
                 {
-                "sort" : [
-                    { "year" : "desc" }
-                ],    
-                "query" : {
-                    "bool" : {
-                        "filter" : {
-                            "terms":
-                                 '.$query_part.'
+                    "sort" : [
+                            { "facebook.total" : "desc" },
+                            { "facebook.total" : {"missing" : "_last"} },
+                            { "year" : "desc" }
+                    ],   
+                    "query" : {
+                        "bool" : {
+                            "filter" : {
+                                "terms":
+                                     '.$query_part.'
+                            }
                         }
-                    }
-                },
-                "from": '.$skip.',
-                "size": '.$limit.'
+                    },
+                    "from": '.$skip.',
+                    "size": '.$limit.'
                 }    
                 ';
             $query_aggregate = '
