@@ -12,6 +12,7 @@
     $new_get = $result_get['new_get'];
     $cursor = query_elastic($query_complete,$server);
     $total = $cursor["hits"]["total"];
+    //print_r($cursor);
 
    /* Citeproc-PHP*/
     include 'inc/citeproc-php/CiteProc.php';

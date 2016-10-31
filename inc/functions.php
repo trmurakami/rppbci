@@ -11,7 +11,7 @@ function query_elastic ($query,$server) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
     $result = curl_exec($ch);
     curl_close($ch);
-    $data = json_decode($result, TRUE);
+    $data = json_decode($result, true);
     return $data;
 }
 
@@ -270,23 +270,13 @@ function analisa_get($get) {
             $query_complete = '
             
 {
-  "sort" : [
-    { "year.keyword" : "desc" }
-  ],   
   "query": {
-    "filtered": {
-      "query": {
-        "match_all": {}
-      },
-      "filter": {
-        "bool": {
-          "must": [{
-            "missing": {
-              "field": "facebook.total"
-            }
-          }]
+    "bool": {
+      "must_not": [{
+        "exists": {
+          "field": "facebook.total"
         }
-      }
+      }]
     }
   },
   "from": '.$skip.',
@@ -297,16 +287,12 @@ function analisa_get($get) {
             $query_aggregate = '
                 "query" : {
                     "bool" : {
-                        "filter" : {
-                            "bool": {
-                              "must": [{
-                                "missing": {
-                                  "field": "facebook.total"
-                                }
-                              }]
+                          "must_not": [{
+                            "exists": {
+                              "field": "facebook.total"
                             }
-                          }
-                     }
+                          }]
+                        }
                 },
             ';          
         
@@ -612,16 +598,18 @@ function facebook_altmetrics_update($server,$facebook_id,$facebook_array){
                     "facebook" : {
                         '.implode(",",$facebook_array).'
                     },
-                    "date":'.date("Y-m-d").'
+                    "date":"'.date("Y-m-d").'"
                 },                    
                 "doc_as_upsert" : true
-            }';    
+            }'; 
+    //print_r($query);
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_PORT, 9200);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
     curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
     $result = curl_exec($ch);
+    //var_dump($result);
     curl_close($ch); 
 }
 

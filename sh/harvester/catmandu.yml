@@ -5,4 +5,4 @@ store:
     options:
       # use my_id instead of _id
       key_prefix: rppbci_
-      index_name: rppbci     
+      index_name: rppbci      

@@ -21,7 +21,7 @@ catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Braz
 sleep 2
 
 # Cadernos de Informação Jurídica (Cajur)
-catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Cadernos de Informacao Juridica")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.cajur.com.br/index.php/cajur/oai --metadataPrefix oai_dc oai_dc to rppbci --bag journals --verbose
+catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Cadernos de Informacao Juridica")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.cajur.com.br/index.php/cajur/oai --metadataPrefix oai_dc to rppbci --bag journals --verbose
 sleep 2
 
 
@@ -159,6 +159,6 @@ sleep 2
 
 
 
-curl -XDELETE 'http://localhost:9200/rppbci/journals/_query' -d '{ "query": { "term": { "status": "deleted" } } }'
+curl -XPOST 'http://localhost:9200/rppbci/journals/_delete_by_query' -d '{ "query": { "term": { "status": "deleted" } } }'
                 
 
