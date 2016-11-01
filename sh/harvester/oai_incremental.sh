@@ -32,6 +32,10 @@ sleep 2
 catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Ciencia da Informacao em Revista")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.seer.ufal.br/index.php/cir/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
 sleep 2
 
+# Comunicação & Informação
+catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Comunicacao e informacao")' --fix 'set_array("qualis2014","B2")' --url http://revistas.ufg.br/ci/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
+sleep 2
+
 # CRB-8 Digital
 #catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","crb8digital")' --fix 'set_array("qualis2014","B5")' --url http://revista.crb8.org.br/index.php/crb8digital/oai --metadataPrefix oai_dc to rppbci --bag journals --verbose
 #sleep 2
@@ -68,6 +72,14 @@ sleep 2
 catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Informacao em pauta")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.periodicos.ufc.br/index.php/informacaoempauta/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
 sleep 2
 
+# Informe: Estudos de Biblioteconomia e Gestão da Informação
+catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Informe")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.repositorios.ufpe.br/revistas/index.php/INF/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
+sleep 2
+
+# Intexto
+#catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Intexto")' --fix 'set_array("qualis2014","Nao possui")' --url http://www.seer.ufrgs.br/intexto/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
+#sleep 2
+
 # IRIS - Revista de Informação, Memória e Tecnologia
 catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","IRIS")' --fix 'set_array("qualis2014","B3")' --url http://www.repositorios.ufpe.br/revistas/index.php/IRIS/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
 sleep 2
@@ -78,6 +90,10 @@ sleep 2
 
 # Logeion - Filosofia da informação
 catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Logeion")' --fix 'set_array("qualis2014","Nao possui")' --url http://revista.ibict.br/fiinf/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
+sleep 2
+
+# Multiplos olhares em Ciência da Informação
+catmandu import OAI --fix fixes_oai.txt --fix 'set_array("journalci_title","Multiplos olhares em Ciencia da Informacao")' --fix 'set_array("qualis2014","Nao possui")' --url http://portaldeperiodicos.eci.ufmg.br/index.php/moci/oai --metadataPrefix oai_dc --from $ontem --until $hoje to rppbci --bag journals --verbose
 sleep 2
 
 # Perspectivas em Ciência da Informação - PCI
