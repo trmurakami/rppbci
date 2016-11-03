@@ -105,11 +105,11 @@
                                         <li data-uk-sort="my-category2"><a href="">Quantidade de Registros Menor > Maior</a></li>
                                         <li data-uk-sort="my-category2:desc"><a href="">Quantidade de registros Maior > Menor</a></li>
                                     </ul>
-
                                     <div data-uk-grid="{controls: '#my-id'}">
                                         <?php facetas_inicio($server,"journalci_title"); ?>
-                                    </div>                      
-                                    </div>
+                                    </div>                                    
+                                </div>
+ 
 
                             </div>
                             
