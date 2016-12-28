@@ -122,12 +122,12 @@
                                     <h1>Top 10 registros com altmetrics</h1>
                                     <?php ultimos_registros($server); ?>
                                 </div>
-                                <!--
+                                
                                 <div class="uk-width-medium-1-2">
                                     <h1>Altmetrics por periódico</h1>
-                                    <iframe src="http://bdpife2.sibi.usp.br:5601/goto/3de7cdf52f42e4e20f7fa1c5ad95b08e" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
+                                    <iframe src="http://bdpife2.sibi.usp.br:5601/goto/e04d456a15d8c2017971b405308c4d72?embed=true" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
                                 </div>
-                                -->
+                                
                             </div>
 
                             <hr class="uk-grid-divider">

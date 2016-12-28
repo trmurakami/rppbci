@@ -175,6 +175,6 @@ sleep 2
 
 
 
-curl -XPOST 'http://localhost:9200/rppbci2/journals/_delete_by_query' -d '{ "query": { "term": { "status": "deleted" } } }'
+curl -XPOST 'http://localhost:9200/rppbci/journals/_delete_by_query' -d '{ "query": { "term": { "status": "deleted" } } }'
                 
 
