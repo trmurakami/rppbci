@@ -24,13 +24,17 @@
                             <fieldset data-uk-margin>
                                 <legend>Faça uma busca</legend>
                                 
-                                <input type="text" placeholder="Busque no campo título, autor ou no resumo" name="search_index" class="uk-form-large uk-form-width-large ">
+                                <input type="text" placeholder="Busque no campo título, autor ou no resumo" name="search[]" class="uk-form-large uk-form-width-large ">
                                 <!--
                                 <select>
                                     <option>Títulos e autores</option>
                                     <option>Referências</option>
                                 </select>
                                 -->
+                                <input type="hidden" name="fields[]" value="title">
+                                <input type="hidden" name="fields[]" value="creator">
+                                <input type="hidden" name="fields[]" value="subject">
+                                <input type="hidden" name="fields[]" value="description">				
                                 <button class="uk-button uk-button-primary uk-button-large">Pesquisar <i class="uk-icon-search"></i></button>
                                 <!--
                                 <label><input type="checkbox"> Somente com altmetrics</label>

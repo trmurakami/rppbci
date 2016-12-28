@@ -11,6 +11,7 @@ function query_elastic ($query,$server) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
     $result = curl_exec($ch);
     curl_close($ch);
+    //print_r($result);
     $data = json_decode($result, true);
     return $data;
 }
@@ -64,7 +65,7 @@ function ultimos_registros($server) {
         if (!empty($r["_source"]['creator'])) {
             echo '<div class="uk-comment-meta";">';    
             foreach ($r["_source"]['creator'] as $autores) {
-            echo '<a href="result.php?creator[]='.$autores.'">'.$autores.'</a>, ';
+            echo '<a href="result.php?creator[]='.$autores[0].'">'.$autores[0].'</a>, ';
             }
             echo '</div>';
         }
@@ -75,9 +76,115 @@ function ultimos_registros($server) {
 
 function analisa_get($get) {
     
+    $search_fields = "";
+    if (!empty($get['fields'])) {
+        $search_fields = implode('","',$get['fields']);  
+    } else {            
+        $search_fields = "_all";
+    }    
+    
+    if (!empty($get['search'])){
+        $get['search'] = str_replace('"','\"',$get['search']);
+    }
+    
+    /* Pagination */
+    if (isset($get['page'])) {
+        $page = $get['page'];
+        unset($get['page']);
+    } else {
+        $page = 1;
+    }
+    
+    /* Pagination variables */
+    $limit = 20;
+    $skip = ($page - 1) * $limit;
+    $next = ($page + 1);
+    $prev = ($page - 1);
+    $sort = array('year' => -1);       
+    
+    if (!empty($get['assunto'])){        
+        $get['search'][] = 'subject:\"'.$get['assunto'].'\"';
+    }    
+    
+    if (!empty($get['search'])){
+        $query = implode(" ", $get['search']); 
+    } else {
+        $query = "*";
+    }
+    
+    
+    if (!empty($get['missing'])){
+        
+
+            $query_complete = '
+            
+{
+  "query": {
+    "bool": {
+      "must_not": [{
+        "exists": {
+          "field": "facebook.total"
+        }
+      }]
+    }
+  },
+  "from": '.$skip.',
+  "size": '.$limit.'
+}
+   
+                ';
+            $query_aggregate = '
+                "query" : {
+                    "bool" : {
+                          "must_not": [{
+                            "exists": {
+                              "field": "facebook.total"
+                            }
+                          }]
+                        }
+                },
+            ';          
+        
+        
+    } else {
+    
+    
+    $search_term = '
+        "query_string" : {
+            "fields" : ["'.$search_fields.'"],
+            "query" : "'.$query.'",
+            "default_operator": "AND",
+            "analyzer":"portuguese",
+            "phrase_slop":10
+        }                
+    ';    
+    
+    $query_complete = '{
+        "sort" : [
+                { "facebook.total" : "desc" },
+                { "facebook.total" : {"missing" : "_last"} },
+                { "year.keyword" : "desc" }
+        ],   
+        "query": {
+        '.$search_term.'
+        }
+    }';
+    $query_aggregate = '
+        "query": {
+            '.$search_term.'
+        },
+    ';
+ }
+ 
+    return compact('page','get','new_get','query_complete','query_aggregate','url','escaped_url','limit','termo_consulta','data_inicio','data_fim','skip');
+}
+
+/*
+function analisa_get($get) {
+    
     $new_get = $get;
     
-    /* Missing query */
+    /* Missing query * /
     foreach ($get as $k => $v){
         if($v == 'N/D'){
             $filter[] = '{"missing" : { "field" : "'.$k.'" }}';
@@ -85,12 +192,12 @@ function analisa_get($get) {
         }
     }    
     
-    /* limpar base all */
+    /* limpar base all * /
     if (isset($get['base']) && $get['base'][0] == 'all'){
         unset($get['base']);
         unset($new_get['base']);
     }    
-    /* Subject */
+    /* Subject * /
     if (isset($get['assunto'])){   
         $get['subject'][] = $get['assunto'];
         $new_get['subject'][] = $get['assunto'];
@@ -98,7 +205,7 @@ function analisa_get($get) {
         unset($new_get['assunto']);
     }    
     
-    /* Pagination */
+    /* Pagination * /
     if (isset($get['page'])) {
         $page = $get['page'];
         unset($get['page']);
@@ -107,7 +214,7 @@ function analisa_get($get) {
         $page = 1;
     }
     
-    /* Pagination variables */
+    /* Pagination variables * /
     $limit = 20;
     $skip = ($page - 1) * $limit;
     $next = ($page + 1);
@@ -367,8 +474,8 @@ function analisa_get($get) {
                    },
     ';
     }
-        
-/* Pegar a URL atual */
+
+/* Pegar a URL atual * /
     
     
 if (isset($new_get)){
@@ -392,9 +499,10 @@ if (isset($new_get)){
     
     return compact('page','get','new_get','query_complete','query_aggregate','url','escaped_url','limit','termo_consulta','data_inicio','data_fim');
 }
+*/
 
 
-function gerar_faceta($consulta,$url,$server,$campo,$tamanho,$nome_do_campo,$sort) {
+function gerar_faceta($consulta,$server,$field,$tamanho,$nome_do_campo,$sort) {
     $sort_query = "";
     if (!empty($sort)){
          
@@ -407,7 +515,7 @@ function gerar_faceta($consulta,$url,$server,$campo,$tamanho,$nome_do_campo,$sor
         "aggregations": {
           "counts": {
             "terms": {
-              "field": "'.$campo.'",
+              "field": "'.$field.'.keyword",
               '.$sort_query.'
               "size":'.$tamanho.'
             }
@@ -423,12 +531,14 @@ function gerar_faceta($consulta,$url,$server,$campo,$tamanho,$nome_do_campo,$sor
     echo ' <ul class="uk-nav-sub">';
     echo '<form>';
     //$count = 1;
-    foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
-        echo '<li class="uk-h6 uk-form-controls uk-form-controls-text">';
-        echo '<p class="uk-form-controls-condensed">';
-        echo '<input type="checkbox" name="'.$campo.'[]" value="'.$facets['key'].'"><a href="'.$url.'&'.$campo.'[]='.$facets['key'].'">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a>';
-        echo '</p>';
-        echo '</li>';
+    
+	foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
+	    echo '<li class="uk-h6 uk-form-controls uk-form-controls-text">';
+	    echo '<p class="uk-form-controls-condensed">';
+	    echo '<div class="uk-grid"><div class="uk-width-4-5">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</div> <div class="uk-width-1-5"> <a href="http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"].'?'.$_SERVER["QUERY_STRING"].'&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;" class="uk-icon-hover uk-icon-plus" data-uk-tooltip title="E"></a> <a href="http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"].'?'.$_SERVER["QUERY_STRING"].'&search[]=-'.$field.'.keyword:&quot;'.$facets['key'].'&quot;" class="uk-icon-hover uk-icon-minus" data-uk-tooltip title="NÃO"></a>  <a href="http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"].'?'.$_SERVER["QUERY_STRING"].'&search[]=OR '.$field.'.keyword:&quot;'.$facets['key'].'&quot;" class="uk-icon-hover uk-icon-check-circle-o" data-uk-tooltip title="OU"></a></div>';
+	    echo '</p>';
+	    echo '</li>';     
+
         
         //if ($count == 11)
         //    {  
@@ -554,7 +664,7 @@ function get_type($material_type){
 }
 
 /* Function to generate Graph Bar */
-function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orientation, $facet_display_name,$tamanho) {
+function generateDataGraphBar($server, $consulta, $campo, $sort, $sort_orientation, $facet_display_name,$tamanho) {
     if (!empty($sort)){
         $sort_query = '"order" : { "'.$sort.'" : "'.$sort_orientation.'" },';  
     }
@@ -565,7 +675,7 @@ function generateDataGraphBar($server,$url, $consulta, $campo, $sort, $sort_orie
         "aggregations": {
           "counts": {
             "terms": {
-              "field": "'.$campo.'",
+              "field": "'.$campo.'.keyword",
               '.$sort_query.'
               "size":'.$tamanho.'
             }
@@ -597,16 +707,16 @@ function facebook_altmetrics_update($server,$facebook_id,$facebook_array){
     $method = "POST";
     $facebook_id_corrigido = urlencode($facebook_id);
     $url = "http://$server/rppbci/journals/$facebook_id_corrigido/_update";
-       $query = 
-             '{
-                "doc":{
-                    "facebook" : {
-                        '.implode(",",$facebook_array).'
-                    },
-                    "date":"'.date("Y-m-d").'"
-                },                    
-                "doc_as_upsert" : true
-            }'; 
+	$query = 
+	     '{
+		"doc":{
+		    "facebook" : {
+			'.implode(",",$facebook_array).'
+		    },
+		    "date":"'.date("Y-m-d").'"
+		},                    
+		"doc_as_upsert" : true
+	    }'; 
     //print_r($query);
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_PORT, 9200);
@@ -785,7 +895,7 @@ function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
     $altmetrics_total+= $fb_reactions_count;
     
     $facebook_array[] = '"total":'.$altmetrics_total.'';
-    $facebook_array[] = '"date_altmetrics":'.date("Ymd").'';
+    $facebook_array[] = '"date_altmetrics":"'.date("Y-m-d").'"';
     
     facebook_altmetrics_update($server,$facebook_id,$facebook_array);
     
@@ -808,7 +918,7 @@ function facetas_inicio($server,$campo) {
         "aggs": {         
             "group_by_state": {
                 "terms": {
-                    "field": "'.$campo.'",                    
+                    "field": "'.$campo.'.keyword",                    
                     "size" : 100,
                     "order" : { "_term" : "asc" }
                 }
@@ -820,7 +930,7 @@ function facetas_inicio($server,$campo) {
     
         
     foreach ($data["aggregations"]["group_by_state"]["buckets"] as $facets) {
-        echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?'.$campo.'[]='.$facets['key'].'">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
+        echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$campo.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
     }
 
 }

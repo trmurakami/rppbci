@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <?php
     include('inc/config.php'); 
@@ -6,10 +5,10 @@
     $result_get = analisa_get($_GET);
     $query_complete = $result_get['query_complete'];
     $query_aggregate = $result_get['query_aggregate'];
-    $escaped_url = $result_get['escaped_url'];
+    //$escaped_url = $result_get['escaped_url'];
     $limit = $result_get['limit'];
     $page = $result_get['page'];
-    $new_get = $result_get['new_get'];
+    //$new_get = $result_get['new_get'];
     $cursor = query_elastic($query_complete,$server);
     $total = $cursor["hits"]["total"];
     //print_r($cursor);
@@ -65,44 +64,44 @@
                     
 
             <div class="uk-panel uk-panel-box">
-                <form class="uk-form" method="get" action="result.php">
-                    <fieldset>
-                        <legend>Filtros ativos</legend>
-                        <?php foreach ($new_get as $key => $value) : ?>
-                            <div class="uk-form-row">
-                                <label><?php echo $key; ?>: <?php echo implode(",",$value); ?></label>
-                                <input type="checkbox" checked="checked"  name="<?php echo $key; ?>[]" value="<?php echo implode(",",$value); ?>">
-                            </div>
-                        <?php endforeach;?>
-                        <?php if (!empty($result_get['termo_consulta'])): ?>
-                            <div class="uk-form-row">
-                                <label>Consulta: <?php echo $result_get['termo_consulta']; ?></label>
-                                <input type="checkbox" checked="checked"  name="search_index" value="<?php echo $result_get['termo_consulta']; ?>">
-                            </div>
-                        <?php endif; ?>      
-                        <div class="uk-form-row"><button type="submit" class="uk-button-primary">Retirar filtros</button></div>
-                    </fieldset>        
-                </form>    
+  
+		<form class="uk-form" method="get" action="result.php">
+			<fieldset>
+			<?php if (!empty($_GET["search"])) : ?>
+				<legend>Filtros ativos</legend>
+				<div class="uk-form-row">
+					<?php foreach($_GET["search"] as $filters): ?>
+						<input type="checkbox" name="search[]" value="<?php print_r(str_replace('"','&quot;',$filters)); ?>" checked><?php print_r($filters); ?><br/>
+					<?php endforeach; ?>
+				</div>
+				<div class="uk-form-row"><button type="submit" class="uk-button-primary">Retirar filtros</button></div>
+			<?php endif;?> 
+			</fieldset>        
+		</form>  
+     
             <hr>
     <h3 class="uk-panel-title">Refinar meus resultados</h3>    
     <ul class="uk-nav uk-nav-side uk-nav-parent-icon uk-margin-top" data-uk-nav="{multiple:true}">
         <hr>
      
     <?php 
-        gerar_faceta($query_aggregate,$escaped_url,$server,"tipo",10,"Tipo de material",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"journalci_title",100,"Título do periódico",null);                    
-        gerar_faceta($query_aggregate,$escaped_url,$server,"creator",120,"Autores",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"creator_total",100,"Quantidade de autores",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"contributor",100,"Agências de fomento",null); 
-        gerar_faceta($query_aggregate,$escaped_url,$server,"year",120,"Ano de publicação","desc");
-        gerar_faceta($query_aggregate,$escaped_url,$server,"subject",100,"Assuntos",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"language",40,"Idioma",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"publisher",100,"Editora",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"format",100,"Formato",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"ISSN",100,"ISSN",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"source",100,"Fonte",null); 
-        gerar_faceta($query_aggregate,$escaped_url,$server,"qualis2014",200,"Qualis 2014",null);
-        gerar_faceta($query_aggregate,$escaped_url,$server,"coverage",30,"Cobertura",null);
+        gerar_faceta($query_aggregate,$server,"tipo",10,"Tipo de material",null);
+        gerar_faceta($query_aggregate,$server,"journalci_title",100,"Título do periódico",null);                    
+        gerar_faceta($query_aggregate,$server,"autor",120,"Autores",null);
+	gerar_faceta($query_aggregate,$server,"instituicao",120,"Instituição",null);
+        gerar_faceta($query_aggregate,$server,"creator_total",100,"Quantidade de autores",null);
+        gerar_faceta($query_aggregate,$server,"contributor",100,"Agências de fomento",null); 
+        gerar_faceta($query_aggregate,$server,"year",120,"Ano de publicação","desc");
+        gerar_faceta($query_aggregate,$server,"subject",100,"Assuntos",null);
+        gerar_faceta($query_aggregate,$server,"language",40,"Idioma",null);
+        gerar_faceta($query_aggregate,$server,"publisher",100,"Editora",null);
+        gerar_faceta($query_aggregate,$server,"format",100,"Formato",null);
+        gerar_faceta($query_aggregate,$server,"issn",100,"ISSN",null);
+        gerar_faceta($query_aggregate,$server,"edicao",100,"Fonte","desc");
+	gerar_faceta($query_aggregate,$server,"prefixo_doi",100,"Prefixo DOI","desc");  
+        gerar_faceta($query_aggregate,$server,"qualis2014",200,"Qualis 2014",null);
+        gerar_faceta($query_aggregate,$server,"coverage",30,"Cobertura",null);
+	gerar_faceta($query_aggregate,$server,"setSpec",30,"Seção",null);
     ?>
         
     </ul>
@@ -121,7 +120,7 @@
                     <a href="" class="uk-alert-close uk-close"></a>
                 
                     
-                        <?php $ano_bar = generateDataGraphBar($server, $escaped_url, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
+                        <?php $ano_bar = generateDataGraphBar($server, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
                     
                         <div id="ano_chart" class="uk-visible-large"></div>
                         <script type="application/javascript">
@@ -212,7 +211,7 @@
                                             Autores:
                                             <?php if (!empty($r["_source"]['creator'])) : ?>
                                             <?php foreach ($r["_source"]['creator'] as $autores) {
-                                                $authors_array[]='<a href="result.php?authors[]='.$autores.'">'.$autores.'</a>';
+                                                $authors_array[]='<a href="result.php?authors[]='.$autores[0].'">'.$autores[0].'</a>';
                                             } 
                                            $array_aut = implode(", ",$authors_array);
                                             unset($authors_array);
