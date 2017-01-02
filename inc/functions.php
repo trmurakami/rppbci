@@ -167,7 +167,9 @@ function analisa_get($get) {
         ],   
         "query": {
         '.$search_term.'
-        }
+        },
+        "from": '.$skip.',
+        "size": '.$limit.'
     }';
     $query_aggregate = '
         "query": {
