@@ -2,14 +2,14 @@
 <?php
     include('inc/config.php'); 
     include('inc/functions.php');
-    $result_get = analisa_get($_GET);
+    $result_get = get::analisa_get($_GET);
     $query_complete = $result_get['query_complete'];
     $query_aggregate = $result_get['query_aggregate'];
     //$escaped_url = $result_get['escaped_url'];
     $limit = $result_get['limit'];
     $page = $result_get['page'];
     //$new_get = $result_get['new_get'];
-    $cursor = query_elastic($query_complete,$server);
+    $cursor = elasticsearch::elastic_search("journals",null,$limit = $result_get['limit'],$query_complete);
     $total = $cursor["hits"]["total"];
     //print_r($cursor);
 

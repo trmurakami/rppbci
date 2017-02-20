@@ -1,20 +1,6 @@
 <?php
 
-function query_elastic ($query,$server) {
-    $ch = curl_init();
-    $method = "POST";
-    $url = "http://$server/rppbci/journals/_search";
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_PORT, 9200);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-    $result = curl_exec($ch);
-    curl_close($ch);
-    //print_r($result);
-    $data = json_decode($result, true);
-    return $data;
-}
+include('functions_core.php');
 
 function contar_registros ($server) {
     $ch = curl_init();
@@ -74,437 +60,9 @@ function ultimos_registros($server) {
     }     
 }
 
-function analisa_get($get) {
-    
-    $search_fields = "";
-    if (!empty($get['fields'])) {
-        $search_fields = implode('","',$get['fields']);  
-    } else {            
-        $search_fields = "_all";
-    }    
-    
-    if (!empty($get['search'])){
-        $get['search'] = str_replace('"','\"',$get['search']);
-    }
-    
-    /* Pagination */
-    if (isset($get['page'])) {
-        $page = $get['page'];
-        unset($get['page']);
-    } else {
-        $page = 1;
-    }
-    
-    /* Pagination variables */
-    $limit = 20;
-    $skip = ($page - 1) * $limit;
-    $next = ($page + 1);
-    $prev = ($page - 1);
-    $sort = array('year' => -1);       
-    
-    if (!empty($get['assunto'])){        
-        $get['search'][] = 'subject:\"'.$get['assunto'].'\"';
-    }    
-    
-    if (!empty($get['search'])){
-        $query = implode(" ", $get['search']); 
-    } else {
-        $query = "*";
-    }
-    
-    
-    if (!empty($get['missing'])){
-        
-
-            $query_complete = '
-            
-{
-  "query": {
-    "bool": {
-      "must_not": [{
-        "exists": {
-          "field": "facebook.total"
-        }
-      }]
-    }
-  },
-  "from": '.$skip.',
-  "size": '.$limit.'
-}
-   
-                ';
-            $query_aggregate = '
-                "query" : {
-                    "bool" : {
-                          "must_not": [{
-                            "exists": {
-                              "field": "facebook.total"
-                            }
-                          }]
-                        }
-                },
-            ';          
-        
-        
-    } else {
-    
-    
-    $search_term = '
-        "query_string" : {
-            "fields" : ["'.$search_fields.'"],
-            "query" : "'.$query.'",
-            "default_operator": "AND",
-            "analyzer":"portuguese",
-            "phrase_slop":10
-        }                
-    ';    
-    
-    $query_complete = '{
-        "sort" : [
-                { "facebook.total" : "desc" },
-                { "facebook.total" : {"missing" : "_last"} },
-                { "year.keyword" : "desc" }
-        ],   
-        "query": {
-        '.$search_term.'
-        },
-        "from": '.$skip.',
-        "size": '.$limit.'
-    }';
-    $query_aggregate = '
-        "query": {
-            '.$search_term.'
-        },
-    ';
- }
- 
-    return compact('page','get','new_get','query_complete','query_aggregate','url','escaped_url','limit','termo_consulta','data_inicio','data_fim','skip');
-}
-
-/*
-function analisa_get($get) {
-    
-    $new_get = $get;
-    
-    /* Missing query * /
-    foreach ($get as $k => $v){
-        if($v == 'N/D'){
-            $filter[] = '{"missing" : { "field" : "'.$k.'" }}';
-            unset($get[$k]);
-        }
-    }    
-    
-    /* limpar base all * /
-    if (isset($get['base']) && $get['base'][0] == 'all'){
-        unset($get['base']);
-        unset($new_get['base']);
-    }    
-    /* Subject * /
-    if (isset($get['assunto'])){   
-        $get['subject'][] = $get['assunto'];
-        $new_get['subject'][] = $get['assunto'];
-        unset($get['assunto']);
-        unset($new_get['assunto']);
-    }    
-    
-    /* Pagination * /
-    if (isset($get['page'])) {
-        $page = $get['page'];
-        unset($get['page']);
-        unset($new_get['page']);
-    } else {
-        $page = 1;
-    }
-    
-    /* Pagination variables * /
-    $limit = 20;
-    $skip = ($page - 1) * $limit;
-    $next = ($page + 1);
-    $prev = ($page - 1);
-    $sort = array('year' => -1);    
-    
-     if (!empty($get["date_init"])||(!empty($get["date_end"]))) {
-        $filter[] = '
-        {
-            "range" : {
-                "year" : {
-                    "gte" : '.$get["date_init"].',
-                    "lte" : '.$get["date_end"].'
-                }
-            }
-        }
-        ';
-        $novo_get[] = 'date_init='.$new_get['date_init'].'';
-        $novo_get[] = 'date_end='.$new_get['date_end'].''; 
-        $data_inicio = $get["date_init"];
-        $data_fim = $get["date_end"];
-        unset($new_get["date_init"]);
-        unset($new_get["date_end"]);         
-        unset($get["date_init"]);
-        unset($get["date_end"]);
-    }
-    
-    if (count($get) == 0 ||(count($get) == 1&&!empty($get["page"]))) {
-        $search_term = '"match_all": {}';
-        $filter_query = '';
-        
-        $query_complete = '{
-        "sort" : [
-                { "facebook.total" : "desc" },
-                { "facebook.total" : {"missing" : "_last"} },
-                { "year" : "desc" }
-        ],    
-        "query": {    
-            "bool": {
-              "must": {
-                '.$search_term.'
-              },
-              "filter":[
-                '.$filter_query.'        
-                ]
-              }
-        },       
-        "from": '.$skip.',
-        "size": '.$limit.'
-        }';
-        $query_aggregate = '
-            "query": {
-                "bool": {
-                  "must": {
-                    '.$search_term.'
-                  },
-                  "must_not" : {
-                    "term": {"status":"deleted"}
-                    }
-                }
-            },
-        ';
-        
-    } elseif (!empty($get['search_index'])) {
-        $search_term = '
-                "multi_match" : {
-                    "query":      "'.$get['search_index'].'",
-                    "type":       "cross_fields",
-                    "fields":     [ "title", "autores_original", "subject", "description" ],
-                    "operator":   "and"
-                }          
-        ';
-        
-        unset($get['search_index']);
-        
-        $filter = [];
-        foreach ($get as $key => $value) {
-           if (count($value) > 1){
-               foreach ($value as $valor){
-                    $filter[] = '{"term":{"'.$key.'.keyword":"'.$valor.'"}}';
-                }               
-           } else {
-               $filter[] = '{"term":{"'.$key.'.keyword":"'.$value[0].'"}}';
-           }
-            
-        }
-        if (count($filter) > 0) {
-            $filter_query = ''.implode(",", $filter).''; 
-        } else {
-            $filter_query = '';
-        }
-        $query_complete = '{
-        "sort" : [
-                { "facebook.total" : "desc" },
-                { "facebook.total" : {"missing" : "_last"} },
-                { "year" : "desc" }
-        ],    
-        "query": {    
-        "bool": {
-          "must": {
-            '.$search_term.'
-          },
-          "filter":[
-            '.$filter_query.'        
-            ]
-          }
-        },
-        "from": '.$skip.',
-        "size": '.$limit.'
-        }';
-        
-        $query_aggregate = '
-            "query": {
-                "bool": {
-                  "must": {
-                    '.$search_term.'
-                  },
-                  "filter":[
-                    '.$filter_query.'
-                    ]
-                  }
-                },
-        ';
-    } elseif (!empty($get['operator'])) {
-        
-        unset($get['operator']);
-        
-        foreach ($get as $key => $value){
-                $key = $key;
-                $value_array[] = $value;                
-        } 
-            $query_part = '{"'.$key.'":["'.implode('","',$value_array[0]).'"]}';
-            $query_complete = '
-                {
-                    "sort" : [
-                            { "facebook.total" : "desc" },
-                            { "facebook.total" : {"missing" : "_last"} },
-                            { "year" : "desc" }
-                    ],   
-                    "query" : {
-                        "bool" : {
-                            "filter" : {
-                                "terms":
-                                     '.$query_part.'
-                            }
-                        }
-                    },
-                    "from": '.$skip.',
-                    "size": '.$limit.'
-                }    
-                ';
-            $query_aggregate = '
-                "query" : {
-                    "bool" : {
-                        "filter" : {
-                            "terms":
-                                 '.$query_part.'
-                        }
-                    }
-                },
-            ';          
-    } elseif (!empty($get['missing'])){
-        
-
-            $query_complete = '
-            
-{
-  "query": {
-    "bool": {
-      "must_not": [{
-        "exists": {
-          "field": "facebook.total"
-        }
-      }]
-    }
-  },
-  "from": '.$skip.',
-  "size": '.$limit.'
-}
-   
-                ';
-            $query_aggregate = '
-                "query" : {
-                    "bool" : {
-                          "must_not": [{
-                            "exists": {
-                              "field": "facebook.total"
-                            }
-                          }]
-                        }
-                },
-            ';          
-        
-        
-    } else {
-        
-        $get_query1 = [];
-        foreach ($get as $key => $value) {
-            $conta_value = count($value);
-            if ($conta_value > 1) {
-                foreach ($value as $valor){
-                    $get_query1[] = '{"term":{"'.$key.'":"'.$valor.'"}}';
-                }                        
-            } else {
-                 foreach ($value as $valor){
-                     $filter[] = '{"term":{"'.$key.'":"'.$valor.'"}}';
-                 }
-            }       
-        }
-    
-        $query_part = '"must" : ['.implode(",",$get_query1).']';
-        $query_part2 = implode(",",$filter);
-        $query_complete = '
-                    {
-                       "sort" : [
-                            { "facebook.total" : "desc" },
-                            { "facebook.total" : {"missing" : "_last"} },
-                           { "year" : "desc" }
-                       ],    
-                       "query" : {
-                          "constant_score" : {
-                             "filter" : {
-                                "bool" : {
-                                  "should" : [
-                                    { "bool" : {
-                                    '.$query_part.'
-                                   }} 
-                                  ],
-                                  "filter": [
-                                    '.$query_part2.'
-                                  ]
-                               }
-                             }
-                          }
-                       },
-                      "from": '.$skip.',
-                      "size": '.$limit.'
-                    }    
-        ';
-        
-        $query_aggregate = '
-                    "query" : {
-                      "constant_score" : {
-                         "filter" : {
-                            "bool" : {
-                              "should" : [
-                                { "bool" : {
-                                '.$query_part.'
-                               }} 
-                              ],
-                              "filter": [
-                                '.$query_part2.'
-                              ]
-                           }
-                         }
-                      }
-                   },
-    ';
-    }
-
-/* Pegar a URL atual * /
-    
-    
-if (isset($new_get)){
-    
-   $novo_get = [];
-    if (!empty($new_get['search_index'])){
-        $novo_get[] = 'search_index='.$new_get['search_index'].'';
-        $termo_consulta = $new_get['search_index'];
-        unset($new_get['search_index']);
-    }  
-    
-    foreach ($new_get as $key => $value){
-        $novo_get[] = ''.$key.'[]='.$value[0].'';        
-    }    
-    $pega_get = implode("&",$novo_get);
-    $url = 'http://'.$_SERVER['SERVER_NAME'].''.$_SERVER['PHP_SELF'].'?'.$pega_get.'';
-} else {
-    $url = 'http://'.$_SERVER['SERVER_NAME'].''.$_SERVER['PHP_SELF'].'';
-}
-    $escaped_url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');     
-    
-    return compact('page','get','new_get','query_complete','query_aggregate','url','escaped_url','limit','termo_consulta','data_inicio','data_fim');
-}
-*/
-
-
 function gerar_faceta($consulta,$server,$field,$tamanho,$nome_do_campo,$sort) {
+    global $index;
+    global $client;
     $sort_query = "";
     if (!empty($sort)){
          
@@ -525,8 +83,14 @@ function gerar_faceta($consulta,$server,$field,$tamanho,$nome_do_campo,$sort) {
         }
      }
      ';
-       
-    $data = query_elastic($query,$server);
+    
+    $params = [
+        'index' => $index,
+        'type' => 'journals',
+        'size'=> 0,          
+        'body' => $query
+    ];
+    $data = $client->search($params);       
     
     echo '<li class="uk-parent">';    
     echo '<a href="#">'.$nome_do_campo.'</a>';
@@ -667,6 +231,8 @@ function get_type($material_type){
 
 /* Function to generate Graph Bar */
 function generateDataGraphBar($server, $consulta, $campo, $sort, $sort_orientation, $facet_display_name,$tamanho) {
+    global $index;
+    global $client;
     if (!empty($sort)){
         $sort_query = '"order" : { "'.$sort.'" : "'.$sort_orientation.'" },';  
     }
@@ -685,8 +251,13 @@ function generateDataGraphBar($server, $consulta, $campo, $sort, $sort_orientati
         }
      }
      ';
-    
-    $facet = query_elastic($query,$server);    
+    $params = [
+        'index' => $index,
+        'type' => 'journals',
+        'size'=> 0,          
+        'body' => $query
+    ];
+    $facet = $client->search($params);
     
     $data_array= array();
     foreach ($facet['aggregations']['counts']['buckets'] as $facets) {
