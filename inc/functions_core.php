@@ -113,7 +113,8 @@ class get {
         $limit = 20;
         $skip = ($page - 1) * $limit;
         $next = ($page + 1);
-        $prev = ($page - 1);               
+        $prev = ($page - 1);
+        $sort = array('year' => -1);       
 
         if (!empty($get['codpes'])){        
             $get['search'][] = 'codpes:'.$get['codpes'].'';
