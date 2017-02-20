@@ -25,18 +25,25 @@ function contar_registros ($server) {
     return $data["hits"]["total"];
 }
 
-function ultimos_registros($server) {
-    
-     $query = '{
+function ultimos_registros() {
+    global $index;
+    global $client;
+    $query = '{
                 "query": {
                     "match_all": {}
                  },                
-                "size": 10,
                 "sort" : [
                     {"facebook.total" : {"order" : "desc"}}
                     ]
                 }';
-    $data = query_elastic($query,$server);
+    
+    $params = [
+        'index' => $index,
+        'type' => 'journals',
+        'size'=> 10,          
+        'body' => $query
+    ];
+    $data = $client->search($params);  
     
     //print_r($data);
 
@@ -58,68 +65,6 @@ function ultimos_registros($server) {
         echo '</header>';
         echo '</article>';
     }     
-}
-
-function gerar_faceta($consulta,$server,$field,$tamanho,$nome_do_campo,$sort) {
-    global $index;
-    global $client;
-    $sort_query = "";
-    if (!empty($sort)){
-         
-         $sort_query = '"order" : { "_term" : "'.$sort.'" },';  
-        }
-    $query = '
-    {
-        "size": 0,        
-        '.$consulta.'
-        "aggregations": {
-          "counts": {
-            "terms": {
-              "field": "'.$field.'.keyword",
-              '.$sort_query.'
-              "size":'.$tamanho.'
-            }
-          }
-        }
-     }
-     ';
-    
-    $params = [
-        'index' => $index,
-        'type' => 'journals',
-        'size'=> 0,          
-        'body' => $query
-    ];
-    $data = $client->search($params);       
-    
-    echo '<li class="uk-parent">';    
-    echo '<a href="#">'.$nome_do_campo.'</a>';
-    echo ' <ul class="uk-nav-sub">';
-    echo '<form>';
-    //$count = 1;
-    
-	foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
-	    echo '<li class="uk-h6 uk-form-controls uk-form-controls-text">';
-	    echo '<p class="uk-form-controls-condensed">';
-	    echo '<div class="uk-grid"><div class="uk-width-4-5">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</div> <div class="uk-width-1-5"> <a href="http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"].'?'.$_SERVER["QUERY_STRING"].'&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;" class="uk-icon-hover uk-icon-plus" data-uk-tooltip title="E"></a> <a href="http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"].'?'.$_SERVER["QUERY_STRING"].'&search[]=-'.$field.'.keyword:&quot;'.$facets['key'].'&quot;" class="uk-icon-hover uk-icon-minus" data-uk-tooltip title="NÃO"></a>  <a href="http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"].'?'.$_SERVER["QUERY_STRING"].'&search[]=OR '.$field.'.keyword:&quot;'.$facets['key'].'&quot;" class="uk-icon-hover uk-icon-check-circle-o" data-uk-tooltip title="OU"></a></div>';
-	    echo '</p>';
-	    echo '</li>';     
-
-        
-        //if ($count == 11)
-        //    {  
-        //         echo '<div id="'.$campo.'" class="uk-hidden">';
-        //    }
-        //$count++;
-    };
-    //if ($count > 12) {
-        //echo '</div>';
-        //echo '<button class="uk-button" data-uk-toggle="{target:\'#'.$campo.'\'}">Ver mais</button>';
-    //}
-    echo '<input type="hidden" checked="checked" name="operator" value="AND">';
-    echo '<button type="submit" class="uk-button-primary">Limitar facetas</button>';
-    echo '</form>';
-    echo   '</ul></li>';
 }
 
 function gera_consulta_citacao($citacao) {
@@ -230,41 +175,32 @@ function get_type($material_type){
 }
 
 /* Function to generate Graph Bar */
-function generateDataGraphBar($server, $consulta, $campo, $sort, $sort_orientation, $facet_display_name,$tamanho) {
+function generateDataGraphBar($query,$field,$sort,$sort_orientation,$facet_display_name,$size) {
     global $index;
     global $client;
-    if (!empty($sort)){
-        $sort_query = '"order" : { "'.$sort.'" : "'.$sort_orientation.'" },';  
+    global $type;
+    
+    $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+    if (isset($sort)) {
+        $query["aggs"]["counts"]["terms"]["order"][$sort] = $sort_orientation;
     }
-    $query = '
-    {
-        "size": 0,
-        '.$consulta.'
-        "aggregations": {
-          "counts": {
-            "terms": {
-              "field": "'.$campo.'.keyword",
-              '.$sort_query.'
-              "size":'.$tamanho.'
-            }
-          }
-        }
-     }
-     ';
+    $query["aggs"]["counts"]["terms"]["size"] = $size;
+
     $params = [
         'index' => $index,
-        'type' => 'journals',
-        'size'=> 0,          
+        'type' => $type,
+        'size'=> 0, 
         'body' => $query
-    ];
-    $facet = $client->search($params);
-    
+    ]; 
+
+    $facet = $client->search($params);     
+        
     $data_array= array();
     foreach ($facet['aggregations']['counts']['buckets'] as $facets) {
         array_push($data_array,'{"name":"'.$facets['key'].'","value":'.$facets['doc_count'].'}');
     };
     
-    if ($campo == "year" ) {
+    if ($field == "year" ) {
         $data_array_inverse = array_reverse($data_array);
         $comma_separated = implode(",", $data_array_inverse);
     } else {
@@ -395,7 +331,6 @@ function facebook_altmetrics($server,$url_array,$facebook_token,$facebook_id) {
     unset($facebook_array);
 }
 
-
 function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
     
     foreach ($url_array as $url){
@@ -481,29 +416,27 @@ function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
     
 } 
 
-
-
 /*Facetas - Página inicial*/
 
-function facetas_inicio($server,$campo) {
-    $query = '{
-        "size": 0,        
-        "aggs": {         
-            "group_by_state": {
-                "terms": {
-                    "field": "'.$campo.'.keyword",                    
-                    "size" : 100,
-                    "order" : { "_term" : "asc" }
-                }
-            }
-        }        
-    }';
+function facetas_inicio($field) {
+    global $index;
+    global $type;
+    global $client;
     
-    $data = query_elastic($query,$server);
+    $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+     $query["aggs"]["counts"]["terms"]["size"] = 1000;
+    
+    $params = [
+        'index' => $index,
+        'type' => $type,
+        'size'=> 0,          
+        'body' => $query
+    ];
+    $data = $client->search($params);
     
         
-    foreach ($data["aggregations"]["group_by_state"]["buckets"] as $facets) {
-        echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$campo.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
+    foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
+        echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
     }
 
 }

@@ -3,15 +3,25 @@
     include('inc/config.php'); 
     include('inc/functions.php');
     $result_get = get::analisa_get($_GET);
-    $query_complete = $result_get['query_complete'];
-    $query_aggregate = $result_get['query_aggregate'];
-    //$escaped_url = $result_get['escaped_url'];
+    $query = $result_get['query'];
     $limit = $result_get['limit'];
     $page = $result_get['page'];
-    //$new_get = $result_get['new_get'];
-    $cursor = elasticsearch::elastic_search("journals",null,$limit = $result_get['limit'],$query_complete);
+
+    $result_get = get::analisa_get($_GET);
+    $query = $result_get['query'];  
+    $limit = $result_get['limit'];
+    $page = $result_get['page'];
+    $skip = $result_get['skip'];    
+
+    $params = [
+        'index' => $index,
+        'type' => $type,
+        'size'=> $limit,
+        'from' => $skip,   
+        'body' => $query
+    ];  
+    $cursor = $client->search($params);
     $total = $cursor["hits"]["total"];
-    //print_r($cursor);
 
    /* Citeproc-PHP*/
     include 'inc/citeproc-php/CiteProc.php';
@@ -84,24 +94,27 @@
     <ul class="uk-nav uk-nav-side uk-nav-parent-icon uk-margin-top" data-uk-nav="{multiple:true}">
         <hr>
      
-    <?php 
-        gerar_faceta($query_aggregate,$server,"tipo",10,"Tipo de material",null);
-        gerar_faceta($query_aggregate,$server,"journalci_title",100,"Título do periódico",null);                    
-        gerar_faceta($query_aggregate,$server,"autor",120,"Autores",null);
-	gerar_faceta($query_aggregate,$server,"instituicao",120,"Instituição",null);
-        gerar_faceta($query_aggregate,$server,"creator_total",100,"Quantidade de autores",null);
-        gerar_faceta($query_aggregate,$server,"contributor",100,"Agências de fomento",null); 
-        gerar_faceta($query_aggregate,$server,"year",120,"Ano de publicação","desc");
-        gerar_faceta($query_aggregate,$server,"subject",100,"Assuntos",null);
-        gerar_faceta($query_aggregate,$server,"language",40,"Idioma",null);
-        gerar_faceta($query_aggregate,$server,"publisher",100,"Editora",null);
-        gerar_faceta($query_aggregate,$server,"format",100,"Formato",null);
-        gerar_faceta($query_aggregate,$server,"issn",100,"ISSN",null);
-        gerar_faceta($query_aggregate,$server,"edicao",100,"Fonte","desc");
-	gerar_faceta($query_aggregate,$server,"prefixo_doi",100,"Prefixo DOI","desc");  
-        gerar_faceta($query_aggregate,$server,"qualis2014",200,"Qualis 2014",null);
-        gerar_faceta($query_aggregate,$server,"coverage",30,"Cobertura",null);
-	gerar_faceta($query_aggregate,$server,"setSpec",30,"Seção",null);
+    <?php
+        $facets = new facets();
+        $facets->query = $query;
+        
+        $facets->facet("tipo",10,"Tipo de material",null);
+        $facets->facet("journalci_title",100,"Título do periódico",null);
+        $facets->facet("autor",120,"Autores",null);
+        $facets->facet("instituicao",120,"Instituição",null);
+        $facets->facet("creator_total",100,"Quantidade de autores",null);
+        $facets->facet("contributor",100,"Agências de fomento",null);
+        $facets->facet("year",120,"Ano de publicação","desc");
+        $facets->facet("subject",100,"Assuntos",null);
+        $facets->facet("language",40,"Idioma",null);
+        $facets->facet("publisher",100,"Editora",null);
+        $facets->facet("format",100,"Formato",null);        
+        $facets->facet("issn",100,"ISSN",null);
+        $facets->facet("edicao",100,"Fonte","desc");
+        $facets->facet("prefixo_doi",100,"Prefixo DOI","desc");
+        $facets->facet("qualis2014",200,"Qualis 2014",null);
+        $facets->facet("coverage",30,"Cobertura",null);
+        $facets->facet("setSpec",30,"Seção",null);
     ?>
         
     </ul>
@@ -120,7 +133,7 @@
                     <a href="" class="uk-alert-close uk-close"></a>
                 
                     
-                        <?php $ano_bar = generateDataGraphBar($server, $query_aggregate, 'year', "_term", 'desc', 'Ano', 10); ?>
+                        <?php $ano_bar = generateDataGraphBar($query, 'year', "_term", 'desc', 'Ano', 10); ?>
                     
                         <div id="ano_chart" class="uk-visible-large"></div>
                         <script type="application/javascript">
