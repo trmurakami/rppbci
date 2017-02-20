@@ -21,10 +21,6 @@
         'body' => $query
     ];  
 
-    $params['body']['sort'] = [
-        ['facebook.total' => ['order' => 'desc']],
-    ];
-
     $cursor = $client->search($params);
     $total = $cursor["hits"]["total"];
 

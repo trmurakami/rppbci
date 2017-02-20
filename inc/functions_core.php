@@ -114,7 +114,10 @@ class get {
         $skip = ($page - 1) * $limit;
         $next = ($page + 1);
         $prev = ($page - 1);
-        $sort = array('year' => -1);       
+        
+        $query['sort'] = [
+            ['facebook.total' => ['order' => 'desc']],
+        ];        
 
         if (!empty($get['codpes'])){        
             $get['search'][] = 'codpes:'.$get['codpes'].'';
