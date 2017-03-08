@@ -2,70 +2,104 @@
 
 include('functions_core.php');
 
-function contar_registros ($server) {
-    $ch = curl_init();
+class inicio {
     
-    $query = '{
+    static function contar_registros ($server) {
+        global $index;
+        global $type;
+        global $client;
+        
+        $body = '
+            {
                 "query": {
                     "match_all": {}
-                 },                
-                "size": 0
-                }';
-    
-    $method = "GET";
-    $url = "http://$server/rppbci/journals/_search";
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_PORT, 9200);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-    $result = curl_exec($ch);
-    curl_close($ch);
-    $data = json_decode($result, TRUE);
-    return $data["hits"]["total"];
-}
+                }
+            } 
+        ';
+        
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["size"] = 0;
+        $params["body"] = $body;
+        
+        $response = $client->search($params);
+        return $response["hits"]["total"];
 
-function ultimos_registros() {
-    global $index;
-    global $client;
-    $query = '{
-                "query": {
-                    "match_all": {}
-                 },                
-                "sort" : [
-                    {"facebook.total" : {"order" : "desc"}}
-                    ]
-                }';
+    } 
     
-    $params = [
-        'index' => $index,
-        'type' => 'journals',
-        'size'=> 10,          
-        'body' => $query
-    ];
-    $data = $client->search($params);  
-    
-    //print_r($data);
+    static function top_registros() {
+        global $index;
+        global $type;
+        global $client;
+        $query = '{
+                    "query": {
+                        "match_all": {}
+                     },                
+                    "sort" : [
+                        {"facebook.total" : {"order" : "desc"}}
+                        ]
+                    }';
+        
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["size"] = 10;
+        $params["body"] = $query;        
+        
+        $data = $client->search($params);  
 
-    foreach ($data["hits"]["hits"] as $r){
-        //var_dump($r);
-    
-        echo '<article class="uk-comment">
-        <header class="uk-comment-header">'; 
-        //print_r($r);
-        echo '<a class="ui small header" href="'.$r['_source']['url_principal'].'"><h4 class="uk-comment-title">'.$r['_source']['facebook']['total'].' - '.$r['_source']['title'][0].' ('.$r['_source']['year'][0].' - '.$r['_source']['journalci_title'][0].')</h4></a>';
-        echo '<div class="extra">';
-        if (!empty($r["_source"]['creator'])) {
-            echo '<div class="uk-comment-meta";">';    
-            foreach ($r["_source"]['creator'] as $autores) {
-            echo '<a href="result.php?creator[]='.$autores[0].'">'.$autores[0].'</a>, ';
+        //print_r($data);
+
+        foreach ($data["hits"]["hits"] as $r){
+            //var_dump($r);
+
+            echo '<article class="uk-comment">
+            <header class="uk-comment-header">'; 
+            //print_r($r);
+            echo '<a class="ui small header" href="'.$r['_source']['url_principal'].'"><h4 class="uk-comment-title">'.$r['_source']['title'][0].' ('.$r['_source']['year'][0].' - '.$r['_source']['journalci_title'][0].') - <b>'.$r['_source']['facebook']['total'].' interações</b></h4></a>';
+            echo '<div class="extra">';
+            if (!empty($r["_source"]['creator'])) {
+                echo '<div class="uk-comment-meta";">';    
+                foreach ($r["_source"]['creator'] as $autores) {
+                echo '<a href="result.php?search[]=creator.keyword:&quot;'.$autores[0].'&quot;">'.$autores[0].'</a>, ';
+                }
+                echo '</div>';
             }
-            echo '</div>';
+            echo '</header>';
+            echo '</article>';
+        }     
+    }    
+    
+    
+    /*Facetas - Página inicial*/
+    static function facetas_inicio($field) {
+        global $index;
+        global $type;
+        global $client;
+
+        $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["counts"]["terms"]["size"] = 1000;
+
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["size"] = 10;
+        $params["body"] = $query;           
+
+        $data = $client->search($params);
+
+
+        foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
+            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
         }
-        echo '</header>';
-        echo '</article>';
-    }     
+
+    }    
+    
 }
+
+
+
 
 function gera_consulta_citacao($citacao) {
     $type = get_type($citacao["tipo"]);
@@ -186,12 +220,11 @@ function generateDataGraphBar($query,$field,$sort,$sort_orientation,$facet_displ
     }
     $query["aggs"]["counts"]["terms"]["size"] = $size;
 
-    $params = [
-        'index' => $index,
-        'type' => $type,
-        'size'=> 0, 
-        'body' => $query
-    ]; 
+    $params = [];
+    $params["index"] = $index;
+    $params["type"] = $type;
+    $params["size"] = 10;
+    $params["body"] = $query;
 
     $facet = $client->search($params);     
         
@@ -416,30 +449,7 @@ function facebook_api_reactions($url_array,$fb,$server,$facebook_id) {
     
 } 
 
-/*Facetas - Página inicial*/
 
-function facetas_inicio($field) {
-    global $index;
-    global $type;
-    global $client;
-    
-    $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
-     $query["aggs"]["counts"]["terms"]["size"] = 1000;
-    
-    $params = [
-        'index' => $index,
-        'type' => $type,
-        'size'=> 0,          
-        'body' => $query
-    ];
-    $data = $client->search($params);
-    
-        
-    foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
-        echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
-    }
-
-}
 
 /*Deletar Excluídos*/
 function exclude_deleted(){

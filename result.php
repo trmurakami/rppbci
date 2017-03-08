@@ -2,10 +2,6 @@
 <?php
     include('inc/config.php'); 
     include('inc/functions.php');
-    $result_get = get::analisa_get($_GET);
-    $query = $result_get['query'];
-    $limit = $result_get['limit'];
-    $page = $result_get['page'];
 
     $result_get = get::analisa_get($_GET);
     $query = $result_get['query'];  

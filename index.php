@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="uk-width-5-6">
                                             <h2 class="uk-h3">Coleta</h2>
-                                            <p>Os dados dos periódicos disponíveis em OAI-PHM são coletados utilizando a ferramenta Librecat/Catmandu e armazenados em um banco de dados NoSQL ElasticSearch. Os dados são coletados automaticamente, totalizando: <?php echo contar_registros($server); ?> documentos </p>
+                                            <p>Os dados dos periódicos disponíveis em OAI-PHM são coletados utilizando a ferramenta Librecat/Catmandu e armazenados em um banco de dados NoSQL ElasticSearch. Os dados são coletados automaticamente, totalizando: <?php echo inicio::contar_registros($server); ?> documentos </p>
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +110,7 @@
                                         <li data-uk-sort="my-category2:desc"><a href="">Quantidade de registros Maior > Menor</a></li>
                                     </ul>
                                     <div data-uk-grid="{controls: '#my-id'}">
-                                        <?php facetas_inicio("journalci_title"); ?>
+                                        <?php inicio::facetas_inicio("journalci_title"); ?>
                                     </div>                                    
                                 </div>
  
@@ -120,7 +120,7 @@
                             <div class="uk-grid" data-uk-grid-margin>
                                 <div class="uk-width-medium-1-2">
                                     <h1>Top 10 registros com altmetrics</h1>
-                                    <?php ultimos_registros($server); ?>
+                                    <?php inicio::top_registros(); ?>
                                 </div>
                                 
                                 <div class="uk-width-medium-1-2">
