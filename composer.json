@@ -1,6 +1,6 @@
 {
   "require" : {
     "facebook/graph-sdk" : "^5.4",
-    "elasticsearch/elasticsearch": "~5.0"  
+    "elasticsearch/elasticsearch": "5.0.0"  
   }
 }
