@@ -13,7 +13,22 @@ $myEndpoint = new \Phpoaipmh\Endpoint($client_harvester);
 // Result will be a SimpleXMLElement object
 $identify = $myEndpoint->identify();
 echo '<pre>';
-print_r($identify);
+//print_r($identify);
+
+
+
+
+// Store repository data - Início
+
+$body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
+$body_repository["doc"]["date"] = (string)$identify->responseDate;
+$body_repository["doc"]["url"] = (string)$identify->request;
+$body_repository["doc_as_upsert"] = true;
+
+$insert_repository_result = elasticsearch::elastic_update($body_repository["doc"]["url"],"repository",$body_repository);
+print_r($insert_repository_result);
+
+// Store repository data - Fim
 
 // Results will be iterator of SimpleXMLElement objects
 $results = $myEndpoint->listMetadataFormats();
@@ -44,14 +59,17 @@ if (in_array("nlm", $metadata_formats)) {
             $query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
             $query["doc"]["resumo"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'abstract'}->{'p'});
             
-            // Palavras-chave 
-            foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'} as $palavra_chave) {
-                $palavraschave_array = explode(".", (string)$palavra_chave);
-                foreach ($palavraschave_array  as $pc) {
-                    $query["doc"]["palavras_chave"][] = trim($pc);
-                }
-                        
+            // Palavras-chave
+            if (isset($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'})) {
+                foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'} as $palavra_chave) {
+                    $palavraschave_array = explode(".", (string)$palavra_chave);
+                    foreach ($palavraschave_array  as $pc) {
+                        $query["doc"]["palavras_chave"][] = trim($pc);
+                    }
+
+                }                
             }
+
             
             $i = 0;
             foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'contrib-group'}->{'contrib'} as $autores) {

@@ -94,7 +94,34 @@ class inicio {
             echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
         }
 
-    }    
+    }
+    
+    /*Facetas - Página inicial*/
+    static function sources($field) {
+        global $index;
+        global $type;
+        global $client;
+
+        $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["counts"]["terms"]["size"] = 1000;
+
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = "repository";
+        $params["size"] = 10;
+        $params["body"] = $query;           
+
+        $data = $client->search($params);
+        //print_r($data["hits"]["hits"]);
+
+
+        foreach ($data["hits"]["hits"] as $repository) {
+            print_r($repository);
+            echo '<br/><br/>';
+            echo '<p>'.$repository['_source']['name'].'  <a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'">Update</a><a class="uk-button uk-button-danger" href="">Excluir fonte</a></p>';
+        }
+
+    }     
     
 }
 
