@@ -110,7 +110,7 @@
                                         <li data-uk-sort="my-category2:desc"><a href="">Quantidade de registros Maior > Menor</a></li>
                                     </ul>
                                     <div data-uk-grid="{controls: '#my-id'}">
-                                        <?php inicio::facetas_inicio("journalci_title"); ?>
+                                        <?php inicio::facetas_inicio("source"); ?>
                                     </div>                                    
                                 </div>
  

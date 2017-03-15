@@ -96,21 +96,18 @@
         $facets->query = $query;
         
         $facets->facet("tipo",10,"Tipo de material",null);
-        $facets->facet("journalci_title",100,"Título do periódico",null);
-        $facets->facet("autor",120,"Autores",null);
-        $facets->facet("instituicao",120,"Instituição",null);
+        $facets->facet("source",100,"Título do periódico",null);
+        $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null);
+        $facets->facet("autores.afiliacao",120,"Instituição",null);
         $facets->facet("creator_total",100,"Quantidade de autores",null);
         $facets->facet("contributor",100,"Agências de fomento",null);
-        $facets->facet("year",120,"Ano de publicação","desc");
-        $facets->facet("subject",100,"Assuntos",null);
-        $facets->facet("language",40,"Idioma",null);
-        $facets->facet("publisher",100,"Editora",null);
-        $facets->facet("format",100,"Formato",null);        
-        $facets->facet("issn",100,"ISSN",null);
-        $facets->facet("edicao",100,"Fonte","desc");
-        $facets->facet("prefixo_doi",100,"Prefixo DOI","desc");
+        $facets->facet("ano",120,"Ano de publicação","desc");
+        $facets->facet("palavras_chave",100,"Assuntos",null);
+        $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null);
+        $facets->facet("artigoPublicado.volume",100,"Volume",null);
+        $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null);
+        $facets->facet("artigoPublicado.issn",100,"ISSN",null);
         $facets->facet("qualis2014",200,"Qualis 2014",null);
-        $facets->facet("coverage",30,"Cobertura",null);
         $facets->facet("setSpec",30,"Seção",null);
     ?>
         
@@ -130,7 +127,7 @@
                     <a href="" class="uk-alert-close uk-close"></a>
                 
                     
-                        <?php $ano_bar = generateDataGraphBar($query, 'year', "_term", 'desc', 'Ano', 10); ?>
+                        <?php $ano_bar = generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
                     
                         <div id="ano_chart" class="uk-visible-large"></div>
                         <script type="application/javascript">
@@ -193,12 +190,12 @@
                     <ul class="uk-list uk-list-line">
                     <?php $conta_cit = 1; ?>    
                     <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
-                                        
+                        
                         <li>                        
                             <div class="uk-grid uk-flex-middle" data-uk-grid-   margin="">
                                 <div class="uk-width-medium-2-10 uk-row-first">
                                     <div class="uk-panel uk-h6 uk-text-break">
-                                        <a href="result.php?type[]=<?php echo $r["_source"]['journalci_title'][0];?>"><?php echo $r["_source"]['journalci_title'][0];?></a>
+                                        <a href="result.php?search[]=source.keyword:&quot;<?php echo $r["_source"]['source'];?>&quot;"><?php echo $r["_source"]['source'];?></a>
                                     </div>
                                     <div class="uk-panel uk-h6 uk-text-break">
 
@@ -215,20 +212,18 @@
                                     
                                     <ul class="uk-list">
                                         <li class="uk-margin-top uk-h4">
-                                            <strong><a href="<?php echo $r['_source']['url_principal'];?>"><?php echo $r["_source"]['title'][0];?> (<?php echo $r["_source"]['year'][0]; ?>)</a></strong>
+                                            <strong><a href="<?php echo $r['_source']['url_principal'];?>"><?php echo $r["_source"]['titulo'];?> (<?php echo $r["_source"]['ano']; ?>)</a></strong>
                                         </li>
                                         <li class="uk-h6">
                                             Autores:
-                                            <?php if (!empty($r["_source"]['creator'])) : ?>
-                                            <?php foreach ($r["_source"]['creator'] as $autores) {
-                                                $authors_array[]='<a href="result.php?authors[]='.$autores[0].'">'.$autores[0].'</a>';
-                                            } 
-                                           $array_aut = implode(", ",$authors_array);
-                                            unset($authors_array);
-                                            print_r($array_aut);
-                                            ?>
-                                            
-                                           
+                                            <?php if (!empty($r["_source"]['autores'])) : ?>
+                                                <?php foreach ($r["_source"]['autores'] as $autores) {
+                                                    $authors_array[]='<a href="result.php?search[]=autores.nomeCompletoDoAutor.keyword:&quot;'.$autores["nomeCompletoDoAutor"].'&quot;">'.$autores["nomeCompletoDoAutor"].'</a>';
+                                                } 
+                                                $array_aut = implode(", ",$authors_array);
+                                                unset($authors_array);
+                                                print_r($array_aut);
+                                                ?>
                                             <?php endif; ?>                           
                                         </li>
                                         
@@ -236,17 +231,12 @@
                             
                                         <li class="uk-h6">
                                             Assuntos:
-                                            <?php if (!empty($r["_source"]['subject'])) : ?>
-                                            <?php foreach ($r["_source"]['subject'] as $assunto) : ?>
-                                                <a href="result.php?subject[]=<?php echo $assunto;?>"><?php echo $assunto;?></a>
+                                            <?php if (!empty($r["_source"]['palavras_chave'])) : ?>
+                                            <?php foreach ($r["_source"]['palavras_chave'] as $assunto) : ?>
+                                                <a href="result.php?search[]=palavras_chave.keyword:&quot;<?php echo $assunto;?>&quot;"><?php echo $assunto;?></a>
                                             <?php endforeach;?>
                                             <?php endif; ?>
                                         </li>
-                                        <?php if (!empty($r["_source"]['fatorimpacto'])) : ?>
-                                        <li class="uk-h6">
-                                            <p>Fator de impacto da publicação: <?php echo $r["_source"]['fatorimpacto'][0]; ?></p>
-                                        </li>
-                                        <?php endif; ?>
                                         <li>
                                             <?php if (!empty($r["_source"]['url_principal'])||!empty($r["_source"]['doi'])) : ?>
                                             <div class="uk-button-group" style="padding:15px 15px 15px 0;">     
@@ -274,18 +264,15 @@
                                             <?php endif; ?>
                                             <ul>
                                                 <li>
-                                                    <?php
-                                                        $facebook_url_array[] = $r["_source"]['url_principal'];
+                                                    <?php facebook::facebook_data($r["_source"]['relation'],$r["_id"]);?>
+                                                    <!--
+                                                    < ?php
                                                         if (!empty($r["_source"]['relation'])){
-                                                             foreach ($r["_source"]['relation'] as $relation) {
-                                                               $facebook_url_array[] = $relation; 
-                                                            }                                                             
-                                                        }                                                      
-                                                        //print_r(array_filter($facebook_url_array));
-                                                        //facebook_altmetrics($server,array_filter($facebook_url_array),$facebook_token,$r['_id']);
-                                                        facebook_api_reactions($facebook_url_array,$fb,$server,$r['_id']);
-                                                        unset($facebook_url_array);
+                                                            facebook::facebook_api_reactions($r["_source"]['relation'],$fb,$server,$r['_id']);
+                                                            unset($facebook_url_array);
+                                                        }
                                                     ?>
+                                                    -->
                                                 </li>
                                             </ul>
                                         </li>
@@ -298,8 +285,8 @@
                                                 <li class="uk-margin-top">
                                                     <p><strong>ABNT</strong></p>
                                                     <?php                                                        
-                                                        $data = gera_consulta_citacao($r["_source"]);
-                                                        print_r($citeproc_abnt->render($data, $mode));
+                                                        //$data = gera_consulta_citacao($r["_source"]);
+                                                        //print_r($citeproc_abnt->render($data, $mode));
                                                     ?>
                                                 </li>                                               
                                             </ul>                                              

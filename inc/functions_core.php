@@ -115,18 +115,14 @@ class get {
         $next = ($page + 1);
         $prev = ($page - 1);
         
-        $query['sort'] = [
-            ['facebook.total' => ['order' => 'desc']],
-        ];        
-
-        if (!empty($get['codpes'])){        
-            $get['search'][] = 'codpes:'.$get['codpes'].'';
+        if (isset($get['missing'])){
+            $query["query"]["query_string"]["query"] = "_exists_:facebook";          
+        } else {
+            $query['sort'] = [
+                ['facebook.facebook_total' => ['order' => 'desc']],
+            ]; 
         }
-
-        if (!empty($get['assunto'])){        
-            $get['search'][] = 'subject:\"'.$get['assunto'].'\"';
-        }    
-
+        
         if (!empty($get['search'])){
             $search = implode(" ",$get['search']);
             $query["query"]["query_string"]["query"] = $search;
@@ -288,6 +284,90 @@ class facets {
 
     }
     
+    
+}
+
+class citation {
+    
+    /* Pegar o tipo de material */
+    static function get_type($material_type){
+        switch ($material_type) {
+            case "ARTIGO DE JORNAL":
+                return "article-newspaper";
+            break;
+            case "ARTIGO DE PERIODICO":
+                return "article-journal";
+            break;
+            case "PARTE DE MONOGRAFIA/LIVRO":
+                return "chapter";
+            break;
+            case "APRESENTACAO SONORA/CENICA/ENTREVISTA":
+                return "interview";
+            break;
+            case "TRABALHO DE EVENTO-RESUMO":
+                return "paper-conference";
+            break;
+            case "TRABALHO DE EVENTO":
+                return "paper-conference";
+            break;     
+            case "TESE":
+                return "thesis";
+            break;          
+            case "TEXTO NA WEB":
+                return "post-weblog";
+            break;
+        }
+    }    
+    
+    static function citation_query($citacao) {        
+        $array_citation = [];
+        $array_citation["type"] = citation::get_type($citacao["type"]);
+        $array_citation["title"] = $citacao["title"];
+        
+        if (!empty($citacao["authors"])) {
+            $i = 0;
+            foreach ($citacao["authors"] as $authors){
+                $array_authors = explode(',', $authors);
+                $array_citation["author"][$i]["family"] = $array_authors[0];
+                $array_citation["author"][$i]["given"] = $array_authors[1];
+                $i++;
+            }
+        }
+        
+        if (!empty($citacao["ispartof"])) {
+            $array_citation["container-title"] = $citacao["ispartof"];
+        }
+        if (!empty($citacao["doi"])) {
+            $array_citation["DOI"] = $citacao["doi"][0];
+        }        
+        if (!empty($citacao["url"])) {
+            $array_citation["URL"] = $citacao["url"][0];
+        }           
+        if (!empty($citacao["publisher"])) {
+            $array_citation["publisher"] = $citacao["publisher"];
+        }
+        if (!empty($citacao["publisher_place"])) {
+            $array_citation["publisher_place"] = $citacao["publisher_place"];
+        }
+        if (!empty($citacao["year"])) {
+            $array_citation["issued"]["date-parts"][] = $citacao["year"];
+        }        
+        if (!empty($citacao["ispartof_data"])) {
+            foreach ($citacao["ispartof_data"] as $ispartof_data) {
+                if (strpos($ispartof_data, 'v.') !== false) {
+                    $array_citation["volume"] = str_replace("v.","",$ispartof_data);
+                } elseif (strpos($ispartof_data, 'n.') !== false) {
+                    $array_citation["issue"] = str_replace("n.","",$ispartof_data);
+                } elseif (strpos($ispartof_data, 'p.') !== false) {
+                    $array_citation["page"] = str_replace("p.","",$ispartof_data);
+                }
+            }
+        }
+        
+        $json = json_encode($array_citation);
+        $data = json_decode($json);
+        return $data;    
+    }
     
 }
 
