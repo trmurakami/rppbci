@@ -424,6 +424,23 @@ class facebook {
     
 }
 
+class altmetric_com {
+    static function get_altmetrics ($doi) {
+        
+        $ch = curl_init();
+        $method = "GET";
+        $url = "https://api.altmetric.com/v1/doi/$doi";
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        $result = curl_exec($ch);
+        var_dump($result);
+        curl_close($ch);         
+                
+    }     
+}
+
+
 /*Deletar Excluídos*/
 function exclude_deleted(){
     $ch = curl_init();

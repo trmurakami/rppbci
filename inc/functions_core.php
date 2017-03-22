@@ -115,9 +115,7 @@ class get {
         $next = ($page + 1);
         $prev = ($page - 1);
         
-        if (isset($get['missing'])){
-            $query["query"]["query_string"]["query"] = "_exists_:facebook";          
-        } else {
+        if (empty($get["missing"])){
             $query['sort'] = [
                 ['facebook.facebook_total' => ['order' => 'desc']],
             ]; 
@@ -127,7 +125,12 @@ class get {
             $search = implode(" ",$get['search']);
             $query["query"]["query_string"]["query"] = $search;
         } else {
-            $query["query"]["query_string"]["query"] = "*";
+            if (!empty($get["missing"])){
+                $query["query"]["query_string"]["query"] = "-_exists_:facebook.facebook_total";
+            } else {
+                $query["query"]["query_string"]["query"] = "*";                
+            }
+            
         }
      
         $query["query"]["query_string"]["default_operator"] = "AND";
