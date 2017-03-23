@@ -1,0 +1,283 @@
+DELETE /rppbci
+
+PUT /rppbci
+{
+  "settings": {
+    "number_of_shards" :   4,
+    "number_of_replicas" : 3,
+    "analysis": {
+        "filter": {
+            "portuguese_stop": {
+              "type":       "stop",
+              "stopwords":  "_portuguese_" 
+            },
+            "my_ascii_folding" : {
+                "type" : "asciifolding",
+                "preserve_original" : true
+            },
+            "portuguese_stemmer": {
+              "type":       "stemmer",
+              "language":   "light_portuguese"
+            }            
+      }, 
+      "analyzer": {
+        "portuguese": {
+          "tokenizer": "standard",
+          "filter":  [ "standard", "lowercase", "my_ascii_folding","portuguese_stop","portuguese_stemmer"]
+        }
+      }
+    }
+  }
+}
+
+PUT /rppbci/journals/_mapping
+{
+         "journals": {
+            "properties": {
+              "ano": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "artigoPublicado": {
+                "properties": {
+                  "fasciculo": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "issn": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "nomeDaEditora": {
+                    "type": "text",
+                    "analyzer": "portuguese",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "paginaInicial": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "serie": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "tituloDoPeriodicoOuRevista": {
+                    "type": "text",
+                    "analyzer": "portuguese",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "volume": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "autores": {
+                "properties": {
+                  "afiliacao": {
+                    "type": "text",
+                    "analyzer": "portuguese",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "nomeCompletoDoAutor": {
+                    "type": "text",
+                    "analyzer": "portuguese",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "nomeParaCitacao": {
+                    "type": "text",
+                    "analyzer": "portuguese",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "nroIdCnpq": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "doi": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "facebook": {
+                "properties": {
+                  "date": {
+                    "type": "date"
+                  },
+                  "facebook_total": {
+                    "type": "long"
+                  }
+                }
+              },
+              "harvester_id": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "palavras_chave": {
+                "type": "text",
+                "analyzer": "portuguese",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "relation": {
+                "type": "text",
+                "analyzer": "portuguese",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "resumo": {
+                "type": "text",
+                "analyzer": "portuguese",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "source": {
+                "type": "text",
+                "analyzer": "portuguese",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "tipo": {
+                "type": "text",
+                "analyzer": "portuguese",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "titulo": {
+                "type": "text",
+                "analyzer": "portuguese",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "url_principal": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "repository": {
+            "properties": {
+              "date": {
+                "type": "date"
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }            
+
+            }
+         }
+    }
+}

@@ -118,6 +118,7 @@ class get {
         if (empty($get["missing"])){
             $query['sort'] = [
                 ['facebook.facebook_total' => ['order' => 'desc']],
+                ['ano.keyword' => ['order' => 'desc']]
             ]; 
         }
         
@@ -127,6 +128,9 @@ class get {
         } else {
             if (!empty($get["missing"])){
                 $query["query"]["query_string"]["query"] = "-_exists_:facebook.facebook_total";
+                $query['sort'] = [
+                    ['ano.keyword' => ['order' => 'desc']],
+                ];
             } else {
                 $query["query"]["query_string"]["query"] = "*";                
             }

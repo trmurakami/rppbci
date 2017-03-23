@@ -99,16 +99,12 @@
         $facets->facet("source",100,"Título do periódico",null);
         $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null);
         $facets->facet("autores.afiliacao",120,"Instituição",null);
-        $facets->facet("creator_total",100,"Quantidade de autores",null);
-        $facets->facet("contributor",100,"Agências de fomento",null);
         $facets->facet("ano",120,"Ano de publicação","desc");
         $facets->facet("palavras_chave",100,"Assuntos",null);
         $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null);
         $facets->facet("artigoPublicado.volume",100,"Volume",null);
         $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null);
         $facets->facet("artigoPublicado.issn",100,"ISSN",null);
-        $facets->facet("qualis2014",200,"Qualis 2014",null);
-        $facets->facet("setSpec",30,"Seção",null);
     ?>
         
     </ul>
@@ -261,7 +257,7 @@
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi']); ?>
+                                                    <!-- < ?php altmetric_com::get_altmetrics($r["_source"]['doi']); ?> -->
                                                 </li>
                                             </ul>
                                             <?php endif; ?>

@@ -31,10 +31,10 @@
                                     <option>Referências</option>
                                 </select>
                                 -->
-                                <input type="hidden" name="fields[]" value="title">
-                                <input type="hidden" name="fields[]" value="creator">
-                                <input type="hidden" name="fields[]" value="subject">
-                                <input type="hidden" name="fields[]" value="description">				
+                                <input type="hidden" name="fields[]" value="titulo">
+                                <input type="hidden" name="fields[]" value="autores.*">
+                                <input type="hidden" name="fields[]" value="palavras_chave">
+                                <input type="hidden" name="fields[]" value="resumo">				
                                 <button class="uk-button uk-button-primary uk-button-large">Pesquisar <i class="uk-icon-search"></i></button>
                                 <!--
                                 <label><input type="checkbox"> Somente com altmetrics</label>
@@ -125,7 +125,7 @@
                                 
                                 <div class="uk-width-medium-1-2">
                                     <h1>Altmetrics por periódico</h1>
-                                    <iframe src="http://bdpife2.sibi.usp.br:5601/goto/ab4a84dc8eea65d5b91d8e8d4de59ae0?embed=true" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
+                                    <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=pie&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(field:facebook.facebook_total),schema:metric,type:sum),(enabled:!t,id:'2',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:segment,type:terms)),listeners:(),params:(addLegend:!t,addTooltip:!t,isDonut:!f,legendPosition:right),title:'New+Visualization',type:pie))" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                    
                                 </div>
                                 
                             </div>
@@ -140,7 +140,7 @@
                                 </div>
                             </div>                            
                       
-                        </article>
+                        </article>http://portaldeperiodicos.eci.ufmg.br/index.php/pci/oai
                     </main>
 
                     
