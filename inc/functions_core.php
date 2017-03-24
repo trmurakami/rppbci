@@ -72,6 +72,45 @@ class elasticsearch {
         $response = $client->update($params);        
         return $response;
     }
+    
+    /**
+     * Executa o commando delete no Elasticsearch
+     * 
+     * @param string $_id ID do documento
+     * @param string $type Tipo de documento no índice do Elasticsearch     
+     * 
+     */     
+    public static function elastic_delete ($_id,$type,$body) {
+        global $index;
+        global $client;
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["id"] = $_id;
+        
+        $response = $client->delete($params);        
+        return $response;
+    }
+    
+    /**
+     * Executa o commando delete_by_query no Elasticsearch
+     * 
+     * @param string $_id ID do documento
+     * @param string $type Tipo de documento no índice do Elasticsearch
+     * @param resource $body Arquivo JSON com os parâmetros das consultas no Elasticsearch  
+     * 
+     */     
+    public static function elastic_delete_by_query ($type,$body) {
+        global $index;
+        global $client;
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["body"] = $body;
+        
+        $response = $client->deleteByQuery($params);        
+        return $response;
+    }        
 
     
     /**

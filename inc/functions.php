@@ -129,13 +129,23 @@ class admin {
         
         foreach ($data["hits"]["hits"] as $repository) {
             //print_r($repository);
-            echo '<tr><td>'.$repository['_source']['name'].'</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'">Update</a></td><td><a class="uk-button uk-button-danger" href="">Excluir fonte</a></td></tr>';
-        }
+            echo '<tr><td>'.$repository['_id'].'</td><td>'.$repository['_source']['name'].'</td><td>';
+	    echo admin::count_records($repository['_source']['name']);
+	    echo '</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'">Update</a></td><td><a class="uk-button uk-button-danger" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?delete='.$repository['_id'].'&delete_name=&quot;'.$repository['_source']['name'].'&quot;">Excluir</a></td></tr>';
+            
+	}
         echo '</tbody>';
         echo '</table>';
 
-    }    
-    
+    }
+
+    static function count_records ($name) {
+	global $type;
+	$body["query"]["query_string"]["query"] = 'source.keyword:"'.$name.'"';
+	$result = elasticsearch::elastic_search($type,null,0,$body); 
+	return $result["hits"]["total"];
+
+    }
 }
 
 /* Function to generate Graph Bar */
