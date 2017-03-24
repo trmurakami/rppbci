@@ -135,6 +135,16 @@ if (isset($_GET["oai"])) {
     echo '<br/>';
     echo $_GET["delete_name"];
 
+    $delete_repository = elasticsearch::elastic_delete($_GET["delete"],"repository");
+    print_r($delete_repository);
+    echo '<br/>';
+    $body["query"]["query_string"]["query"] = 'source.keyword:"'.$_GET["delete_name"].'"';
+    print_r($body);
+    echo '<br/><br/>';
+    $delete_records = elasticsearch::elastic_delete_by_query("journals",$body);
+    print_r($delete_records);
+
+
 } else {
     echo "URL não informada";
 }

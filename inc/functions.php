@@ -131,7 +131,7 @@ class admin {
             //print_r($repository);
             echo '<tr><td>'.$repository['_id'].'</td><td>'.$repository['_source']['name'].'</td><td>';
 	    echo admin::count_records($repository['_source']['name']);
-	    echo '</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'">Update</a></td><td><a class="uk-button uk-button-danger" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?delete='.$repository['_id'].'&delete_name=&quot;'.$repository['_source']['name'].'&quot;">Excluir</a></td></tr>';
+	    echo '</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'">Update</a></td><td><a class="uk-button uk-button-danger" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?delete='.$repository['_id'].'&delete_name='.$repository['_source']['name'].'">Excluir</a></td></tr>';
             
 	}
         echo '</tbody>';
