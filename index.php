@@ -140,7 +140,7 @@
                                 </div>
                             </div>                            
                       
-                        </article>http://portaldeperiodicos.eci.ufmg.br/index.php/pci/oai
+                        </article>
                     </main>
 
                     
@@ -165,7 +165,8 @@
 </ul>
 
 <ul class="uk-subnav uk-margin uk-flex uk-flex-center">
-    <li><a href="#">Laboratório de Estudos Métricos da Informação na Web (Lab-iMetrics)</a></li>
+    <li><a href="http://labimetrics.inf.br">Laboratório de Estudos Métricos da Informação na Web (Lab-iMetrics)</a></li>
+    <li><a href="statistics.php">Estatísticas</a></li>
     <li><a href="about.php">Sobre</a></li>
 </ul>
     </div>

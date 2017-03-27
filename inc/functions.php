@@ -108,7 +108,8 @@ class admin {
         global $client;
 
         $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
-        $query["aggs"]["counts"]["terms"]["size"] = 1000;
+        $query["aggs"]["counts"]["terms"]["order"]["_term"] = "asc";
+        $query["aggs"]["counts"]["terms"]["size"] = 10000;
 
         $params = [];
         $params["index"] = $index;
@@ -200,7 +201,7 @@ class facebook {
                     'GET',
                     '/',
                     array(
-                    'id' => $url
+                    'id' => str_replace("https", "http", $url)
                     )
                 );              
             }    
