@@ -45,6 +45,9 @@
             <h2>Quantidade de artigos por autor</h2>
             <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=table&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(vis:(params:(sort:(columnIndex:!n,direction:!n)))),vis:(aggs:!((enabled:!t,id:'1',params:(customLabel:'Quantidade+de+artigos'),schema:metric,type:count),(enabled:!t,id:'2',params:(customLabel:Autores,field:autores.nomeCompletoDoAutor.keyword,order:desc,orderBy:'1',size:50),schema:bucket,type:terms)),listeners:(),params:(perPage:10,showMeticsAtAllLevels:!f,showPartialRows:!f,showTotal:!f,sort:(columnIndex:!n,direction:!n),totalFunc:sum),title:'New+Visualization',type:table))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
             
+            <h2>Altmetrics por Instituição e Periódico</h2>
+            <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=histogram&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(field:facebook.facebook_total),schema:metric,type:sum),(enabled:!t,id:'2',params:(field:autores.afiliacao.keyword,order:desc,orderBy:'1',size:30),schema:segment,type:terms),(enabled:!t,id:'3',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,defaultYExtents:!f,legendPosition:right,mode:stacked,scale:linear,setYExtents:!f,times:!()),title:'New+Visualization',type:histogram))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
+            
             
             <?php include('inc/offcanvas.php')?>
         </div>    
