@@ -91,7 +91,7 @@ class inicio {
 
 
         foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
-            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
+            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.htmlentities(urlencode($facets['key'])).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
         }
 
     } 
@@ -132,7 +132,7 @@ class admin {
             //print_r($repository);
             echo '<tr><td>'.$repository['_id'].'</td><td>'.$repository['_source']['name'].'</td><td>';
 	    echo admin::count_records($repository['_source']['name']);
-	    echo '</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'">Update</a></td><td><a class="uk-button uk-button-danger" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?delete='.$repository['_id'].'&delete_name='.$repository['_source']['name'].'">Excluir</a></td></tr>';
+	    echo '</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'&metadataFormat=nlm">Update</a></td><td><a class="uk-button uk-button-danger" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
 	}
         echo '</tbody>';
@@ -197,11 +197,22 @@ class facebook {
 //                )
 //            );
         foreach ($urls as $url) {
+            $url_limpa = str_replace("http://", "", $url);
+            $url_limpa = str_replace("https://", "", $url_limpa);
+            
             $request[] = $fb->request(            
                     'GET',
                     '/',
                     array(
-                    'id' => str_replace("https", "http", $url)
+                    'id' => "http://".$url_limpa
+                    )
+                );             
+            
+            $request[] = $fb->request(            
+                    'GET',
+                    '/',
+                    array(
+                    'id' => "https://".$url_limpa
                     )
                 );              
             }    

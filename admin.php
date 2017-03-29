@@ -21,6 +21,11 @@
                         <legend>Adicione uma nova fonte</legend>
 
                         <input type="text" placeholder="Incluir o endereço do oai" name="oai" class="uk-form-large uk-form-width-large">
+                        <input type="text" placeholder="Set_oai. Em branco por padrão" name="set" class="uk-form-large uk-form-width-large">
+                        <select name="metadataFormat">
+                            <option value="nlm">nlm (padrão)</option>
+                            <option value="rfc1807">rfc1807</option>
+                        </select>                        
                         <button class="uk-button uk-button-primary uk-button-large">Inserir</button>
                     </fieldset>
 

@@ -5,8 +5,7 @@ include('inc/functions.php');
 
 
 if (isset($_GET["oai"])) {
-    //$oaiUrl   = 'http://openscholarship.wustl.edu/do/oai/';
-    //$oaiUrl   = 'http://www.seer.ufal.br/index.php/cir/oai';
+
     $oaiUrl = $_GET["oai"];
     $client_harvester = new \Phpoaipmh\Client(''.$oaiUrl.'');
     $myEndpoint = new \Phpoaipmh\Endpoint($client_harvester);
@@ -15,11 +14,7 @@ if (isset($_GET["oai"])) {
     // Result will be a SimpleXMLElement object
     $identify = $myEndpoint->identify();
     echo '<pre>';
-    //print_r($identify);
-
-
-
-
+ 
     // Store repository data - Início
 
     $body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
@@ -39,8 +34,15 @@ if (isset($_GET["oai"])) {
         $metadata_formats[] = $item->{"metadataPrefix"};
     }
 
-    if (in_array("nlm", $metadata_formats)) {
-        $recs = $myEndpoint->listRecords('nlm');
+    if ($_GET["metadataFormat"] == "nlm") {
+        
+        if (isset($_GET["set"])){
+            $recs = $myEndpoint->listRecords('nlm',null,null,$_GET["set"]);
+        } else {
+            $recs = $myEndpoint->listRecords('nlm');
+        }
+        
+        
         foreach($recs as $rec) {
 
             //print_r($rec);
@@ -118,18 +120,85 @@ if (isset($_GET["oai"])) {
             }
         }
 
-    } elseif (in_array("oai_dc", $metadata_formats))  {
-        echo "Tem oai_dc";
-        $recs = $myEndpoint->listRecords('oai_dc');
+    } else {
+        
+        $recs = $myEndpoint->listRecords('rfc1807');
+        var_dump($recs);
         foreach($recs as $rec) {
             if ($rec->{'header'}->attributes()->{'status'} != "deleted"){
-                print_r($rec->{'metadata'});
-            }
-        }
 
-    } else {
-        echo "Este repositório não possui um formato compatível";
-    }
+                $sha256 = hash('sha256', ''.$rec->{'header'}->{'identifier'}.'');
+
+                $query["doc"]["source"] = (string)$identify->Identify->repositoryName;
+                    $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
+                    if (isset($_GET["tag"])) {
+                        $query["doc"]["tag"] = $_GET["tag"];
+                    }
+                    $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
+                    $query["doc"]["titulo"] = str_replace('"','',(string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
+                    $query["doc"]["ano"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'},0,4);
+    //                $query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
+                    $query["doc"]["resumo"] = str_replace('"','',(string)$rec->{'metadata'}->{'rfc1807'}->{'abstract'});
+    //
+                    // Palavras-chave
+                    if (isset($rec->{'metadata'}->{'rfc1807'}->{'keyword'})) {
+                        foreach ($rec->{'metadata'}->{'rfc1807'}->{'keyword'} as $palavra_chave) {
+                            $pc_array = [];
+                            $pc_array = explode(";", (string)$palavra_chave);
+                            foreach ($pc_array as $pc_explode){
+                                $pc_array_dot = explode("-", $pc_explode);
+                            }
+                            foreach ($pc_array_dot as $pc_dot){
+                                $pc_array_end = explode(".", $pc_dot);
+                            }                             
+                            foreach ($pc_array_end as $pc) {
+                                $query["doc"]["palavras_chave"][] = trim($pc);
+                            }                             
+                        }
+                    }
+
+
+                    $i = 0;
+                    foreach ($rec->{'metadata'}->{'rfc1807'}->{'author'} as $autor) {
+                        $autor_array = explode(";", (string)$autor);
+                        $autor_nome_array = explode(",", (string)$autor_array[0]);
+
+                            $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor_nome_array[1].' '.$autor_nome_array[0];
+                            $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autor_array[0];
+
+                            if(isset($autor_array[1])) {
+                                $query["doc"]["autores"][$i]["afiliacao"] = (string)$autor_array[1];
+                            }
+                            $i++;
+                    }
+
+                    $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$identify->Identify->repositoryName;
+    //                $query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
+    //                $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
+    //                $query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
+    //                $query["doc"]["artigoPublicado"]["fasciculo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue'};
+    //                $query["doc"]["artigoPublicado"]["paginaInicial"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-id'};
+    //                $query["doc"]["artigoPublicado"]["serie"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-title'};
+                    $query["doc"]["url_principal"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
+
+
+                    $query["doc"]["relation"][]=(string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
+
+                    $query["doc_as_upsert"] = true;
+
+                    $resultado = elasticsearch::elastic_update($sha256,$type,$query);
+                    print_r($resultado);
+
+                    unset($query);
+                    flush();
+
+
+            }
+        }        
+
+
+    } 
+
 } elseif (isset($_GET["delete"])) {
     echo $_GET["delete"];
     echo '<br/>';
