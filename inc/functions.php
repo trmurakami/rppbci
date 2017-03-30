@@ -249,7 +249,7 @@ class facebook {
 }
 
 class altmetric_com {
-    static function get_altmetrics ($doi) {
+    static function get_altmetrics ($doi,$id) {
         
         $ch = curl_init();
         $method = "GET";
@@ -258,9 +258,16 @@ class altmetric_com {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
         $result = curl_exec($ch);
-        var_dump($result);
-        curl_close($ch);         
-                
+        //print_r(json_decode($result,true));
+        curl_close($ch);
+        
+        
+        $body["doc"]["altmetric_com"] = json_decode($result,true);
+        $body["doc"]["altmetric_com"]["date"] = date("Y-m-d");
+        $body["doc_as_upsert"] = true;
+        
+        $result = elasticsearch::elastic_update($id,"journals",$body);        
+        //print_r($result);        
     }     
 }
 

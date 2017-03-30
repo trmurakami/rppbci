@@ -257,7 +257,7 @@
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    <!-- < ?php altmetric_com::get_altmetrics($r["_source"]['doi']); ?> -->
+                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'],$r["_id"]); ?>
                                                 </li>
                                             </ul>
                                             <?php endif; ?>
