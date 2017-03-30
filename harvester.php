@@ -163,7 +163,7 @@ if (isset($_GET["oai"])) {
                         $autor_array = explode(";", (string)$autor);
                         $autor_nome_array = explode(",", (string)$autor_array[0]);
 
-                            $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor_nome_array[1].' '.$autor_nome_array[0];
+                            $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor_nome_array[1].' '.ucwords(strtolower($autor_nome_array[0]));
                             $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autor_array[0];
 
                             if(isset($autor_array[1])) {
