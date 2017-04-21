@@ -260,7 +260,7 @@ class facebook {
                         <th>Reactions</th>
                         <th>Comentários</th>
                         <th>Compartilhamentos</th>
-                        <th>comment_plugin_count</th>
+                        <th>comment_plugin</th>
                         <th>Total</th>
                     </tr>
                 </thead>';
