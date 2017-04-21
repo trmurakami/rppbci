@@ -230,6 +230,7 @@ class facebook {
         $fb_share_count = 0;
         $fb_comment_plugin_count = 0;
         $fb_total = 0;
+        $i = 0;
         foreach ($responses as $key => $response) {
             $response_array = json_decode($response->getBody());
             echo '<a class="uk-button" href="'.(string)$response_array->{"id"}.'">Link</a>';
@@ -242,14 +243,18 @@ class facebook {
                 $fb_total_link= $response_array->{"engagement"}->{'reaction_count'} + $response_array->{"engagement"}->{'comment_count'} + $response_array->{"engagement"}->{'share_count'} + $response_array->{"engagement"}->{'comment_plugin_count'};                
                 echo '<div class="uk-badge uk-badge-notification">'.$fb_total_link.' interações no facebook</div><br/>';
                 $fb_total+= $fb_total_link;
+                ${"fb" . $i} = $fb_total_link;
+                
             } else {
                 $fb_reaction_count+= 0;
                 $fb_comment_count+= 0;
                 $fb_share_count+= 0;
                 $fb_comment_plugin_count+= 0;
                 $fb_total+= 0;
+                ${"fb" . $i} = 0;
                 echo '<div class="uk-badge uk-badge-notification">Nenhuma interação no facebook</div><br/>';
             }
+            $i++;
 
         }
         
@@ -274,7 +279,12 @@ class facebook {
                     </tr>
                   </tbody>';   
             echo '</table><br/>';
-
+        
+        $f = 0;
+        while ($f < $i):
+            $body["doc"]["facebook"]["fb".$f] = ${"fb" . $f};
+            $f++;
+        endwhile;
         $body["doc"]["facebook"]["reaction_count"] = $fb_reaction_count;
         $body["doc"]["facebook"]["comment_count"] = $fb_comment_count;
         $body["doc"]["facebook"]["share_count"] = $fb_share_count;
