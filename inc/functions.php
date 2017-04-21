@@ -204,7 +204,8 @@ class facebook {
                     'GET',
                     '/',
                     array(
-                    'id' => "http://".$url_limpa
+                    'id' => "http://".$url_limpa,
+                    'fields' => 'engagement'
                     )
                 );             
             
@@ -212,7 +213,8 @@ class facebook {
                     'GET',
                     '/',
                     array(
-                    'id' => "https://".$url_limpa
+                    'id' => "https://".$url_limpa,
+                    'fields' => 'engagement'    
                     )
                 );              
             }    
@@ -222,24 +224,62 @@ class facebook {
             $request
         ];
         $responses = $fb->sendBatchRequest($batch);
-        $graphObject = $responses->getGraphObject();
+        $graphObject = $responses->getGraphObject();        
+        $fb_reaction_count = 0;
+        $fb_comment_count = 0;
         $fb_share_count = 0;
+        $fb_comment_plugin_count = 0;
+        $fb_total = 0;
         foreach ($responses as $key => $response) {
             $response_array = json_decode($response->getBody());
             echo '<a class="uk-button" href="'.(string)$response_array->{"id"}.'">Link</a>';
-            if (isset($response_array->{"share"})) {
-                 $fb_share_count+= $response_array->{'share'}->{'share_count'};
-                 echo '<div class="uk-badge uk-badge-notification">'.(string)$response_array->{"share"}->{"share_count"}.' interações no facebook</div><br/>';
+            if (isset($response_array->{"engagement"})) {
+                
+                $fb_reaction_count+= $response_array->{"engagement"}->{'reaction_count'};
+                $fb_comment_count+= $response_array->{"engagement"}->{'comment_count'};
+                $fb_share_count+= $response_array->{"engagement"}->{'share_count'};
+                $fb_comment_plugin_count+= $response_array->{"engagement"}->{'comment_plugin_count'};
+                $fb_total_link= $response_array->{"engagement"}->{'reaction_count'} + $response_array->{"engagement"}->{'comment_count'} + $response_array->{"engagement"}->{'share_count'} + $response_array->{"engagement"}->{'comment_plugin_count'};                
+                echo '<div class="uk-badge uk-badge-notification">'.$fb_total_link.' interações no facebook</div><br/>';
+                $fb_total+= $fb_total_link;
             } else {
-                 $fb_share_count+= 0;
-                 echo '<div class="uk-badge uk-badge-notification">Nenhuma interação no facebook</div><br/>';
+                $fb_reaction_count+= 0;
+                $fb_comment_count+= 0;
+                $fb_share_count+= 0;
+                $fb_comment_plugin_count+= 0;
+                $fb_total+= 0;
+                echo '<div class="uk-badge uk-badge-notification">Nenhuma interação no facebook</div><br/>';
             }
 
         }
         
-         echo 'Total de interações no Facebook: '.$fb_share_count.'<br/>';
-        
-        $body["doc"]["facebook"]["facebook_total"] = $fb_share_count;
+    
+            echo '<table class="uk-table"><caption>Interações no Fecebook</caption>';        
+            echo '<thead>
+                    <tr>
+                        <th>Reactions</th>
+                        <th>Comentários</th>
+                        <th>Compartilhamentos</th>
+                        <th>comment_plugin_count</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>';
+            echo '<tbody>
+                    <tr>
+                        <td>'.$fb_reaction_count.'</td>
+                        <td>'.$fb_comment_count.'</td>
+                        <td>'.$fb_share_count.'</td>
+                        <td>'.$fb_comment_plugin_count.'</td>
+                        <td>'.$fb_total.'</td>
+                    </tr>
+                  </tbody>';   
+            echo '</table><br/>';
+
+        $body["doc"]["facebook"]["reaction_count"] = $fb_reaction_count;
+        $body["doc"]["facebook"]["comment_count"] = $fb_comment_count;
+        $body["doc"]["facebook"]["share_count"] = $fb_share_count;
+        $body["doc"]["facebook"]["comment_plugin_count"] = $fb_comment_plugin_count;        
+        $body["doc"]["facebook"]["facebook_total"] = $fb_total;
         $body["doc"]["facebook"]["date"] = date("Y-m-d");
         $body["doc_as_upsert"] = true;
         
