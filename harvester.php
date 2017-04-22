@@ -18,6 +18,10 @@ if (isset($_GET["oai"])) {
     // Store repository data - Início
 
     $body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
+    $body_repository["doc"]["metadataFormat"] = $_GET["metadataFormat"];
+    if (isset($_GET["qualis2015"])){
+        $body_repository["doc"]["qualis2015"] = $_GET["qualis2015"];
+    }    
     $body_repository["doc"]["date"] = (string)$identify->responseDate;
     $body_repository["doc"]["url"] = (string)$identify->request;
     $body_repository["doc_as_upsert"] = true;
@@ -54,9 +58,9 @@ if (isset($_GET["oai"])) {
 
                 $query["doc"]["source"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'};
                 $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
-                if (isset($_GET["tag"])) {
-                    $query["doc"]["tag"] = $_GET["tag"];
-                }
+                if (isset($_GET["qualis2015"])) {
+                    $query["doc"]["qualis2015"] = $_GET["qualis2015"];
+                }                
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-categories'}->{'subj-group'}->{'subject'};
                 $query["doc"]["titulo"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
                 $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[0]->{'year'};
@@ -131,9 +135,9 @@ if (isset($_GET["oai"])) {
 
                 $query["doc"]["source"] = (string)$identify->Identify->repositoryName;
                     $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
-                    if (isset($_GET["tag"])) {
-                        $query["doc"]["tag"] = $_GET["tag"];
-                    }
+                    if (isset($_GET["qualis2015"])) {
+                        $query["doc"]["qualis2015"] = $_GET["qualis2015"];
+                    }                   
                     $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
                     $query["doc"]["titulo"] = str_replace('"','',(string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
                     $query["doc"]["ano"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'},0,4);

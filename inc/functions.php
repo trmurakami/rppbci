@@ -123,16 +123,27 @@ class admin {
         echo '<table class="uk-table">';
         echo '<thead>';
         echo '<tr>';
-        echo '<th>URL</th>';
+        echo '<th>Periódico</th>';
+        echo '<th>Formato</th>';
+        echo '<th>Qualis2015</th>';
+        echo '<th>Data da coleta</th>';
+        echo '<th>Núm. de registros</th>';
+        echo '<th>Atualizar tudo</th>';
+        echo '<th>Excluir</th>';
         echo '</tr>';
         echo '</thead>';
         echo '<tbody>';
         
         foreach ($data["hits"]["hits"] as $repository) {
             //print_r($repository);
-            echo '<tr><td>'.$repository['_id'].'</td><td>'.$repository['_source']['name'].'</td><td>';
-	    echo admin::count_records($repository['_source']['name']);
-	    echo '</td><td><a class="uk-button uk-button-success" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?oai='.$repository['_source']['url'].'&metadataFormat=nlm">Update</a></td><td><a class="uk-button uk-button-danger" href="http://bdpife2.sibi.usp.br/rppbci/harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
+            echo '<tr><td><a href="'.$repository['_id'].'">'.$repository['_source']['name'].'</a></td><td>'.$repository['_source']['metadataFormat'].'</td>';
+            if (!empty($repository['_source']['qualis2015'])){
+                echo '<td>'.$repository['_source']['qualis2015'].'</td>';
+            }
+            echo  '<td>'.$repository['_source']['date'].'</td><td>';
+	        echo admin::count_records($repository['_source']['name']);
+	        echo '</td><td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&qualis2015='.$repository['_source']['qualis2015'].'&metadataFormat='.$repository['_source']['metadataFormat'].'">Update</a></td>';
+            echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
 	}
         echo '</tbody>';
