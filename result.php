@@ -105,7 +105,7 @@
         $facets->facet("artigoPublicado.volume",100,"Volume",null);
         $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null);
         $facets->facet("artigoPublicado.issn",100,"ISSN",null);
-        $facets->facet("qualis2015",100,"Qualis 2015 (Informação e Comunicação)",null);
+        $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null);
     ?>
         
     </ul>
