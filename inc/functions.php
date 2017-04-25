@@ -275,8 +275,7 @@ class facebook {
                     <tr>
                         <th>Reactions</th>
                         <th>Comentários</th>
-                        <th>Compartilhamentos</th>
-                        <th>comment_plugin</th>
+                        <th>Compartilhamentos</th>                        
                         <th>Total</th>
                     </tr>
                 </thead>';
@@ -285,7 +284,6 @@ class facebook {
                         <td>'.$fb_reaction_count.'</td>
                         <td>'.$fb_comment_count.'</td>
                         <td>'.$fb_share_count.'</td>
-                        <td>'.$fb_comment_plugin_count.'</td>
                         <td>'.$fb_total.'</td>
                     </tr>
                   </tbody>';   
