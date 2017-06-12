@@ -3,6 +3,10 @@
     include('inc/config.php'); 
     include('inc/functions.php');
 
+    if (!empty($_POST)) {
+        admin::add_divulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
+    }
+
     $result_get = get::analisa_get($_GET);
     $query = $result_get['query'];  
     $limit = $result_get['limit'];
@@ -28,9 +32,6 @@
     $csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
     $lang = "br";
     $citeproc_abnt = new citeproc($csl_abnt,$lang);
-    $citeproc_apa = new citeproc($csl_apa,$lang);
-    $citeproc_nlm = new citeproc($csl_nlm,$lang);
-    $citeproc_vancouver = new citeproc($csl_nlm,$lang);
     $mode = "reference";
 
 ?>
@@ -246,6 +247,27 @@
                                             </div>
                                             <?php endif; ?>
                                         </li>
+                                        <?php if (isset($_GET["papel"])): ?>
+                                            <?php if ($_GET["papel"] == "admin"): ?>
+                                                <form class="uk-form uk-form-stacked" action="result.php?search[]=" method="POST">
+
+                                                    <fieldset data-uk-margin>
+                                                        <legend>Inserir URL de divulgação científica</legend>
+                                                        <div class="uk-form-row">
+                                                            <label class="uk-form-label" for="">Título</label>
+                                                            <div class="uk-form-controls"><input type="text" placeholder="" name="titulo" class="uk-width-1-1"></div>
+                                                        </div>
+                                                        <div class="uk-form-row">
+                                                            <label class="uk-form-label" for="">URL</label>
+                                                            <div class="uk-form-controls"><input type="text" placeholder="" name="url" class="uk-width-1-1"></div>
+                                                        </div>
+                                                        <input type="hidden" name="id" value="<?php echo $r['_id']; ?>">
+                                                        <button class="uk-button">Enviar</button>
+                                                    </fieldset>
+
+                                                </form>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                         
                                         <li class="uk-h6 uk-margin-top">
                                             <p>Métricas:</p>
@@ -260,6 +282,11 @@
                                                 <li>
                                                     <?php altmetric_com::get_altmetrics($r["_source"]['doi'],$r["_id"]); ?>
                                                 </li>
+                                                <li>
+                                                    <?php $dois[] = $r["_source"]['doi']; ?>
+                                                     <?php facebook::facebook_doi($dois,$r["_id"]);?>
+                                                     <?php unset($dois); ?>
+                                                </li>
                                             </ul>
                                             <?php endif; ?>
                                             <ul>
@@ -273,6 +300,15 @@
                                                         }
                                                     ?>
                                                     -->
+                                                </li>
+                                                <li>
+                                                    <?php if(isset($r["_source"]['div_cientifica'])): ?>
+                                                        <?php foreach ($r["_source"]['div_cientifica'] as $div_source) :?>
+                                                        <?php $url_array[] = $div_source['url']; ?>
+                                                        <?php endforeach; ?>
+                                                        <?php facebook::facebook_divulgacao($url_array,$r["_id"]);?>
+                                                        <?php unset($url_array);?>
+                                                    <?php endif; ?>
                                                 </li>
                                             </ul>
                                         </li>

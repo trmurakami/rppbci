@@ -152,10 +152,26 @@ class admin {
     }
 
     static function count_records ($name) {
-	global $type;
-	$body["query"]["query_string"]["query"] = 'source.keyword:"'.$name.'"';
-	$result = elasticsearch::elastic_search($type,null,0,$body); 
-	return $result["hits"]["total"];
+        global $type;
+        $body["query"]["query_string"]["query"] = 'source.keyword:"'.$name.'"';
+        $result = elasticsearch::elastic_search($type,null,0,$body); 
+        return $result["hits"]["total"];
+    }
+
+    static function add_divulgacao($titulo,$url,$id) {
+
+        $result_get = elasticsearch::elastic_get($id,"journals","div_cientifica");
+        if (count($result_get['_source']['div_cientifica']) > 0) {
+            $body["doc"]["div_cientifica"] = $result_get['_source']['div_cientifica'];
+        }
+        $array = [];        
+        $array["titulo"] = $titulo;
+        $array["url"] = $url;                
+        $body["doc"]["div_cientifica"][] = $array;
+        $body["doc_as_upsert"] = true;
+        
+        $result_insert = elasticsearch::elastic_update($id,"journals",$body);    
+        print_r($result_insert);    
 
     }
 }
@@ -199,14 +215,6 @@ class facebook {
     
     static function facebook_data($urls,$id) {
         global $fb;
-//        $request[] = $fb->request(            
-//                'GET',
-//                '/',
-//                array(
-//                'id' => $url,
-//                'fields' => 'og_object{likes.limit(0).summary(true),engagement,reactions.type(LIKE).limit(0).summary(total_count).as(reactions_like),reactions.type(LOVE).limit(0).summary(total_count).as(reactions_love),reactions.type(WOW).limit(0).summary(total_count).as(reactions_wow),reactions.type(HAHA).limit(0).summary(total_count).as(reactions_haha),reactions.type(SAD).limit(0).summary(total_count).as(reactions_sad),reactions.type(ANGRY).limit(0).summary(total_count).as(reactions_angry),reactions.type(NONE).limit(0).summary(total_count).as(reactions_none),reactions.type(THANKFUL).limit(0).summary(total_count).as(reactions_thankful)},share{share_count,comment_count}'
-//                )
-//            );
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://", "", $url);
             $url_limpa = str_replace("https://", "", $url_limpa);
@@ -270,7 +278,7 @@ class facebook {
         }
         
     
-            echo '<table class="uk-table"><caption>Interações no Fecebook</caption>';        
+            echo '<table class="uk-table"><caption>Interações no Facebook</caption>';        
             echo '<thead>
                     <tr>
                         <th>Reactions</th>
@@ -304,6 +312,202 @@ class facebook {
         
         elasticsearch::elastic_update($id,"journals",$body);
     }
+
+    static function facebook_doi($urls,$id) {
+        global $fb;
+        foreach ($urls as $url) {
+            $url_limpa = str_replace("http://dx.doi.org/", "", $url);
+            $url_limpa = str_replace("https://dx.doi.org/", "", $url_limpa);
+            
+            $request[] = $fb->request(            
+                    'GET',
+                    '/',
+                    array(
+                    'id' => "https://dx.doi.org/".$url_limpa,
+                    'fields' => 'engagement'    
+                    )
+                );              
+            }    
+      
+        
+        $batch = [
+            $request
+        ];
+        $responses = $fb->sendBatchRequest($batch);
+        $graphObject = $responses->getGraphObject();        
+        $fb_reaction_count = 0;
+        $fb_comment_count = 0;
+        $fb_share_count = 0;
+        $fb_comment_plugin_count = 0;
+        $fb_total = 0;
+        $i = 0;
+        foreach ($responses as $key => $response) {
+            $response_array = json_decode($response->getBody());
+            //echo '<a class="uk-button" href="'.(string)$response_array->{"id"}.'">Link</a>';
+            if (isset($response_array->{"engagement"})) {
+                
+                $fb_reaction_count+= $response_array->{"engagement"}->{'reaction_count'};
+                $fb_comment_count+= $response_array->{"engagement"}->{'comment_count'};
+                $fb_share_count+= $response_array->{"engagement"}->{'share_count'};
+                $fb_comment_plugin_count+= $response_array->{"engagement"}->{'comment_plugin_count'};
+                $fb_total_link= $response_array->{"engagement"}->{'reaction_count'} + $response_array->{"engagement"}->{'comment_count'} + $response_array->{"engagement"}->{'share_count'} + $response_array->{"engagement"}->{'comment_plugin_count'};                
+                //echo '<div class="uk-badge uk-badge-notification">'.$fb_total_link.' interações no facebook</div><br/>';
+                $fb_total+= $fb_total_link;
+                ${"fb" . $i} = $fb_total_link;
+                
+            } else {
+                $fb_reaction_count+= 0;
+                $fb_comment_count+= 0;
+                $fb_share_count+= 0;
+                $fb_comment_plugin_count+= 0;
+                $fb_total+= 0;
+                ${"fb" . $i} = 0;
+                //echo '<div class="uk-badge uk-badge-notification">Nenhuma interação no facebook pelo DOI</div><br/>';
+            }
+            $i++;
+
+        }
+        
+    
+            // echo '<table class="uk-table"><caption>Interações no Facebook pelo DOI</caption>';        
+            // echo '<thead>
+            //         <tr>
+            //             <th>Reactions</th>
+            //             <th>Comentários</th>
+            //             <th>Compartilhamentos</th>                        
+            //             <th>Total</th>
+            //         </tr>
+            //     </thead>';
+            // echo '<tbody>
+            //         <tr>
+            //             <td>'.$fb_reaction_count.'</td>
+            //             <td>'.$fb_comment_count.'</td>
+            //             <td>'.$fb_share_count.'</td>
+            //             <td>'.$fb_total.'</td>
+            //         </tr>
+            //       </tbody>';   
+            // echo '</table><br/>';
+        
+        $f = 0;
+        while ($f < $i):
+            $body["doc"]["facebook_doi"]["fb".$f] = ${"fb" . $f};
+            $f++;
+        endwhile;
+        $body["doc"]["facebook_doi"]["reaction_count"] = $fb_reaction_count;
+        $body["doc"]["facebook_doi"]["comment_count"] = $fb_comment_count;
+        $body["doc"]["facebook_doi"]["share_count"] = $fb_share_count;
+        $body["doc"]["facebook_doi"]["comment_plugin_count"] = $fb_comment_plugin_count;        
+        $body["doc"]["facebook_doi"]["facebook_total"] = $fb_total;
+        $body["doc"]["facebook_doi"]["date"] = date("Y-m-d");
+        $body["doc_as_upsert"] = true;
+        
+        elasticsearch::elastic_update($id,"journals",$body);
+    }
+
+    static function facebook_divulgacao($urls,$id) {
+        global $fb;
+        foreach ($urls as $url) {
+            $url_limpa = str_replace("http://", "", $url);
+            $url_limpa = str_replace("https://", "", $url_limpa);
+            
+            $request[] = $fb->request(            
+                    'GET',
+                    '/',
+                    array(
+                    'id' => "http://".$url_limpa,
+                    'fields' => 'engagement,og_object'
+                    )
+                );             
+            
+            $request[] = $fb->request(            
+                    'GET',
+                    '/',
+                    array(
+                    'id' => "https://".$url_limpa,
+                    'fields' => 'engagement,og_object'    
+                    )
+                );              
+            }    
+      
+        
+        $batch = [
+            $request
+        ];
+        $responses = $fb->sendBatchRequest($batch);
+        $graphObject = $responses->getGraphObject();        
+        $fb_reaction_count = 0;
+        $fb_comment_count = 0;
+        $fb_share_count = 0;
+        $fb_comment_plugin_count = 0;
+        $fb_total = 0;
+        $i = 0;
+        foreach ($responses as $key => $response) {
+            $response_array = json_decode($response->getBody());
+            if  (!empty($response_array->{"og_object"}->{'title'})){
+                $title = (string)$response_array->{"og_object"}->{'title'};
+            } else {
+                $title = "Link";
+            }
+            echo '<a class="uk-button" href="'.(string)$response_array->{"id"}.'">'.$title.'</a>';
+            if (isset($response_array->{"engagement"})) {
+                
+                $fb_reaction_count+= $response_array->{"engagement"}->{'reaction_count'};
+                $fb_comment_count+= $response_array->{"engagement"}->{'comment_count'};
+                $fb_share_count+= $response_array->{"engagement"}->{'share_count'};
+                $fb_comment_plugin_count+= $response_array->{"engagement"}->{'comment_plugin_count'};
+                $fb_total_link= $response_array->{"engagement"}->{'reaction_count'} + $response_array->{"engagement"}->{'comment_count'} + $response_array->{"engagement"}->{'share_count'} + $response_array->{"engagement"}->{'comment_plugin_count'};                
+                echo '<div class="uk-badge uk-badge-notification">'.$fb_total_link.'</div><br/>';
+                $fb_total+= $fb_total_link;
+                ${"fb" . $i} = $fb_total_link;
+                
+            } else {
+                $fb_reaction_count+= 0;
+                $fb_comment_count+= 0;
+                $fb_share_count+= 0;
+                $fb_comment_plugin_count+= 0;
+                $fb_total+= 0;
+                ${"fb" . $i} = 0;
+                echo '<div class="uk-badge uk-badge-notification">Nenhuma interação no facebook em divulgação cientifica</div><br/>';
+            }
+            $i++;
+
+        }
+        
+    
+            echo '<table class="uk-table"><caption>Interações no Facebook em divulgação cientifica</caption>';        
+            echo '<thead>
+                    <tr>
+                        <th>Reactions</th>
+                        <th>Comentários</th>
+                        <th>Compartilhamentos</th>                        
+                        <th>Total</th>
+                    </tr>
+                </thead>';
+            echo '<tbody>
+                    <tr>
+                        <td>'.$fb_reaction_count.'</td>
+                        <td>'.$fb_comment_count.'</td>
+                        <td>'.$fb_share_count.'</td>
+                        <td>'.$fb_total.'</td>
+                    </tr>
+                  </tbody>';   
+            echo '</table><br/>';
+        
+        $f = 0;
+        while ($f < $i):
+            $body["doc"]["facebook_divulgacao"]["fb".$f] = ${"fb" . $f};
+            $f++;
+        endwhile;
+        $body["doc"]["facebook_divulgacao"]["reaction_count"] = $fb_reaction_count;
+        $body["doc"]["facebook_divulgacao"]["comment_count"] = $fb_comment_count;
+        $body["doc"]["facebook_divulgacao"]["share_count"] = $fb_share_count;
+        $body["doc"]["facebook_divulgacao"]["comment_plugin_count"] = $fb_comment_plugin_count;        
+        $body["doc"]["facebook_divulgacao"]["facebook_total"] = $fb_total;
+        $body["doc"]["facebook_divulgacao"]["date"] = date("Y-m-d");
+        $body["doc_as_upsert"] = true;
+        
+        elasticsearch::elastic_update($id,"journals",$body);
+    }        
     
 }
 
