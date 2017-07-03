@@ -5,17 +5,25 @@
             include('inc/functions.php');
             include('inc/meta-header.php');
         ?>
-        <title>Estatísticas do RPPBCI</title>
+        <title>Estatísticas</title>
     </head>    
     <body>
         <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
             <?php include('inc/navbar.php')?>
             
-            <h1>Estatísticas do RPPBCI</h1>
+            <h1>Estatísticas</h1>
             
             <h2>Facebook</h2>
             
             <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=metric&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(customLabel:Coment%C3%A1rios,field:facebook.comment_count),schema:metric,type:sum),(enabled:!t,id:'2',params:(customLabel:Reactions,field:facebook.reaction_count),schema:metric,type:sum),(enabled:!t,id:'3',params:(customLabel:Compartilhamentos,field:facebook.share_count),schema:metric,type:sum),(enabled:!t,id:'4',params:(customLabel:'Total+de+intera%C3%A7%C3%B5es+no+Facebook',field:facebook.facebook_total),schema:metric,type:sum)),listeners:(),params:(fontSize:60,handleNoResults:!t),title:'New+Visualization',type:metric))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
+
+            <h2>Facebook de divulgação científica</h2>
+
+            <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=metric&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(customLabel:Coment%C3%A1rios,field:facebook_doi.comment_count),schema:metric,type:sum),(enabled:!t,id:'2',params:(customLabel:Reactions,field:facebook_divulgacao.reaction_count),schema:metric,type:sum),(enabled:!t,id:'3',params:(customLabel:Compartilhamentos,field:facebook_divulgacao.share_count),schema:metric,type:sum),(enabled:!t,id:'4',params:(customLabel:Total,field:facebook_divulgacao.facebook_total),schema:metric,type:sum)),listeners:(),params:(fontSize:60,handleNoResults:!t),title:'New+Visualization',type:metric))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
+            
+            <h2>Facebook de divulgação científica por artigo e periódico</h2>
+
+            <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=histogram&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(field:facebook_divulgacao.facebook_total),schema:metric,type:sum),(enabled:!t,id:'2',params:(field:source.keyword,order:desc,orderBy:'1',size:13),schema:segment,type:terms),(enabled:!t,id:'3',params:(field:titulo.keyword,order:desc,orderBy:'1',size:40),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,categoryAxes:!((id:CategoryAxis-1,labels:(show:!t,truncate:100),position:bottom,scale:(type:linear),show:!t,style:(),title:(text:'source.keyword:+Descending'),type:category)),defaultYExtents:!f,drawLinesBetweenPoints:!t,grid:(categoryLines:!f,style:(color:%23eee)),interpolate:linear,legendPosition:right,radiusRatio:9,scale:linear,seriesParams:!((data:(id:'1',label:'Sum+of+facebook_divulgacao.facebook_total'),drawLinesBetweenPoints:!t,mode:stacked,show:true,showCircles:!t,type:histogram,valueAxis:ValueAxis-1)),setYExtents:!f,showCircles:!t,times:!(),valueAxes:!(('$$hashKey':'object:2190',id:ValueAxis-1,labels:(filter:!f,rotate:0,show:!t,truncate:100),name:LeftAxis-1,position:left,scale:(mode:normal,type:linear),show:!t,style:(),title:(text:'Sum+of+facebook_divulgacao.facebook_total'),type:value))),title:'New+Visualization',type:histogram))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
             
             <h2>Publicações por periódico e por ano de publicação</h2>
             
@@ -68,7 +76,7 @@
             <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=histogram&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(),schema:metric,type:count),(enabled:!t,id:'2',params:(field:altmetric_com.score,order:desc,orderBy:'1',size:100),schema:segment,type:terms),(enabled:!t,id:'3',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,defaultYExtents:!f,legendPosition:right,mode:stacked,scale:linear,setYExtents:!f,times:!()),title:'New+Visualization',type:histogram))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
             
             <h2>Leitores no Mendeley (altmetric.com)</h2>
-            <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=histogram&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(),schema:metric,type:count),(enabled:!t,id:'2',params:(field:altmetric_com.readers.mendeley.keyword,order:desc,orderBy:'1',size:100),schema:segment,type:terms),(enabled:!t,id:'3',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,defaultYExtents:!f,legendPosition:right,mode:stacked,scale:linear,setYExtents:!f,times:!()),title:'New+Visualization',type:histogram))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
+            <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=histogram&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(),schema:metric,type:count),(enabled:!t,id:'2',params:(field:altmetric_com.readers.mendeley,order:desc,orderBy:'1',size:100),schema:segment,type:terms),(enabled:!t,id:'3',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,defaultYExtents:!f,legendPosition:right,mode:stacked,scale:linear,setYExtents:!f,times:!()),title:'New+Visualization',type:histogram))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
             
             
             <?php include('inc/offcanvas.php')?>
