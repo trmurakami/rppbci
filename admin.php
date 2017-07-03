@@ -5,7 +5,7 @@
             include('inc/functions.php');
             include('inc/meta-header.php');
         ?>
-        <title>Administração - RPPBCI</title>
+        <title>Administração</title>
         <script type="text/javascript" src="inc/uikit/js/components/grid.js"></script>
         <script type="text/javascript" src="inc/uikit/js/components/parallax.min.js"></script>
     </head>
@@ -13,7 +13,7 @@
         <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
             <?php include('inc/navbar.php')?>
 
-            <h2>Administração - RPPBCI</h2>
+            <h2>Administração</h2>
 
                 <form class="uk-form" action="harvester.php" method="get">
 
