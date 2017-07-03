@@ -23,7 +23,7 @@
             echo 'Total de registros faltantes: '.$response['hits']['total'].'';
         
         ?> 
-        <title>Autoridades - RPPBCI</title>
+        <title>Autoridades</title>
     </head>
     <body> 
         

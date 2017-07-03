@@ -40,7 +40,7 @@
         <?php
             include('inc/meta-header.php'); 
         ?>        
-        <title>RPPBCI - Resultado da busca</title>
+        <title>Resultado da busca</title>
         <script src="inc/uikit/js/components/accordion.min.js"></script>
         <script src="inc/uikit/js/components/pagination.min.js"></script>
         <script src="inc/uikit/js/components/datepicker.min.js"></script>
