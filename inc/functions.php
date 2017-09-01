@@ -1,6 +1,6 @@
 <?php
 
-include('functions_core.php');
+include('functions_core/functions_core.php');
 
 class inicio {
     
@@ -54,20 +54,17 @@ class inicio {
         foreach ($data["hits"]["hits"] as $r){
             //var_dump($r);
 
-            echo '<article class="uk-comment">
-            <header class="uk-comment-header">'; 
+            echo '<dl class="uk-description-list">'; 
             //print_r($r);
-            echo '<a class="ui small header" href="'.$r['_source']['url_principal'].'"><h4 class="uk-comment-title">'.$r['_source']['titulo'].' ('.$r['_source']['ano'].' - '.$r['_source']['source'].') - <b>'.$r['_source']['facebook']['facebook_total'].' interações</b></h4></a>';
-            echo '<div class="extra">';
-            if (!empty($r["_source"]['creator'])) {
-                echo '<div class="uk-comment-meta";">';    
-                foreach ($r["_source"]['autores'] as $autores) {                
-                echo '<a href="result.php?search[]=creator.keyword:&quot;'.$autores[0].'&quot;">'.$autores[0].'</a>, ';
+            echo '<dt><a href="'.$r['_source']['url_principal'].'">'.$r['_source']['titulo'].' ('.$r['_source']['ano'].' - '.$r['_source']['source'].') - <b>'.$r['_source']['facebook']['facebook_total'].' interações</b></a></dt>';
+            echo '<dd>';
+            if (!empty($r["_source"]['autores'])) {                  
+                foreach ($r["_source"]['autores'] as $autores) {
+                    echo '<a href="result.php?search[]=creator.keyword:&quot;'.$autores["nomeCompletoDoAutor"].'&quot;">'.$autores["nomeCompletoDoAutor"].'</a>, ';
                 }
-                echo '</div>';
             }
-            echo '</header>';
-            echo '</article>';
+            echo '</dd>';
+            echo '</dl>';
         }     
     }    
     
@@ -176,39 +173,40 @@ class admin {
     }
 }
 
-/* Function to generate Graph Bar */
-function generateDataGraphBar($query,$field,$sort,$sort_orientation,$facet_display_name,$size) {
-    global $index;
-    global $client;
-    global $type;
+class processaResultados {
     
-    $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
-    if (isset($sort)) {
-        $query["aggs"]["counts"]["terms"]["order"][$sort] = $sort_orientation;
-    }
-    $query["aggs"]["counts"]["terms"]["size"] = $size;
-
-    $params = [];
-    $params["index"] = $index;
-    $params["type"] = $type;
-    $params["size"] = 10;
-    $params["body"] = $query;
-
-    $facet = $client->search($params);     
+    /* Function to generate Graph Bar */
+    static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size) {
+        global $index;
+        global $client;
+        global $type;
         
-    $data_array= array();
-    foreach ($facet['aggregations']['counts']['buckets'] as $facets) {
-        array_push($data_array,'{"name":"'.$facets['key'].'","value":'.$facets['doc_count'].'}');
-    };
-    
-    if ($field == "year" ) {
-        $data_array_inverse = array_reverse($data_array);
-        $comma_separated = implode(",", $data_array_inverse);
-    } else {
-        $comma_separated = implode(",", $data_array);
+        $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+        if (isset($sort)) {
+            $query["aggs"]["counts"]["terms"]["order"][$sort] = $sort_orientation;
+        }
+        $query["aggs"]["counts"]["terms"]["size"] = $size;
+        
+        $params = [
+            'index' => $index,
+            'type' => $type,
+            'size'=> 0, 
+            'body' => $query
+        ]; 
+        $facet = $client->search($params);  
+        $data_array= array();
+        foreach ($facet['aggregations']['counts']['buckets'] as $facets) {
+            array_push($data_array,'{"name":"'.$facets['key'].'","value":'.$facets['doc_count'].'}');
+        };
+        if ($field == "ano" ) {
+            $data_array_inverse = array_reverse($data_array);
+            $comma_separated = implode(",", $data_array_inverse);
+        } else {
+            $comma_separated = implode(",", $data_array);
+        }
+        return $comma_separated;
     }
-    return $comma_separated;
-};
+}    
 
 class facebook {
     

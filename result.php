@@ -11,15 +11,24 @@
     $query = $result_get['query'];  
     $limit = $result_get['limit'];
     $page = $result_get['page'];
-    $skip = $result_get['skip'];    
+    $skip = $result_get['skip'];
 
-    $params = [
-        'index' => $index,
-        'type' => $type,
-        'size'=> $limit,
-        'from' => $skip,
-        'body' => $query
-    ];  
+    if (isset($_GET["sort"])) {
+        $query['sort'] = [
+            ['ano.keyword' => ['order' => 'desc']],
+        ];
+    } else {
+        $query['sort'] = [
+            ['facebook.facebook_total' => ['order' => 'desc']],
+        ];
+    }
+
+    $params = [];
+    $params["index"] = $index;
+    $params["type"] = $type;
+    $params["size"] = $limit;
+    $params["from"] = $skip;
+    $params["body"] = $query; 
 
     $cursor = $client->search($params);
     $total = $cursor["hits"]["total"];
@@ -60,74 +69,117 @@
         
     </head>
     <body>
-        <!-- < ?php include_once("inc/analyticstracking.php") ?>  -->
-              
-        
-        <div class="uk-container uk-container-center">
-            
-            <?php include('inc/navbar.php'); ?>  
-            
-            <div class="uk-grid" data-uk-grid>                        
-                <div class="uk-width-small-1-2 uk-width-medium-2-6">                    
-                    
 
-            <div class="uk-panel uk-panel-box">
-  
-		<form class="uk-form" method="get" action="result.php">
-			<fieldset>
-			<?php if (!empty($_GET["search"])) : ?>
-				<legend>Filtros ativos</legend>
-				<div class="uk-form-row">
-					<?php foreach($_GET["search"] as $filters): ?>
-						<input type="checkbox" name="search[]" value="<?php print_r(str_replace('"','&quot;',$filters)); ?>" checked><?php print_r($filters); ?><br/>
-					<?php endforeach; ?>
-				</div>
-				<div class="uk-form-row"><button type="submit" class="uk-button-primary">Retirar filtros</button></div>
-			<?php endif;?> 
-			</fieldset>        
-		</form>  
-     
-            <hr>
-    <h3 class="uk-panel-title">Refinar meus resultados</h3>    
-    <ul class="uk-nav uk-nav-side uk-nav-parent-icon uk-margin-top" data-uk-nav="{multiple:true}">
-        <hr>
-     
-    <?php
-        $facets = new facets();
-        $facets->query = $query;
-        
-        $facets->facet("tipo",10,"Tipo de material",null);
-        $facets->facet("source",100,"Título do periódico",null);
-        $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null);
-        $facets->facet("autores.afiliacao",120,"Instituição",null);
-        $facets->facet("ano",120,"Ano de publicação","desc");
-        $facets->facet("palavras_chave",100,"Assuntos",null);
-        $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null);
-        $facets->facet("artigoPublicado.volume",100,"Volume",null);
-        $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null);
-        $facets->facet("artigoPublicado.issn",100,"ISSN",null);
-        $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null);
-    ?>
-        
-    </ul>
+        <?php
+            if (file_exists("inc/analyticstracking.php")){
+                include_once("inc/analyticstracking.php");
+            }
+        ?> 
 
-    <hr>            
-            
-</div>
-    
-                    
+        <div class="uk-container">
 
-                    
+            <?php include('inc/navbar.php'); ?>
+            <br/><br/><br/> 
+
+            <div class="uk-width-1-1@s uk-width-1-1@m">
+
+
+            <nav class="uk-navbar-container uk-margin" uk-navbar>
+                <div class="nav-overlay uk-navbar-left">
+                    <a class="uk-navbar-item uk-logo" uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#">Clique para uma nova pesquisa</a>
                 </div>
-                <div class="uk-width-small-1-2 uk-width-medium-4-6">
-                    
-                <div class="uk-alert" data-uk-alert>
-                    <a href="" class="uk-alert-close uk-close"></a>
-                
-                    
-                        <?php $ano_bar = generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
-                    
-                        <div id="ano_chart" class="uk-visible-large"></div>
+                <div class="nav-overlay uk-navbar-right">
+                    <a class="uk-navbar-toggle" uk-search-icon uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"></a>
+                </div>
+                <div class="nav-overlay uk-navbar-left uk-flex-1" hidden>
+
+                <div class="uk-navbar-item uk-width-expand">
+                    <form class="uk-search uk-search-navbar uk-width-1-1">
+                    <input type="hidden" name="fields[]" value="name">
+                    <input type="hidden" name="fields[]" value="author.person.name">
+                    <input type="hidden" name="fields[]" value="authorUSP.name">
+                    <input type="hidden" name="fields[]" value="about">
+                    <input type="hidden" name="fields[]" value="description"> 	    
+                    <input class="uk-search-input" type="search" name="search[]" placeholder="Nova pesquisa..." autofocus>
+                    </form>
+                </div>
+
+                <a class="uk-navbar-toggle" uk-close uk-toggle="target: .nav-overlay; animation: uk-animation-fade" href="#"></a>
+
+                </div>
+
+            </nav>            
+        
+            </div>
+	   
+            <div class="uk-width-1-1@s uk-width-1-1@m">
+	    
+                <?php if (!empty($_SERVER["QUERY_STRING"])) : ?>                                    
+                    <p class="uk-margin-top" uk-margin>
+                        <a class="uk-button uk-button-default uk-button-small" href="index.php"><?php echo $t->gettext('Começar novamente'); ?></a>	
+                        <?php 
+                        
+                            if (!empty($_GET["search"])){
+                                foreach($_GET["search"] as $filters) {
+                                    $filters_array[] = $filters;
+                                    $name_field = explode(":",$filters);	
+                                    $filters = str_replace($name_field[0].":","",$filters);				
+                                    $diff["search"] = array_diff($_GET["search"],$filters_array);						
+                                    $url_push = $_SERVER['SERVER_NAME'].$_SERVER["SCRIPT_NAME"].'?'.http_build_query($diff);
+                                    echo '<a class="uk-button uk-button-default uk-button-small" href="http://'.$url_push.'">'.$filters.' <span uk-icon="icon: close; ratio: 1"></span></a>';
+                                    unset($filters_array); 	
+                                }
+                            }	
+            
+                        ?>
+                        
+                    </p>
+                <?php endif;?>	    
+	    
+            </div>       
+
+            <div class="uk-grid-divider" uk-grid>
+                <div class="uk-width-1-4@s uk-width-2-6@m">
+                    <div class="uk-panel uk-panel-box"> 
+
+                        <!-- Facetas - Início -->
+                        <h3 class="uk-panel-title">Refinar busca</h3>
+                            <hr>
+                            <ul class="uk-nav-default uk-nav-parent-icon" uk-nav="multiple: true">  
+                            <?php
+                                $facets = new facets();
+                                $facets->query = $query;
+
+                                if (!isset($_GET["search"])) {
+                                    $_GET["search"] = null;                                    
+                                }
+
+                                $facets->facet("tipo",10,"Tipo de material",null,"_term",$_GET["search"]);
+                                $facets->facet("source",100,"Título do periódico",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.afiliacao",120,"Instituição",null,"_term",$_GET["search"]);
+                                $facets->facet("ano",120,"Ano de publicação","desc","_term",$_GET["search"]);
+                                $facets->facet("palavras_chave",100,"Assuntos",null,"_term",$_GET["search"]);
+                                $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null,"_term",$_GET["search"]);
+                                $facets->facet("artigoPublicado.volume",100,"Volume",null,"_term",$_GET["search"]);
+                                $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null,"_term",$_GET["search"]);
+                                $facets->facet("artigoPublicado.issn",100,"ISSN",null,"_term",$_GET["search"]);
+                                $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null,"_term",$_GET["search"]);
+                            ?>
+                            </ul>
+                            <hr>            
+            
+                </div>
+            </div>
+
+            <div class="uk-width-3-4@s uk-width-4-6@m">
+
+                <!-- Gráfico do ano - Início -->
+                <?php if ($year_result_graph == true) : ?>
+                    <div class="uk-alert-primary" uk-alert>
+                        <a class="uk-alert-close" uk-close></a>
+                        <?php $ano_bar = processaResultados::generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
+                        <div id="ano_chart" class="uk-visible@l"></div>
                         <script type="application/javascript">
                             var graphdef = {
                                 categories : ['Ano'],
@@ -140,79 +192,46 @@
                                     position: '#ano_chart',
                                     caption : 'Ano de publicação',
                                     hlabel : 'Ano',
-                                    vlabel : 'Registros'
+                                    vlabel : 'registros'
                                 },
                                 graph : {
                                     orientation : "Vertical"
                                 },
                                 dimension : {
-                                    width: 600,
-                                    height: 140
+                                    width: 650,
+                                    height: 110
                                 }
                             })
                         </script>                        
-                 </div>                 
-
-                    
-                    <div class="uk-grid uk-margin-top">
-                        <div class="uk-width-1-3">                        
-                        <ul class="uk-subnav uk-nav-parent-icon uk-subnav-pill">
-                            <li>Ordenar por:</li>
-
-                            <!-- This is the container enabling the JavaScript -->
-                            <li data-uk-dropdown="{mode:'click'}">
-
-                                <!-- This is the nav item toggling the dropdown -->
-                                <a href="">Data (Novos)</a>
-
-                                <!-- This is the dropdown -->
-                                <div class="uk-dropdown uk-dropdown-small">
-                                    <ul class="uk-nav uk-nav-dropdown">
-                                        <li><a href="">Data (Antigos)</a></li>
-                                        <li><a href="">Título</a></li>
-                                    </ul>
-                                </div>
-
-                            </li>
-                        </ul>                        
-                            
                         </div>
-                        <div class="uk-width-1-3"><p class="uk-text-center"><?php print_r(number_format($total,0,',','.'));?> registros</p></div>
-                        <div class="uk-width-1-3">
-                            <ul class="uk-pagination" data-uk-pagination="{items:<?php print_r($total);?>,itemsOnPage:<?php print_r($limit);?>,displayedPages:3,edges:1,currentPage:<?php print_r($page-1);?>}"></ul>                         
-                        </div>
-                    </div>
+                <?php endif; ?>
+                <!-- Gráfico do ano - Fim -->      
+                
+                <!-- Navegador de resultados - Início -->
+                <?php ui::pagination ($page, $total, $limit, $t); ?>
+                <!-- Navegador de resultados - Fim -->                      
+
                     
                     <hr class="uk-grid-divider">
-                    <div class="uk-width-1-1 uk-margin-top uk-description-list-line">
-                    <ul class="uk-list uk-list-line">
-                    <?php $conta_cit = 1; ?>    
-                    <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
+
+                    <!-- Resultados -->
+                    <div class="uk-width-1-1 uk-margin-top uk-description-list-line">                        
+                        <ul class="uk-list uk-list-divider">   
+                        <?php $conta_cit = 1; ?>    
+                        <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
                         
-                        <li>                        
-                            <div class="uk-grid uk-flex-middle" data-uk-grid-   margin="">
-                                <div class="uk-width-medium-2-10 uk-row-first">
-                                    <div class="uk-panel uk-h6 uk-text-break">
-                                        <a href="result.php?search[]=source.keyword:&quot;<?php echo $r["_source"]['source'];?>&quot;"><?php echo $r["_source"]['source'];?></a>
-                                    </div>
-                                    <div class="uk-panel uk-h6 uk-text-break">
+                        <li> 
 
-                                      
-                                    </div>
+                        <div class="uk-grid-divider uk-padding-small" uk-grid>
+                            <div class="uk-width-1-5@m">
+                                <a href="result.php?search[]=source.keyword:&quot;<?php echo $r["_source"]['source'];?>&quot;"><?php echo $r["_source"]['source'];?></a>                                 
+                            </div>
+                            <div class="uk-width-4-5@m">
+                                <article class="uk-article">
+                                <p class="uk-text-lead uk-margin-remove" style="font-size:115%"><a href="<?php echo $r['_source']['url_principal'];?>"><?php echo $r["_source"]['titulo'];?><?php if (!empty($r["_source"]['ano'])) { echo ' ('.$r["_source"]['ano'].')'; } ?></a></p>
                                     
-                                    <div class="uk-panel uk-h6 uk-text-break">
-
-                                      
-                                    </div>                                     
-                                    
-                                </div>
-                                <div class="uk-width-medium-8-10 uk-flex-middle">
-                                    
-                                    <ul class="uk-list">
-                                        <li class="uk-margin-top uk-h4">
-                                            <strong><a href="<?php echo $r['_source']['url_principal'];?>"><?php echo $r["_source"]['titulo'];?> (<?php echo $r["_source"]['ano']; ?>)</a></strong>
-                                        </li>
-                                        <li class="uk-h6">
+                                    <ul class="uk-list uk-margin-top">
+                                        <p class="uk-margin-remove">
                                             Autores:
                                             <?php if (!empty($r["_source"]['autores'])) : ?>
                                                 <?php foreach ($r["_source"]['autores'] as $autores) {
@@ -223,19 +242,16 @@
                                                 print_r($array_aut);
                                                 ?>
                                             <?php endif; ?>                           
-                                        </li>
-                                        
-                                        <?php if (!empty($r["_source"]['journalci_title'][0])) : ?><li class="uk-h6">In: <a href="result.php?journalci_title[]=<?php echo $r["_source"]['journalci_title'][0];?>"><?php echo $r["_source"]['journalci_title'][0];?></a></li><?php endif; ?>
-                            
-                                        <li class="uk-h6">
+                                        </p>
+                                        <p class="uk-margin-remove">
                                             Assuntos:
                                             <?php if (!empty($r["_source"]['palavras_chave'])) : ?>
                                             <?php foreach ($r["_source"]['palavras_chave'] as $assunto) : ?>
                                                 <a href="result.php?search[]=palavras_chave.keyword:&quot;<?php echo $assunto;?>&quot;"><?php echo $assunto;?></a>
                                             <?php endforeach;?>
                                             <?php endif; ?>
-                                        </li>
-                                        <li>
+                                        </p>
+                                        <p class="uk-margin-remove">
                                             <?php if (!empty($r["_source"]['url_principal'])||!empty($r["_source"]['doi'])) : ?>
                                             <div class="uk-button-group" style="padding:15px 15px 15px 0;">     
                                                 <?php if (!empty($r["_source"]['url_principal'])) : ?>
@@ -246,7 +262,7 @@
                                                 <?php endif; ?>
                                             </div>
                                             <?php endif; ?>
-                                        </li>
+                                        </p>
                                         <?php if (isset($_GET["papel"])): ?>
                                             <?php if ($_GET["papel"] == "admin"): ?>
                                                 <form class="uk-form uk-form-stacked" action="result.php?search[]=" method="POST">
@@ -312,17 +328,19 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <a href="#" data-uk-toggle="{target:'#citacao<?php echo $conta_cit;?>'}">Citar</a>                                        
-                                        <div id="citacao<?php echo $conta_cit;?>" class="uk-hidden">
+                                        <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
+                                        <div id="citacao<?php echo $conta_cit;?>" hidden="hidden">
                                             <?php $conta_cit++; ?>
                                         <li class="uk-h6 uk-margin-top">
                                             <div class="uk-alert uk-alert-danger">A citação é gerada automaticamente e pode não estar totalmente de acordo com as normas</div>
                                             <ul>
                                                 <li class="uk-margin-top">
                                                     <p><strong>ABNT</strong></p>
-                                                    <?php                                                        
-                                                        //$data = gera_consulta_citacao($r["_source"]);
-                                                        //print_r($citeproc_abnt->render($data, $mode));
+                                                    <?php
+                                                                    $r["_source"]['name'] = $r["_source"]["titulo"];
+                                                                    $r["_source"]['type'] = $r["_source"]["tipo"];
+                                                                    $data = citation::citation_query($r["_source"]);
+                                                                    print_r($citeproc_abnt->render($data, $mode));
                                                     ?>
                                                 </li>                                               
                                             </ul>                                              
@@ -336,13 +354,10 @@
                     </ul>
                     </div>
                     <hr class="uk-grid-divider">
-                    <div class="uk-grid uk-margin-top">
-                        <div class="uk-width-1-2"><p class="uk-text-center"><?php print_r($total);?> registros</p></div>
-                        <div class="uk-width-1-2">
-                            <ul class="uk-pagination" data-uk-pagination="{items:<?php print_r($total);?>,itemsOnPage:<?php print_r($limit);?>,displayedPages:3,edges:1,currentPage:<?php print_r($page-1);?>}"></ul>                         
-                        </div>
-                    </div>                   
-                    
+                
+                <!-- Navegador de resultados - Início -->
+                <?php ui::pagination ($page, $total, $limit, $t); ?>
+                <!-- Navegador de resultados - Fim --> 
 
                     
                 </div>

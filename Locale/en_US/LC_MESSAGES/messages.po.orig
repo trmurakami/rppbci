@@ -1,0 +1,268 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BDPI\n"
+"Report-Msgid-Bugs-To: tiago.murakami@st.sibi.usp.br \n"
+"Last-Translator: Tiago Murakami <tiago.murakami@dt.sibi.usp.br>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"PO-Revision-Date: 2016-11-18\n"
+"Language-Team: SIBiUSP\n"
+
+
+msgid "Acesso ao documento"
+msgstr "Online access"
+
+msgid "Acesso online à fonte"
+msgstr "Online access"
+
+msgid "Agência de fomento"
+msgstr "Funding Agencies"
+
+msgid "Ano"
+msgstr "Year"
+
+msgid "Ano de publicação"
+msgstr "Date published"
+
+msgid "Anterior"
+msgstr "Previous"
+
+msgid "arquivos de texto integral"
+msgstr "full-text files"
+
+msgid "ARTIGO DE JORNAL"
+msgstr "NEWS ITEM"
+
+msgid "ARTIGO DE JORNAL-DEP/ENTR"
+msgstr "NEWS ITEM"
+
+msgid "ARTIGO DE PERIODICO"
+msgstr "Article"
+
+msgid "Assuntos"
+msgstr "Subjects"
+
+msgid "Assuntos provenientes das teses"
+msgstr "Subjects from thesis"
+
+msgid "Autores"
+msgstr "Authors"
+
+msgid "autores vinculados à USP"
+msgstr "USP affiliated authors"
+
+msgid "Autores USP"
+msgstr "USP affiliated authors"
+
+msgid "Bases"
+msgstr "Sources"
+
+msgid "Biblioteca Digital de Produção Intelectual da Universidade de São Paulo"
+msgstr "Digital Library of Intellectual Production of Universidade de São Paulo"
+
+msgid "Busca avançada"
+msgstr "Advanced search"
+
+msgid "Busca institucional"
+msgstr "Context search"
+
+msgid "Buscar"
+msgstr "Search"
+
+msgid "Centros, Hospitais, Institutos especializados e Museus"
+msgstr "Centers, Hospitals, Institutes and Museums"
+
+msgid "Clique para uma nova pesquisa"
+msgstr "Click here for a new search"
+
+msgid "Começar novamente"
+msgstr "Start over"
+
+msgid "Como citar"
+msgstr "How to cite"
+
+msgid "Contato"
+msgstr "Contact"
+
+msgid "Data de publicação"
+msgstr "Date published"
+
+msgid "Departamento"
+msgstr "Departament"
+
+msgid "Editora"
+msgstr "Publisher"
+
+msgid "Estatísticas da base"
+msgstr "Statistics"
+
+msgid "É parte de ..."
+msgstr "Is part of ..."
+
+msgid "Ferramentas"
+msgstr "Tools"
+
+msgid "Fonte"
+msgstr "Source"
+
+msgid "Idioma"
+msgstr "Language"
+
+msgid "Inglês"
+msgstr "English"
+
+msgid "Início"
+msgstr "Home"
+
+msgid "Limitar por data"
+msgstr "Refine with date range"
+
+msgid "Limitar datas"
+msgstr "Refine with date range"
+
+msgid "Local"
+msgstr "Publisher place"
+
+msgid "Mais informações"
+msgstr "More informations"
+
+msgid "Métricas"
+msgstr "Metrics"
+
+msgid "MONOGRAFIA/LIVRO"
+msgstr "Book"
+
+msgid "Nome do evento"
+msgstr "Conference titles"
+
+msgid "Nossos números"
+msgstr "Statistics"
+
+msgid "Nova pesquisa..."
+msgstr "New search..."
+
+msgid "Número USP"
+msgstr "USP ID"
+
+msgid "ou pesquise este registro no"
+msgstr "or search this record in"
+
+msgid "País de publicação"
+msgstr "Countries/Territories"
+
+msgid "Página Principal"
+msgstr "Home"
+
+msgid "PARTE DE MONOGRAFIA/LIVRO"
+msgstr "BOOK CHAPTER"
+
+msgid "Pesquisa"
+msgstr "Search"
+
+msgid "Pesquise por termo ou autor"
+msgstr "Search for keyword or author"
+
+<<<<<<< HEAD
+msgid "Resultado da busca"
+msgstr "Search results"
+
+msgid "Tipo de material"
+msgstr "Type"
+
+msgid "Ano de publicação"
+msgstr "Year"
+
+msgid "Assuntos"
+msgstr "Subject"
+
+msgid "Editora"
+msgstr "Publisher"
+
+msgid "Autores"
+msgstr "Authors"
+
+msgid "Unidades USP"
+msgstr "USP Schools"
+
+msgid "Departamentos"
+msgstr "Departments"
+
+
+msgid "registros"
+msgstr "records"
+
+msgid "Filtros ativos"
+msgstr "Filters"
+
+
+
+
+
+
+=======
+msgid "Português"
+msgstr "Portuguese"
+
+msgid "Produção Científica"
+msgstr "Scientific Production"
+
+msgid "Próxima"
+msgstr "Next"
+
+msgid "Refinar busca"
+msgstr "Refine search"
+
+msgid "registros"
+msgstr "records"
+
+msgid "Resumo"
+msgstr "Abstract"
+
+msgid "Selecione a base"
+msgstr "Source selection"
+
+msgid "Selecionar período de tempo"
+msgstr "Select date range"
+
+msgid "Sobre"
+msgstr "About"
+
+msgid "TESE"
+msgstr "Thesis"
+
+msgid "Teses e Dissertações"
+msgstr "Theses and Dissertations"
+
+msgid "Termos de busca"
+msgstr "Search terms"
+
+msgid "Tipo de material"
+msgstr "Document Types"
+
+msgid "Todas as bases"
+msgstr "All sources"
+
+msgid "Todas as Unidades USP"
+msgstr "All USP Schools"
+
+msgid "TRABALHO DE EVENTO"
+msgstr "PROCEEDINGS PAPER"
+
+msgid "TRABALHO DE EVENTO-RESUMO"
+msgstr "MEETING ABSTRACT"
+
+msgid "Últimos registros"
+msgstr "Recent submissions"
+
+msgid "Unidades USP"
+msgstr "USP Schools"
+
+msgid "Usuário"
+msgstr "User"
+
+msgid "Ver registro completo"
+msgstr "Full record"
+>>>>>>> uikit3
