@@ -50,9 +50,6 @@
             include('inc/meta-header.php'); 
         ?>        
         <title>Resultado da busca</title>
-        <script src="inc/uikit/js/components/accordion.min.js"></script>
-        <script src="inc/uikit/js/components/pagination.min.js"></script>
-        <script src="inc/uikit/js/components/datepicker.min.js"></script>
         
         <!-- D3.js Libraries and CSS -->
         <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
