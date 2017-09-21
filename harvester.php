@@ -124,6 +124,80 @@ if (isset($_GET["oai"])) {
             }
         }
 
+    } elseif ($_GET["metadataFormat"] == "oai_dc") {
+
+        if (isset($_GET["set"])){
+            $recs = $myEndpoint->listRecords('oai_dc',null,null,$_GET["set"]);
+        } else {
+            $recs = $myEndpoint->listRecords('oai_dc');           
+        }
+        foreach($recs as $rec) {
+            $data = $rec->metadata->children( 'http://www.openarchives.org/OAI/2.0/oai_dc/' );
+            $rows = $data->children( 'http://purl.org/dc/elements/1.1/' );
+
+            //var_dump ($rows);
+
+            if (isset($rows->publisher)){                
+                $body["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rows->publisher;
+            }
+
+            if (isset($rows->title)){                
+                $body["doc"]["titulo"] = (string)$rows->title[0];
+            }
+
+            if (isset($rows->relation)){                
+                $body["doc"]["doi"] = (string)$rows->relation;
+            }
+
+            if (isset($rows->identifier)){                
+                $body["doc"]["url_principal"] = (string)$rows->identifier;
+            }
+
+            if (isset($rows->identifier)){                
+                $body["doc"]["relation"][] = (string)$rows->identifier;
+            }            
+            
+            if (isset($rows->source)){                
+                $body["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$rows->source;                
+            }              
+            
+            
+            if (isset($rows->creator)){ 
+                $i = 0;
+                foreach ($rows->creator as $author) {
+                    $body["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$author;
+                    $i++;
+                }
+            }
+
+            if (isset($rows->date)){                
+                $body["doc"]["ano"] = substr((string)$rows->date,0,4);
+            }            
+
+            $body["doc"]["relation"][] = "https://dx.doi.org/" . (string)$rows->relation;
+            $id = (string)$rec->header->identifier;
+            if (!empty((string)$rec->header->setSpec)) {
+                $body["doc"]["source"] = (string)$rec->header->setSpec;
+            } else {
+                $body["doc"]["source"] = "";
+            }
+            
+            $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->header->setSpec;
+                      
+            $body["doc_as_upsert"] = true;
+            unset($author);
+            //print_r($body);
+            $resultado = elasticsearch::elastic_update($id,$type,$body);
+            //print_r($resultado);            
+            //print_r($body);
+            unset($body);    
+
+
+
+        }
+    
+
+        
     } else {
         
         $recs = $myEndpoint->listRecords('rfc1807');
