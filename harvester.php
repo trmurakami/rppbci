@@ -174,12 +174,16 @@ if (isset($_GET["oai"])) {
                 $body["doc"]["ano"] = substr((string)$rows->date,0,4);
             }            
 
-            $body["doc"]["relation"][] = "https://dx.doi.org/" . (string)$rows->relation;
+            if (isset($rows->relation)) {
+                $body["doc"]["relation"][] = "https://dx.doi.org/" . (string)$rows->relation;
+            }            
             $id = (string)$rec->header->identifier;
             if (!empty((string)$rec->header->setSpec)) {
                 $body["doc"]["source"] = (string)$rec->header->setSpec;
+            } elseif (isset($_GET["set"])) {
+                $body["doc"]["source"] = $_GET["set"];
             } else {
-                $body["doc"]["source"] = "";
+                $body["doc"]["source"] = "Não preenchido";
             }
             
             $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->header->setSpec;
