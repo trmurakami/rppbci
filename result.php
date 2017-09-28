@@ -154,7 +154,8 @@
                                 $facets->facet("tipo",10,"Tipo de material",null,"_term",$_GET["search"]);
                                 $facets->facet("source",100,"Título do periódico",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null,"_term",$_GET["search"]);
-                                $facets->facet("autores.afiliacao",120,"Instituição",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.afiliacao",120,"Instituição normalizada",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.afiliacao_nao_normalizada",120,"Instituição não normalizada",null,"_term",$_GET["search"]);
                                 $facets->facet("ano",120,"Ano de publicação","desc","_term",$_GET["search"]);
                                 $facets->facet("palavras_chave",100,"Assuntos",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null,"_term",$_GET["search"]);

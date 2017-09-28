@@ -88,7 +88,7 @@ if (isset($_GET["oai"])) {
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if(isset($autores->{'aff'})) {
-                            $query["doc"]["autores"][$i]["afiliacao"] = (string)$autores->{'aff'};
+                            $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = (string)$autores->{'aff'};
                         }
                         if(isset($autores->{'uri'})) {
                             $query["doc"]["autores"][$i]["nroIdCnpq"] = (string)$autores->{'uri'};
@@ -249,7 +249,7 @@ if (isset($_GET["oai"])) {
                             $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autor_array[0];
 
                             if(isset($autor_array[1])) {
-                                $query["doc"]["autores"][$i]["afiliacao"] = (string)$autor_array[1];
+                                $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = (string)$autor_array[1];
                             }
                             $i++;
                     }
