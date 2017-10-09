@@ -110,7 +110,7 @@
                 </div>
                 <div>
                     <h1>Altmetrics por periódico</h1>
-                    <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=pie&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(field:facebook.facebook_total),schema:metric,type:sum),(enabled:!t,id:'2',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:segment,type:terms)),listeners:(),params:(addLegend:!t,addTooltip:!t,isDonut:!f,legendPosition:right),title:'New+Visualization',type:pie))" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>                
+                    <iframe src="http://143.107.154.38:5601/app/kibana#/visualize/edit/AV7IY3Ynb3LAPKfeMwlP?embed=true&_g=()&_a=(filters:!(),linked:!f,query:(match_all:()),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(field:facebook.facebook_total),schema:metric,type:sum),(enabled:!t,id:'2',params:(field:source.keyword,order:desc,orderBy:'1',size:50000),schema:segment,type:terms)),listeners:(),params:(addLegend:!t,addTooltip:!t,isDonut:!f,legendPosition:right,type:pie),title:'RPPBCI+-+Almetrics+por+Peri%C3%B3dico',type:pie))" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>
                 </div>
             </div>
 
