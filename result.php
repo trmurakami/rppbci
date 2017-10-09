@@ -20,6 +20,7 @@
     } else {
         $query['sort'] = [
             ['facebook.facebook_total' => ['order' => 'desc']],
+            ['ano.keyword' => ['order' => 'desc']],
         ];
     }
 
