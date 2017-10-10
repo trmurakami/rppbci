@@ -8,14 +8,14 @@
 
             /* Consulta n registros ainda não corrigidos */
             if (empty($_GET)) {
-                $body["query"]["query_string"]["query"] = "+_exists_:autores -_exists_:aff_ok";
+                $body["query"]["query_string"]["query"] = "+_exists_:autores.afiliacao_nao_normalizada";
             } 
 
             $params = [];
             $params["index"] = $index;
             $params["type"] = $type;
             $params["_source"] = ["_id","autores"];
-            $params["size"] = 20;        
+            $params["size"] = 100;        
             $params["body"] = $body;   
 
             $response = $client->search($params);
@@ -41,10 +41,10 @@
                                 echo '<br/>';
                                 print_r($autor);
                             
-                                if (isset($autor["afiliacao"])) {
+                                if (isset($autor["afiliacao_nao_normalizada"])) {
                                     $ch = curl_init();
                                     $method = "GET";
-                                    $url = 'http://bdpife2.sibi.usp.br/instituicoes/vocab/services.php?task=fetch&arg='.rawurlencode($autor["afiliacao"]).'&output=json';                            
+                                    $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetch&arg='.rawurlencode($autor["afiliacao_nao_normalizada"]).'&output=json';                            
                                     curl_setopt($ch, CURLOPT_URL, $url);
                                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -65,7 +65,7 @@
                                     
                                     $ch = curl_init();
                                     $method = "GET";
-                                    $url = 'http://bdpife2.sibi.usp.br/instituicoes/vocab/services.php?task=fetchTerm&arg='.$term_key.'&output=json';
+                                    $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetchTerm&arg='.$term_key.'&output=json';
                                     curl_setopt($ch, CURLOPT_URL, $url);
                                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -101,15 +101,14 @@
                                     if(!empty($autor["nroIdCnpq"])){
                                         $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
                                     }
-                                    if(!empty($autor["afiliacao"])){
-                                        $body_upsert["doc"]["autores"][$i]["afiliacao"] = $autor["afiliacao"];
+                                    if(!empty($autor["afiliacao_nao_normalizada"])){
+                                        $body_upsert["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = $autor["afiliacao_nao_normalizada"];
                                     }
 
                                 } 
                             $i++;
                             
                         }
-                            $body_upsert["doc"]["aff_ok"] = true;
                             $body_upsert["doc_as_upsert"] = true;
                             echo '<br/>';
                             //print_r($body_upsert);
