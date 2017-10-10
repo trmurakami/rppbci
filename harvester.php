@@ -157,8 +157,13 @@ if (isset($_GET["oai"])) {
                 $body["doc"]["relation"][] = (string)$rows->identifier;
             }            
             
-            if (isset($rows->source)){                
-                $body["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$rows->source;                
+            if (isset($rows->source)){
+                if (isset($_GET["title"])) {
+                    $body["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = mb_convert_encoding($_GET["title"], "UTF-8", "HTML-ENTITIES");
+                } else {
+                    $body["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$rows->source;
+                }               
+                                
             }              
             
             
@@ -178,15 +183,15 @@ if (isset($_GET["oai"])) {
                 $body["doc"]["relation"][] = "https://dx.doi.org/" . (string)$rows->relation;
             }            
             $id = (string)$rec->header->identifier;
-            if (!empty((string)$rec->header->setSpec)) {
-                $body["doc"]["source"] = (string)$rec->header->setSpec;
-            } elseif (isset($_GET["set"])) {
-                $body["doc"]["source"] = $_GET["set"];
-            } else {
-                $body["doc"]["source"] = "Não preenchido";
-            }
+            //if (!empty((string)$rec->header->setSpec)) {
+            //    $body["doc"]["source"] = (string)$rec->header->setSpec;
+            //} elseif (isset($_GET["title"])) {
+                $body["doc"]["source"] = mb_convert_encoding($_GET["title"], "UTF-8", "HTML-ENTITIES");
+            //} else {
+            //    $body["doc"]["source"] = "Não preenchido";
+            //}
             
-            $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->header->setSpec;
+            $query["doc"]["artigoPublicado"]["issn"] = $_GET["set"];
                       
             $body["doc_as_upsert"] = true;
             unset($author);
