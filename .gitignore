@@ -2,3 +2,4 @@ inc/config.php
 vendor/
 composer.phar
 composer.lock
+download_scielo.sh
