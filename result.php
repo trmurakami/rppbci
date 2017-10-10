@@ -20,6 +20,7 @@
     } else {
         $query['sort'] = [
             ['facebook.facebook_total' => ['order' => 'desc']],
+            ['ano.keyword' => ['order' => 'desc']],
         ];
     }
 
@@ -324,6 +325,14 @@
                                                         <?php unset($url_array);?>
                                                     <?php endif; ?>
                                                 </li>
+                                                <?php if(isset($r["_source"]["aminer"]["num_citation"])): ?>
+                                                        <li>
+                                                            <h4>Dados da API do AMiner:</h4>
+                                                            <p>Título: <?php echo $r["_source"]["aminer"]["title"]; ?></p>
+                                                            <p>Número de citações no AMiner: <?php echo $r["_source"]["aminer"]["num_citation"]; ?></p>
+                                                        </li>
+                                                        
+                                                <?php endif; ?>
                                             </ul>
                                         </li>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
