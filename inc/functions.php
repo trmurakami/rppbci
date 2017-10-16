@@ -111,7 +111,7 @@ class admin {
         $params = [];
         $params["index"] = $index;
         $params["type"] = "repository";
-        $params["size"] = 100;
+        $params["size"] = 1000;
         $params["body"] = $query;           
 
         $data = $client->search($params);
