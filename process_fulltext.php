@@ -9,7 +9,7 @@
     $params = [];
     $params["index"] = $index;
     $params["type"] = $type;
-    $params["size"] = 1;
+    $params["size"] = 10;
     $params["body"] = $query;
 
     $cursor = $client->search($params);
@@ -23,8 +23,8 @@
    	    unset($r["_source"]["relation"][0]);
 	    foreach ($r["_source"]["relation"] as $url_fulltext) {
 		$url_fulltext = str_replace("view","download",$url_fulltext);
-		print_r($url_fulltext);
-		echo '<br/><br/>';
+		//print_r($url_fulltext);
+		//echo '<br/><br/>';
 
 		$ch = curl_init();
 		$source = $url_fulltext;
@@ -45,69 +45,143 @@
 			$json = json_encode($xml);
 			$string = json_decode($json,true);
 			//print_r($string);
-			//echo "<br/><br/>";
-			foreach ($string["text"]["back"]["div"]["listBibl"]["biblStruct"] as $ref){
-				if (isset($ref["analytic"])){
-					echo "analytic";
-				} elseif (isset($ref["monogr"])) {
-					echo "monogr";
-					echo '<br/>';
-					print_r($ref);
-					echo '<br/><br/>';
-
-					$update_ref["doc"]["references"]["citations"][]["name"] = $ref["monogr"]["title"];
-					foreach ($ref["monogr"]["author"] as $ref_author) {
-						if (isset($ref_author["persName"])) {
-							$update_ref["doc"]["references"]["citations"][]["person"]["name"]["family"] = $ref_author["persName"]["surname"];
-							if (isset($ref_author["persName"]["forename"])) {
-								if (is_array($ref_author["persName"]["forename"])) {
-									$update_ref["doc"]["references"]["citations"][]["person"]["name"]["given"] = implode(". ",$ref_author["persName"]["forename"]) . ".";
+			if (count($string["text"]["back"]["div"]["listBibl"]["biblStruct"]) > 0) {
+				$i = 0;
+				foreach ($string["text"]["back"]["div"]["listBibl"]["biblStruct"] as $ref){
+	
+					$i_author = 0;
+					if (isset($ref["analytic"])){
+	
+						$update_ref["doc"]["references"]["citations"][$i]["analytic"]["name"] = $ref["monogr"]["title"];
+						$update_ref["doc"]["references"]["citations"][$i]["name"] = $ref["analytic"]["title"];						
+						if (isset($ref["monogr"]["author"])){						
+							foreach ($ref["monogr"]["author"] as $ref_author) {
+								if (isset($ref_author["persName"])) {
+									$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] = $ref_author["persName"]["surname"];
+									if (isset($ref_author["persName"]["forename"])) {
+										if (is_array($ref_author["persName"]["forename"])) {
+											$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = implode(". ",$ref_author["persName"]["forename"]) . ".";
+										} else {
+											$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = $ref_author["persName"]["forename"] . ".";								
+										}
+									}
 								} else {
-									$update_ref["doc"]["references"]["citations"][]["person"]["name"]["given"] = $ref_author["persName"]["forename"] . ".";								
+									$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] = $ref_author["surname"];
+									if (isset($ref_author["forename"])) {
+										if (is_array($ref_author["forename"])) {
+											$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = implode(". ",$ref_author["forename"]) . ".";
+										} else {
+											$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = $ref_author["forename"] . ".";
+										}
+									}								
 								}
+								$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["citation"] = $update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] . ", " . $update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"];
+								$i_author++;
 							}
-						} else {
-							$update_ref["doc"]["references"]["citations"][]["person"]["name"]["family"] = $ref_author["surname"];
-							if (isset($ref_author["forename"])) {
-								if (is_array($ref_author["forename"])) {
-									$update_ref["doc"]["references"]["citations"][]["person"]["name"]["given"] = implode(". ",$ref_author["forename"]) . ".";
-								} else {
-									$update_ref["doc"]["references"]["citations"][]["person"]["name"]["given"] = $ref_author["forename"] . ".";
-								}
-							}
-						
 						}
+						if (isset($ref["monogr"]["imprint"]["date"]["@attributes"]["when"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["datePublished"] = substr($ref["monogr"]["imprint"]["date"]["@attributes"]["when"], 0, 4);
+						}
+						if (isset($ref["monogr"]["imprint"]["pubPlace"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["publisher"]["organization"]["location"] = $ref["monogr"]["imprint"]["pubPlace"];
+						}
+						if (isset($ref["monogr"]["imprint"]["publisher"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["publisher"]["organization"]["name"] = $ref["monogr"]["imprint"]["publisher"];
+						}					
+						if (isset($ref["monogr"]["idno"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["doi"] = $ref["monogr"]["idno"];
+						}
+						if (isset($ref["monogr"]["ptr"]["@attributes"]["target"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["url"] = $ref["monogr"]["ptr"]["@attributes"]["target"];
+						}
+						
+						foreach ($ref["analytic"]["author"] as $ref_author) {
+							if (isset($ref_author["persName"])) {
+								$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] = $ref_author["persName"]["surname"];
+								if (isset($ref_author["persName"]["forename"])) {
+									if (is_array($ref_author["persName"]["forename"])) {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = implode(". ",$ref_author["persName"]["forename"]) . ".";
+									} else {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = $ref_author["persName"]["forename"] . ".";								
+									}
+								}
+							} else {
+								$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] = $ref_author["surname"];
+								if (isset($ref_author["forename"])) {
+									if (is_array($ref_author["forename"])) {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = implode(". ",$ref_author["forename"]) . ".";
+									} else {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = $ref_author["forename"] . ".";
+									}
+								}
+							
+							}
+							$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["citation"] = $update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] . ", " . $update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"];
+							$i_author++;
+						}
+						if (isset($ref["analytic"]["idno"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["doi"] = $ref["analytic"]["idno"];
+						}	
+	
+					} elseif (isset($ref["monogr"])) {
+						$update_ref["doc"]["references"]["citations"][$i]["name"] = $ref["monogr"]["title"];
+						foreach ($ref["monogr"]["author"] as $ref_author) {
+							if (isset($ref_author["persName"])) {
+								$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] = $ref_author["persName"]["surname"];
+								if (isset($ref_author["persName"]["forename"])) {
+									if (is_array($ref_author["persName"]["forename"])) {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = implode(". ",$ref_author["persName"]["forename"]) . ".";
+									} else {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = $ref_author["persName"]["forename"] . ".";								
+									}
+								}
+							} else {
+								$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] = $ref_author["surname"];
+								if (isset($ref_author["forename"])) {
+									if (is_array($ref_author["forename"])) {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = implode(". ",$ref_author["forename"]) . ".";
+									} else {
+										$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"] = $ref_author["forename"] . ".";
+									}
+								}
+							
+							}
+							$update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["citation"] = $update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["family"] . ", " . $update_ref["doc"]["references"]["citations"][$i]["author"][$i_author]["person"]["name"]["given"];
+							$i_author++;
+						}
+						if (isset($ref["monogr"]["imprint"]["date"]["@attributes"]["when"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["datePublished"] = substr($ref["monogr"]["imprint"]["date"]["@attributes"]["when"], 0, 4);
+						}
+						if (isset($ref["monogr"]["imprint"]["pubPlace"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["publisher"]["organization"]["location"] = $ref["monogr"]["imprint"]["pubPlace"];
+						}
+						if (isset($ref["monogr"]["imprint"]["publisher"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["publisher"]["organization"]["name"] = $ref["monogr"]["imprint"]["publisher"];
+						}					
+						if (isset($ref["monogr"]["idno"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["doi"] = $ref["monogr"]["idno"];
+						}
+						if (isset($ref["monogr"]["ptr"]["@attributes"]["target"])) {
+							$update_ref["doc"]["references"]["citations"][$i]["url"] = $ref["monogr"]["ptr"]["@attributes"]["target"];
+						}
+						
+	
+					} else {
+						echo "outro";
 					}
-					if (isset($ref["monogr"]["imprint"]["date"]["@attributes"]["when"])) {
-						$update_ref["doc"]["references"]["citations"][]["datePublished"] = $ref["monogr"]["imprint"]["date"]["@attributes"]["when"];
-					}
-					if (isset($ref["monogr"]["imprint"]["pubPlace"])) {
-						$update_ref["doc"]["references"]["citations"][]["publisher"]["organization"]["location"] = $ref["monogr"]["imprint"]["pubPlace"];
-					}
-					
-					print_r($update_ref);
-					echo '<br/><br/>';	
-					unset($update_ref);				
-				} else {
-					echo "outro";
-				}
-				//$update_ref["doc"]["references"]["citations"][] = $ref;
-				
-				
+					$i++;
+				}				
+
 			}
-            //$update_ref["doc"]["references"]["date"] = date("Ymd");
+			$update_ref["doc"]["references"]["data"] = date("Ymd"); 
             $update_ref["doc_as_upsert"] = true;
-			print_r($update_ref);
-			//$result_ref = elasticsearch::elastic_update($r['_id'],$type,$update_ref);
-            //print_r($result_ref);
+			//print_r($update_ref);
+			$result_ref = elasticsearch::elastic_update($r['_id'],$type,$update_ref);
+            print_r($result_ref);
             unset($update_ref);
 
 		}
 
 	  }
     }
-	    //echo '<br/><br/>';
-	    //print_r($r["_source"]["relation"]);
-	    //echo '<br/><br/>';
-
 ?>
