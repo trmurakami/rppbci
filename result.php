@@ -338,8 +338,25 @@
                                                 <?php if(isset($r["_source"]["aminer"]["num_citation"])): ?>
                                                         <li>
                                                             <h4>Dados da API do AMiner:</h4>
-                                                            <p>Título: <?php echo $r["_source"]["aminer"]["title"]; ?></p>
+                                                            <p>Título: <a href="https://aminer.org/archive/<?php echo $r["_source"]["aminer"]["id"];?>"><?php echo $r["_source"]["aminer"]["title"]; ?></a></p>
                                                             <p>Número de citações no AMiner: <?php echo $r["_source"]["aminer"]["num_citation"]; ?></p>
+                                                            <p>
+                                                            <?php 
+                                                            
+                                                            if (!empty($r["_source"]["aminer"]["doi"])) {
+                                                                echo 'DOI: '.$r["_source"]["aminer"]["doi"].'<br/>';
+                                                            }                                           
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["name"])){
+                                                                echo 'Título do periódico: '.$r["_source"]["aminer"]["venue"]["name"].'<br/>';
+                                                            }
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["volume"])){
+                                                                echo 'Volume: '.$r["_source"]["aminer"]["venue"]["volume"].'<br/>';
+                                                            }                                        
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["issue"])) {
+                                                                echo 'Fascículo: '.$r["_source"]["aminer"]["venue"]["issue"].'<br/>';
+                                                            }                                                              
+                                                            ?>
+                                                            </p>
                                                         </li>
                                                         
                                                 <?php endif; ?>
