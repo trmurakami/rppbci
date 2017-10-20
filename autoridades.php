@@ -8,7 +8,7 @@
 
             /* Consulta n registros ainda não corrigidos */
             if (empty($_GET)) {
-                $body["query"]["query_string"]["query"] = "-_exists_:autores.afiliacao +_exists_:autores.afiliacao_nao_normalizada";
+                $body["query"]["query_string"]["query"] = "+_exists_:autores.afiliacao_nao_normalizada";
             } 
 
             if (isset($_GET["sort"])) {        
@@ -25,7 +25,7 @@
             $params["index"] = $index;
             $params["type"] = $type;
             $params["_source"] = ["_id","autores"];
-            $params["size"] = 100;        
+            $params["size"] = 200;        
             $params["body"] = $body;   
 
             $response = $client->search($params);
@@ -48,13 +48,20 @@
                         $i = 0;                        
                         // Para cada autor no registro
                         foreach ($registro['_source']['autores'] as $autor) {
-                                echo '<br/>';
-                                print_r($autor);
                             
                                 if (isset($autor["afiliacao_nao_normalizada"])) {
+                                    $autor["afiliacao_nao_normalizada"] = preg_replace("/\s+/"," ",$autor["afiliacao_nao_normalizada"]);
+                                    $termo_limpo = str_replace (array("\r\n", "\n", "\r"), "", $autor["afiliacao_nao_normalizada"]);
+                                    $termo_limpo = preg_replace('/^\s+|\s+$/', '', $termo_limpo);
+                                    $termo_limpo = str_replace ("\t\n\r\0\x0B\xc2\xa0"," ",$termo_limpo);
+                                    $termo_limpo = trim($termo_limpo, " \t\n\r\0\x0B\xc2\xa0");
+                                    $termo_limpo_p = $autor["afiliacao_nao_normalizada"];
+                                    $termo_limpo = rawurlencode($termo_limpo);
+                                    $termo_limpo = str_replace("%C2%A0","%20",$termo_limpo);
+                                    
                                     $ch = curl_init();
                                     $method = "GET";
-                                    $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetch&arg='.rawurlencode($autor["afiliacao_nao_normalizada"]).'&output=json';                            
+                                    $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetch&arg='.$termo_limpo.'&output=json';                            
                                     curl_setopt($ch, CURLOPT_URL, $url);
                                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -93,6 +100,7 @@
                                     if(!empty($autor["nroIdCnpq"])){
                                         $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
                                     }
+                                    echo 'Encontrado: '.$termo_limpo_p.'<br/>';
                                     $body_upsert["doc"]["autores"][$i]["afiliacao"] = $termo_correto;
                                     
                                     
@@ -112,7 +120,8 @@
                                         $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
                                     }
                                     if(!empty($autor["afiliacao_nao_normalizada"])){
-                                        $body_upsert["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = $autor["afiliacao_nao_normalizada"];
+                                        echo 'Sem resultado: '.$termo_limpo_p.'<br/>';
+                                        $body_upsert["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = $termo_limpo_p;
                                     }
 
                                 } 
@@ -121,9 +130,9 @@
                         }
                             $body_upsert["doc_as_upsert"] = true;
                             echo '<br/>';
-                            print_r($body_upsert);
+                            //print_r($body_upsert);
                             $resultado_upsert = elasticsearch::elastic_update($registro["_id"],$type,$body_upsert); 
-                            print_r($resultado_upsert);
+                            //print_r($resultado_upsert);
                             unset($body_upsert);
                                                    
                         echo "<br/>=========================================================<br/><br/>";
