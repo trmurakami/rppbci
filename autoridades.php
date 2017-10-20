@@ -8,14 +8,24 @@
 
             /* Consulta n registros ainda não corrigidos */
             if (empty($_GET)) {
-                $body["query"]["query_string"]["query"] = "+_exists_:autores.afiliacao_nao_normalizada";
+                $body["query"]["query_string"]["query"] = "-_exists_:autores.afiliacao +_exists_:autores.afiliacao_nao_normalizada";
             } 
+
+            if (isset($_GET["sort"])) {        
+                $query["sort"][$_GET["sort"]]["unmapped_type"] = "long";
+                $query["sort"][$_GET["sort"]]["missing"] = "_last";
+                $query["sort"][$_GET["sort"]]["order"] = "desc";
+                $query["sort"][$_GET["sort"]]["mode"] = "max";
+            } else {
+                //$query['sort']['facebook.facebook_total']['order'] = "desc";
+                $query['sort']['ano.keyword']['order'] = "asc";
+            }                
 
             $params = [];
             $params["index"] = $index;
             $params["type"] = $type;
             $params["_source"] = ["_id","autores"];
-            $params["size"] = 500;        
+            $params["size"] = 100;        
             $params["body"] = $body;   
 
             $response = $client->search($params);
@@ -28,7 +38,7 @@
     <body> 
         
         <div class="uk-container uk-container-center uk-margin-large-bottom">
-            <?php include('inc/navbar.php'); ?>
+            
             
                 <?php 
             
@@ -111,7 +121,7 @@
                         }
                             $body_upsert["doc_as_upsert"] = true;
                             echo '<br/>';
-                            //print_r($body_upsert);
+                            print_r($body_upsert);
                             $resultado_upsert = elasticsearch::elastic_update($registro["_id"],$type,$body_upsert); 
                             print_r($resultado_upsert);
                             unset($body_upsert);
