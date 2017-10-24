@@ -88,7 +88,7 @@ if (isset($_GET["oai"])) {
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if(isset($autores->{'aff'})) {
-                            $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = (string)$autores->{'aff'};
+                            $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});
                         }
                         if(isset($autores->{'uri'})) {
                             $query["doc"]["autores"][$i]["nroIdCnpq"] = (string)$autores->{'uri'};
@@ -217,6 +217,7 @@ if (isset($_GET["oai"])) {
                 $sha256 = hash('sha256', ''.$rec->{'header'}->{'identifier'}.'');
 
                 $query["doc"]["source"] = (string)$identify->Identify->repositoryName;
+                $query["doc"]["set"] = str_replace("xviiienancib:ENANCIB:","",(string)$rec->{'header'}->{'setSpec'});
                     $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
                     if (isset($_GET["qualis2015"])) {
                         $query["doc"]["qualis2015"] = $_GET["qualis2015"];
@@ -231,14 +232,8 @@ if (isset($_GET["oai"])) {
                     if (isset($rec->{'metadata'}->{'rfc1807'}->{'keyword'})) {
                         foreach ($rec->{'metadata'}->{'rfc1807'}->{'keyword'} as $palavra_chave) {
                             $pc_array = [];
-                            $pc_array = explode(";", (string)$palavra_chave);
-                            foreach ($pc_array as $pc_explode){
-                                $pc_array_dot = explode("-", $pc_explode);
-                            }
-                            foreach ($pc_array_dot as $pc_dot){
-                                $pc_array_end = explode(".", $pc_dot);
-                            }                             
-                            foreach ($pc_array_end as $pc) {
+                            $pc_array = explode(";", (string)$palavra_chave);                         
+                            foreach ($pc_array as $pc) {
                                 $query["doc"]["palavras_chave"][] = trim($pc);
                             }                             
                         }
@@ -254,7 +249,7 @@ if (isset($_GET["oai"])) {
                             $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autor_array[0];
 
                             if(isset($autor_array[1])) {
-                                $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = (string)$autor_array[1];
+                                $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autor_array[1]);
                             }
                             $i++;
                     }
