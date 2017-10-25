@@ -155,6 +155,7 @@
 
                                 $facets->facet("tipo",10,"Tipo de material",null,"_term",$_GET["search"]);
                                 $facets->facet("source",100,"Título do periódico",null,"_term",$_GET["search"]);
+                                $facets->facet("set",100,"Set",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.afiliacao",120,"Instituição normalizada",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.afiliacao_nao_normalizada",120,"Instituição não normalizada",null,"_term",$_GET["search"]);
