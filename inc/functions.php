@@ -1,6 +1,10 @@
 <?php
 
-include('functions_core/functions_core.php');
+if (file_exists('functions_core/functions_core.php')) {
+    include('functions_core/functions_core.php');
+} else {
+    include('../functions_core/functions_core.php');
+}
 
 class inicio {
     
