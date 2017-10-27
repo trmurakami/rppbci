@@ -93,7 +93,7 @@
                                         if(!empty($autor["nroIdCnpq"])){
                                             $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
                                         }
-                                        echo 'Encontrado: '.$termo_limpo_p.'<br/>';
+                                        echo 'Encontrado: '.$termo_correto.'<br/>';
                                         $body_upsert["doc"]["autores"][$i]["afiliacao"] = $termo_correto;
     
                                     } else {
