@@ -68,63 +68,77 @@
                                     $result_get_id_tematres = curl_exec($ch);
                                     $resultado_get_id_tematres = json_decode($result_get_id_tematres, true);
                                     curl_close($ch);
+
+                                    if ($resultado_get_id_tematres["resume"]["cant_result"] != 0) {                                        
+                                        foreach($resultado_get_id_tematres["result"] as $key => $val) {
+                                            $term_key = $key;
+                                        }                                        
+                                        $ch = curl_init();
+                                        $method = "GET";
+                                        $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetchTerm&arg='.$term_key.'&output=json';
+                                        curl_setopt($ch, CURLOPT_URL, $url);
+                                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+                                        $result_term = curl_exec($ch);
+                                        $resultado_term = json_decode($result_term, true);
+                                        $termo_correto = $resultado_term["result"]["term"]["string"];
+                                        curl_close($ch);
+                                        
+                                        if(!empty($autor["nomeCompletoDoAutor"])){
+                                            $body_upsert["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor["nomeCompletoDoAutor"];
+                                        }
+                                        if(!empty($autor["nomeParaCitacao"])){
+                                            $body_upsert["doc"]["autores"][$i]["nomeParaCitacao"] = $autor["nomeParaCitacao"];
+                                        }
+                                        if(!empty($autor["nroIdCnpq"])){
+                                            $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
+                                        }
+                                        echo 'Encontrado: '.$termo_limpo_p.'<br/>';
+                                        $body_upsert["doc"]["autores"][$i]["afiliacao"] = $termo_correto;
+    
+                                    } else {
+                                        
+                                        //echo "Não obteve resultados no tematres<br/>";
+    
+                                        if(!empty($autor["nomeCompletoDoAutor"])){
+                                            $body_upsert["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor["nomeCompletoDoAutor"];
+                                        }
+                                        if(!empty($autor["nomeParaCitacao"])){
+                                            $body_upsert["doc"]["autores"][$i]["nomeParaCitacao"] = $autor["nomeParaCitacao"];
+                                        }
+                                        if(!empty($autor["nroIdCnpq"])){
+                                            $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
+                                        }
+                                        if(!empty($autor["afiliacao_nao_normalizada"])){
+                                            echo 'Sem resultado: '.$termo_limpo_p.'<br/>';
+                                            $body_upsert["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = $termo_limpo_p;
+                                        }
+    
+                                    } 
+
                                 } else {
+
                                     $resultado_get_id_tematres["resume"]["cant_result"] = 0;
+
+                                    if(!empty($autor["nomeCompletoDoAutor"])){
+                                        $body_upsert["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor["nomeCompletoDoAutor"];
+                                    }
+                                    if(!empty($autor["nomeParaCitacao"])){
+                                        $body_upsert["doc"]["autores"][$i]["nomeParaCitacao"] = $autor["nomeParaCitacao"];
+                                    }
+                                    if(!empty($autor["nroIdCnpq"])){
+                                        $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
+                                    }                                    
+                                    if(!empty($autor["afiliacao"])){
+                                        echo 'Existente: '.$autor["afiliacao"].'<br/>';
+                                        $body_upsert["doc"]["autores"][$i]["afiliacao"] = $autor["afiliacao"];
+                                    }                                        
+
                                 }
                             
  
                             
-                                if ($resultado_get_id_tematres["resume"]["cant_result"] != 0) {
 
-                                    foreach($resultado_get_id_tematres["result"] as $key => $val) {
-                                        $term_key = $key;
-                                    }
-                                    
-                                    $ch = curl_init();
-                                    $method = "GET";
-                                    $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetchTerm&arg='.$term_key.'&output=json';
-                                    curl_setopt($ch, CURLOPT_URL, $url);
-                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-                                    $result_term = curl_exec($ch);
-                                    $resultado_term = json_decode($result_term, true);
-                                    $termo_correto = $resultado_term["result"]["term"]["string"];
-                                    curl_close($ch);
-                                    
-                                    if(!empty($autor["nomeCompletoDoAutor"])){
-                                        $body_upsert["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor["nomeCompletoDoAutor"];
-                                    }
-                                    if(!empty($autor["nomeParaCitacao"])){
-                                        $body_upsert["doc"]["autores"][$i]["nomeParaCitacao"] = $autor["nomeParaCitacao"];
-                                    }
-                                    if(!empty($autor["nroIdCnpq"])){
-                                        $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
-                                    }
-                                    echo 'Encontrado: '.$termo_limpo_p.'<br/>';
-                                    $body_upsert["doc"]["autores"][$i]["afiliacao"] = $termo_correto;
-                                    
-                                    
-
-
-                                } else {
-                                    
-                                    //echo "Não obteve resultados no tematres<br/>";
-
-                                    if(!empty($autor["nomeCompletoDoAutor"])){
-                                        $body_upsert["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor["nomeCompletoDoAutor"];
-                                    }
-                                    if(!empty($autor["nomeParaCitacao"])){
-                                        $body_upsert["doc"]["autores"][$i]["nomeParaCitacao"] = $autor["nomeParaCitacao"];
-                                    }
-                                    if(!empty($autor["nroIdCnpq"])){
-                                        $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
-                                    }
-                                    if(!empty($autor["afiliacao_nao_normalizada"])){
-                                        echo 'Sem resultado: '.$termo_limpo_p.'<br/>';
-                                        $body_upsert["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = $termo_limpo_p;
-                                    }
-
-                                } 
                             $i++;
                             
                         }
