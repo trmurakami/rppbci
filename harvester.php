@@ -71,7 +71,7 @@ if (isset($_GET["oai"])) {
                 if (isset($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'})) {
                     foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'} as $palavra_chave) {
                         $palavraschave_array = explode(".", (string)$palavra_chave);
-                        foreach ($palavraschave_array  as $pc) {
+                        foreach ($palavraschave_array  as $pc) { 
                             $query["doc"]["palavras_chave"][] = trim($pc);
                         }
 
@@ -88,7 +88,12 @@ if (isset($_GET["oai"])) {
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if(isset($autores->{'aff'})) {
-                            $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});
+                            $result_tematres = authorities::tematres(strip_tags((string)$autores->{'aff'}),$tematres_url);
+                            if (!empty($result_tematres["found_term"])) {
+                                $query["doc"]["autores"][$i]["afiliacao"] = $result_tematres["found_term"];
+                            } else {
+                                $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});                                
+                            }
                         }
                         if(isset($autores->{'uri'})) {
                             $query["doc"]["autores"][$i]["nroIdCnpq"] = (string)$autores->{'uri'};
