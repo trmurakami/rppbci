@@ -5,7 +5,7 @@
             include('inc/functions.php');
             include('inc/meta-header.php');            
         ?>
-        <title>Repertório da Produção Periódica de Biblioteconomia e Ciência da Informação - RPPBCI</title>
+        <title><?php echo $t->gettext(''.$branch.''); ?></title>
         <script type="text/javascript" src="inc/uikit/js/components/grid.js"></script>
         <script type="text/javascript" src="inc/uikit/js/components/parallax.min.js"></script>
     </head>    
@@ -20,10 +20,7 @@
         
         <div class="uk-background-image@s uk-background-cover uk-height-viewport" >
             <div class="uk-container">
-                <?php 
-                    $background_1 = "inc/images/maceio3.jpg";
-                    $background_2 = "inc/images/maceio3.jpg";
-                    $background_3 = "inc/images/maceio3.jpg"; 
+                <?php
                     $background_number = mt_rand(1, 3);
                     $prefix = "background_";
                 ?>    
