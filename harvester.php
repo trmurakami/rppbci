@@ -254,7 +254,13 @@ if (isset($_GET["oai"])) {
                             $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autor_array[0];
 
                             if(isset($autor_array[1])) {
-                                $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autor_array[1]);
+
+                                $result_tematres = authorities::tematres(strip_tags((string)$autor_array[1]),$tematres_url);
+                                if (!empty($result_tematres["found_term"])) {
+                                    $query["doc"]["autores"][$i]["afiliacao"] = $result_tematres["found_term"];
+                                } else {
+                                    $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autor_array[1]);                                
+                                }
                             }
                             $i++;
                     }
