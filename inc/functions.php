@@ -92,10 +92,34 @@ class inicio {
 
 
         foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
-            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.htmlentities(urlencode($facets['key'])).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
+            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="source.php?&search[]=+'.$field.'.keyword:&quot;'.htmlentities(urlencode($facets['key'])).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
         }
 
     } 
+
+    /*Filtro - Página inicial*/
+    static function facetas_filter($field) {
+        global $index;
+        global $type;
+        global $client;
+
+        $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["counts"]["terms"]["size"] = 1000;
+
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["size"] = 10;
+        $params["body"] = $query;           
+
+        $data = $client->search($params);
+
+
+        foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
+            echo '<option value="source.keyword:&quot;'.$facets['key'].'&quot;" style="color:#333">'.$facets['key'].'</option>';
+        }
+
+    }     
      
     
 }

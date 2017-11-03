@@ -63,7 +63,7 @@ if (isset($_GET["oai"])) {
                 }                
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-categories'}->{'subj-group'}->{'subject'};
                 $query["doc"]["titulo"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
-                $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[0]->{'year'};
+                $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[1]->{'year'};
                 $query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
                 $query["doc"]["resumo"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'abstract'}->{'p'});
 
@@ -84,13 +84,16 @@ if (isset($_GET["oai"])) {
 
                     if ($autores->attributes()->{'contrib-type'} == "author"){
 
-                        $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                        if ((string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'} =! "O Editor" || (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'} =! "Os Editores") {
+                            $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                        }
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if(isset($autores->{'aff'})) {
                             $result_tematres = authorities::tematres(strip_tags((string)$autores->{'aff'}),$tematres_url);
                             if (!empty($result_tematres["found_term"])) {
                                 $query["doc"]["autores"][$i]["afiliacao"] = $result_tematres["found_term"];
+                                $query["doc"]["autores"][$i]["pais"] = $result_tematres["country"];
                             } else {
                                 $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});                                
                             }
