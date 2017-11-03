@@ -70,11 +70,12 @@ if (isset($_GET["oai"])) {
                 // Palavras-chave
                 if (isset($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'})) {
                     foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'} as $palavra_chave) {
-                        $palavraschave_array = explode(".", (string)$palavra_chave);
-                        foreach ($palavraschave_array  as $pc) { 
+                        $palavra_chave_corrigida = str_replace(",",".",(string)$palavra_chave);
+                        $palavra_chave_corrigida = str_replace(";",".",(string)$palavra_chave);
+                        $palavraschave_array = explode(".", $palavra_chave_corrigida);
+                        foreach ($palavraschave_array  as $pc) {                            
                             $query["doc"]["palavras_chave"][] = trim($pc);
                         }
-
                     }
                 }
 
@@ -107,7 +108,29 @@ if (isset($_GET["oai"])) {
 
                 $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'});
                 $query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
-                $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
+                $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};         
+                
+                $qualis = USP::qualis_issn($query["doc"]["artigoPublicado"]["issn"]);
+                if ($qualis["hits"]["total"] > 0) {
+                    $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
+                }
+
+                $jcr = USP::jcr_issn($query["doc"]["artigoPublicado"]["issn"]);
+                if ($qualis["hits"]["total"] > 0) {
+                    $query["doc"]["JCR"] = $qualis["hits"]["hits"][0]["_source"];
+                }
+
+                $wos = USP::wos_issn($query["doc"]["artigoPublicado"]["issn"]);
+                if ($qualis["hits"]["total"] > 0) {
+                    $query["doc"]["WOS"] = $qualis["hits"]["hits"][0]["_source"];
+                }
+                
+                $citescore = USP::citescore_issn($query["doc"]["artigoPublicado"]["issn"]);
+                if ($qualis["hits"]["total"] > 0) {
+                    $query["doc"]["citescore"] = $qualis["hits"]["hits"][0]["_source"];
+                }                 
+
+
                 $query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
                 $query["doc"]["artigoPublicado"]["fasciculo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue'};
                 $query["doc"]["artigoPublicado"]["paginaInicial"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-id'};
@@ -116,12 +139,11 @@ if (isset($_GET["oai"])) {
 
                 $query["doc_as_upsert"] = true;
 
-
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'} as $self_uri) {
                     $query["doc"]["relation"][]=(string)$self_uri->attributes('http://www.w3.org/1999/xlink');
                 }
 
-                //print_r($query);
+               // print_r($query);
 
                 $resultado = elasticsearch::elastic_update($sha256,$type,$query);
                 print_r($resultado);

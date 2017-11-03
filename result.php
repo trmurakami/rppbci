@@ -167,6 +167,23 @@
                                 $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.issn",100,"ISSN",null,"_term",$_GET["search"]);
                                 $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null,"_term",$_GET["search"]);
+
+                                $facets->facet("qualis.qualis.2012.area",50,$t->gettext('Qualis 2010/2012 - Área'),null,"_term",$_GET["search"]);
+                                $facets->facet("qualis.qualis.2012.nota",50,$t->gettext('Qualis 2010/2012 - Nota'),null,"_term",$_GET["search"]);                                    
+                                $facets->facet("qualis.qualis.2012.area_nota",50,$t->gettext('Qualis 2010/2012 - Área / Nota'),null,"_term",$_GET["search"]);
+                                $facets->facet("qualis.qualis.2016.area",50,$t->gettext('Qualis 2013/2016 - Área'),null,"_term",$_GET["search"]);
+                                $facets->facet("qualis.qualis.2016.nota",50,$t->gettext('Qualis 2013/2016 - Nota'),null,"_term",$_GET["search"]);                                    
+                                $facets->facet("qualis.qualis.2016.area_nota",50,$t->gettext('Qualis 2013/2016 - Área / Nota'),null,"_term",$_GET["search"]);
+
+                                $facets->facet("WOS.coverage",50,$t->gettext('Cobertura na Web of Science'),null,"_term",$_GET["search"]);
+                                $facets->facet_range("JCR.JCR.2016.Journal_Impact_Factor",100,"JCR - Journal Impact Factor - 2016");
+                                $facets->facet_range("JCR.JCR.2016.IF_without_Journal_Self_Cites",100,"JCR - Journal Impact Factor without Journal Self Cites - 2016");
+                                $facets->facet_range("JCR.JCR.2016.Eigenfactor_Score",100,"JCR - Eigenfactor Score - 2016");
+                                $facets->facet_range("citescore.citescore.2016.citescore",100,"Citescore - 2016");
+                                $facets->facet_range("citescore.citescore.2016.SJR",100,"SJR - 2016");
+                                $facets->facet_range("citescore.citescore.2016.SNIP",100,"SNIP - 2016");
+           
+
                                 echo '<li>Dados das referências citadas nas publicações</li>';
                                 $facets->facet("references.citations.name",100,"Título",null,"_term",$_GET["search"]);
                                 $facets->facet("references.citations.analytic.name",100,"Título da publicação fonte",null,"_term",$_GET["search"]);
@@ -176,6 +193,8 @@
                                 $facets->facet("references.citations.publisher.organization.name",100,"Editora",null,"_term",$_GET["search"]);
                                 echo '<li>Citações recebidas (Fonte: AMiner)</li>';
                                 $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);
+                                echo '<li>Registro na BDPI USP</li>';
+                                $facets->facet("bdpi.existe",100,"Registrado na BDPI USP?",null,"_term",$_GET["search"]);
                             ?>
                             </ul>
                             <hr>            
@@ -363,6 +382,9 @@
                                                         
                                                 <?php endif; ?>
                                             </ul>
+                                        </li>
+                                        <li class="uk-h6 uk-margin-top">
+                                           <?php USP::query_bdpi($r["_source"]['titulo'],$r["_source"]['ano'],$r["_id"]); ?> 
                                         </li>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
                                         <div id="citacao<?php echo $conta_cit;?>" hidden="hidden">
