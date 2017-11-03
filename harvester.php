@@ -116,18 +116,18 @@ if (isset($_GET["oai"])) {
                 }
 
                 $jcr = USP::jcr_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($qualis["hits"]["total"] > 0) {
-                    $query["doc"]["JCR"] = $qualis["hits"]["hits"][0]["_source"];
+                if ($jcr["hits"]["total"] > 0) {
+                    $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
                 }
 
                 $wos = USP::wos_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($qualis["hits"]["total"] > 0) {
-                    $query["doc"]["WOS"] = $qualis["hits"]["hits"][0]["_source"];
+                if ($wos["hits"]["total"] > 0) {
+                    $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
                 }
                 
                 $citescore = USP::citescore_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($qualis["hits"]["total"] > 0) {
-                    $query["doc"]["citescore"] = $qualis["hits"]["hits"][0]["_source"];
+                if ($citescore["hits"]["total"] > 0) {
+                    $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
                 }                 
 
 
