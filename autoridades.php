@@ -61,7 +61,7 @@
                                     
                                     $ch = curl_init();
                                     $method = "GET";
-                                    $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetch&arg='.$termo_limpo.'&output=json';                            
+                                    $url = ''.$tematres_url.'?task=fetch&arg='.$termo_limpo.'&output=json';                            
                                     curl_setopt($ch, CURLOPT_URL, $url);
                                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -75,7 +75,7 @@
                                         }                                        
                                         $ch = curl_init();
                                         $method = "GET";
-                                        $url = 'http://vocab.sibi.usp.br/instituicoes/vocab/services.php?task=fetchTerm&arg='.$term_key.'&output=json';
+                                        $url = ''.$tematres_url.'?task=fetchTerm&arg='.$term_key.'&output=json';
                                         curl_setopt($ch, CURLOPT_URL, $url);
                                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                                         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -83,6 +83,21 @@
                                         $resultado_term = json_decode($result_term, true);
                                         $termo_correto = $resultado_term["result"]["term"]["string"];
                                         curl_close($ch);
+
+                                        $ch_country = curl_init();
+                                        $method = "GET";
+                                        $url_country = ''.$tematres_url.'?task=fetchUp&arg='.$term_key.'&output=json';
+                                        curl_setopt($ch_country, CURLOPT_URL, $url_country);
+                                        curl_setopt($ch_country, CURLOPT_RETURNTRANSFER, 1);
+                                        curl_setopt($ch_country, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+                                        $result_country = curl_exec($ch_country);
+                                        $resultado_country = json_decode($result_country, true);
+                                        foreach ($resultado_country["result"] as $country_list){
+                                            if ($country_list["order"] == 1) {
+                                                $country = $country_list["string"];
+                                            }
+                                        }            
+                                        curl_close($ch_country);                                        
                                         
                                         if(!empty($autor["nomeCompletoDoAutor"])){
                                             $body_upsert["doc"]["autores"][$i]["nomeCompletoDoAutor"] = $autor["nomeCompletoDoAutor"];
@@ -93,8 +108,9 @@
                                         if(!empty($autor["nroIdCnpq"])){
                                             $body_upsert["doc"]["autores"][$i]["nroIdCnpq"] = $autor["nroIdCnpq"];
                                         }
-                                        echo 'Encontrado: '.$termo_correto.'<br/>';
+                                        echo 'Encontrado: '.$termo_correto.'<br/>País: '.$country.'<br/>';
                                         $body_upsert["doc"]["autores"][$i]["afiliacao"] = $termo_correto;
+                                        $body_upsert["doc"]["autores"][$i]["pais"] = $country;
     
                                     } else {
                                         
