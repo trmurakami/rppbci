@@ -159,14 +159,12 @@
                                 $facets->facet("autores.afiliacao_nao_normalizada",120,"Afiliação não normalizada",null,"_term",$_GET["search"]);
                                 $facets->facet("source",100,"Título do periódico",null,"_term",$_GET["search"]);
                                 $facets->facet("tipo",10,"Seções",null,"_term",$_GET["search"]);
-                                $facets->facet("set",100,"Set",null,"_term",$_GET["search"]);
                                 $facets->facet("ano",120,"Ano de publicação","desc","_term",$_GET["search"]);
                                 $facets->facet("palavras_chave",100,"Assuntos",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.volume",100,"Volume",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.issn",100,"ISSN",null,"_term",$_GET["search"]);
-                                $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null,"_term",$_GET["search"]);
 
                                 $facets->facet("qualis.qualis.2012.area",50,$t->gettext('Qualis 2010/2012 - Área'),null,"_term",$_GET["search"]);
                                 $facets->facet("qualis.qualis.2012.nota",50,$t->gettext('Qualis 2010/2012 - Nota'),null,"_term",$_GET["search"]);                                    

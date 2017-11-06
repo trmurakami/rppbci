@@ -14,7 +14,7 @@ wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvest
 wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/aesalq/oai&metadataFormat=nlm&qualis2015=ND"
 wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/cpst/oai&metadataFormat=nlm&qualis2015=ND"
 wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/bjps/oai&metadataFormat=nlm&qualis2015=ND"
-wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/clinics/oai&metadataFormat=nlm&qualis2015=ND"
+wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/clinics/oai&metadataFormat=nlm&issn=1807-5932"
 wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/ecoa/oai&metadataFormat=nlm&qualis2015=ND"
 wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/ep/oai&metadataFormat=nlm&qualis2015=ND"
 wget -O /dev/null -o /dev/null "http://143.107.154.38/portal_de_revistas/harvester.php?oai=http://www.revistas.usp.br/comueduc/oai&metadataFormat=nlm&qualis2015=ND"

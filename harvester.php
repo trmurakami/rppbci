@@ -18,6 +18,32 @@ if (isset($_GET["oai"])) {
     // Store repository data - Início
 
     $body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
+
+    if (isset($_GET["issn"])){
+        $body_repository["doc"]["issn"] = $_GET["issn"];
+
+        $qualis_periodico = USP::qualis_issn($_GET["issn"]);
+        if ($qualis_periodico["hits"]["total"] > 0) {
+            $body_repository["doc"]["qualis_journal"] = $qualis_periodico["hits"]["hits"][0]["_source"];
+        }
+
+        $jcr_periodico = USP::jcr_issn($_GET["issn"]);
+        if ($jcr_periodico["hits"]["total"] > 0) {
+            $query["doc"]["JCR_jornal"] = $jcr_periodico["hits"]["hits"][0]["_source"];
+        }
+
+        $wos_periodico = USP::wos_issn($_GET["issn"]);
+        if ($wos_periodico["hits"]["total"] > 0) {
+            $query["doc"]["WOS_journal"] = $wos_periodico["hits"]["hits"][0]["_source"];
+        }  
+
+        $citescore_periodico = USP::citescore_issn($_GET["issn"]);
+        if ($citescore_periodico["hits"]["total"] > 0) {
+            $query["doc"]["citescore_journal"] = $citescore_periodico["hits"]["hits"][0]["_source"];
+        }          
+
+    }
+
     $body_repository["doc"]["metadataFormat"] = $_GET["metadataFormat"];
     if (isset($_GET["qualis2015"])){
         $body_repository["doc"]["qualis2015"] = $_GET["qualis2015"];
@@ -84,8 +110,8 @@ if (isset($_GET["oai"])) {
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'contrib-group'}->{'contrib'} as $autores) {
 
                     if ($autores->attributes()->{'contrib-type'} == "author"){
-
-                        if ((string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'} =! "O Editor" || (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'} =! "Os Editores") {
+                        $string_author = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                        if ($string_author != "O Editor" || $string_author != "Os Editores") {
                             $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
                         }
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
@@ -110,25 +136,58 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
                 $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};         
                 
-                $qualis = USP::qualis_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($qualis["hits"]["total"] > 0) {
-                    $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
+                if (isset($_GET["issn"])){
+
+                    $qualis = USP::qualis_issn($_GET["issn"]);
+                    if ($qualis["hits"]["total"] > 0) {
+                        $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
+                    }
+
+                    $jcr = USP::jcr_issn($_GET["issn"]);
+                    if ($jcr["hits"]["total"] > 0) {
+                        $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
+                    }
+
+                    $wos = USP::wos_issn($_GET["issn"]);
+                    if ($wos["hits"]["total"] > 0) {
+                        $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
+                    }  
+
+                    $citescore = USP::citescore_issn($_GET["issn"]);
+                    if ($citescore["hits"]["total"] > 0) {
+                        $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
+                    }                                      
+
+                } else {
+
+                    $qualis = USP::qualis_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($qualis["hits"]["total"] > 0) {
+                        $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
+                    }
+                     
+                    $jcr = USP::jcr_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($jcr["hits"]["total"] > 0) {
+                        $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
+                    } 
+                    
+                    $wos = USP::wos_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($wos["hits"]["total"] > 0) {
+                        $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
+                    }  
+                    
+                    $citescore = USP::citescore_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($citescore["hits"]["total"] > 0) {
+                        $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
+                    }                     
+                    
                 }
 
-                $jcr = USP::jcr_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($jcr["hits"]["total"] > 0) {
-                    $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
-                }
 
-                $wos = USP::wos_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($wos["hits"]["total"] > 0) {
-                    $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
-                }
+
+
+
                 
-                $citescore = USP::citescore_issn($query["doc"]["artigoPublicado"]["issn"]);
-                if ($citescore["hits"]["total"] > 0) {
-                    $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
-                }                 
+                
 
 
                 $query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
