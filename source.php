@@ -183,7 +183,7 @@
                         <?php $conta_cit = 1; ?>    
                         <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
 
-                        <?php print_r($r); ?>
+                        <?php //print_r($r); ?>
 
                         <div class="uk-grid-divider uk-padding-small" uk-grid>
                             <div class="uk-width-1-1@m">
@@ -267,7 +267,7 @@
 
                                 </article>
                                 <br/><br/>
-                                <iframe src="http://143.107.154.38:5601/app/kibana#/dashboard/AV94CQ24dwxasHQlTBf_?embed=true&_g=()&_a=(description:'',filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AV80ZuJZdwxasHQlTBT5,key:source.keyword,negate:!f,type:phrase,value:'<?php echo $source; ?>'),query:(match:(source.keyword:(query:'<?php echo $source; ?>',type:phrase))))),options:(darkTheme:!f),panels:!((col:1,id:AV94B6QEdwxasHQlTBf-,panelIndex:1,row:1,size_x:12,size_y:5,type:visualization),(col:1,id:AV98iMNQdwxasHQlTBgE,panelIndex:2,row:6,size_x:12,size_y:5,type:visualization)),query:(match_all:()),timeRestore:!f,title:'Estat%C3%ADsticas+por+peri%C3%B3dico',uiState:(P-1:(vis:(legendOpen:!f))),viewMode:view)" height="1200" width="800"></iframe>
+                                <iframe src="http://143.107.154.38:5601/app/kibana#/dashboard/AV94CQ24dwxasHQlTBf_?embed=true&_g=()&_a=(description:'',filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AV80ZuJZdwxasHQlTBT5,key:source.keyword,negate:!f,type:phrase,value:'<?php echo $source; ?>'),query:(match:(source.keyword:(query:'<?php echo $source; ?>',type:phrase))))),options:(darkTheme:!f),panels:!((col:1,id:AV94B6QEdwxasHQlTBf-,panelIndex:1,row:1,size_x:12,size_y:5,type:visualization),(col:1,id:AV98iMNQdwxasHQlTBgE,panelIndex:2,row:6,size_x:12,size_y:7,type:visualization),(col:1,id:AV-bIPk422VNrtV_G9d_,panelIndex:4,row:13,size_x:12,size_y:5,type:visualization),(col:1,id:AV-bEuMw22VNrtV_G9d8,panelIndex:5,row:18,size_x:12,size_y:6,type:visualization),(col:1,id:AV-bIDGW22VNrtV_G9d-,panelIndex:6,row:24,size_x:12,size_y:5,type:visualization),(col:1,id:AV-bJaSG22VNrtV_G9eA,panelIndex:7,row:29,size_x:12,size_y:6,type:visualization)),query:(match_all:()),timeRestore:!f,title:'Estat%C3%ADsticas+por+peri%C3%B3dico',uiState:(P-1:(vis:(legendOpen:!f)),P-4:(vis:(params:(sort:(columnIndex:!n,direction:!n)))),P-5:(vis:(params:(sort:(columnIndex:!n,direction:!n)))),P-6:(vis:(params:(sort:(columnIndex:!n,direction:!n))))),viewMode:view)" height="3500" width="800"></iframe>
                             </div>
                         </div>
                         
