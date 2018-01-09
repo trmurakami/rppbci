@@ -82,12 +82,12 @@ if (isset($_GET["oai"])) {
                 $i = 0;
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'contrib-group'}->{'contrib'} as $autores) {
 
-                    if ($autores->attributes()->{'contrib-type'} == "author"){
+                    if ($autores->attributes()->{'contrib-type'} == "author") {
 
                         $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
-                        if(isset($autores->{'aff'})) {
+                        if (isset($autores->{'aff'})) {
                             $result_tematres = authorities::tematres(strip_tags((string)$autores->{'aff'}),$tematres_url);
                             if (!empty($result_tematres["found_term"])) {
                                 $query["doc"]["autores"][$i]["afiliacao"] = $result_tematres["found_term"];
@@ -95,7 +95,8 @@ if (isset($_GET["oai"])) {
                                 $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});                                
                             }
                         }
-                        if(isset($autores->{'uri'})) {
+
+                        if (isset($autores->{'uri'})) {
                             $query["doc"]["autores"][$i]["nroIdCnpq"] = (string)$autores->{'uri'};
                         }
                         $i++;
@@ -118,9 +119,69 @@ if (isset($_GET["oai"])) {
                     $query["doc"]["relation"][]=(string)$self_uri->attributes('http://www.w3.org/1999/xlink');
                 }
 
-                //print_r($query);
+                if ($use_grobid == true) {
+                    foreach ($query["doc"]["relation"] as $url_download) {
+                        $content = file_get_contents(str_replace("view", "download", $url_download));
+                        $citation_xml = grobidQuery($content, $grobid_url);
+                        if (!empty($citation_xml)) {
+                            $i_references = 0;
+                            foreach ($citation_xml->text->back->div->listBibl->biblStruct as $reference) {
+                                $reference_json =  json_encode($reference, JSON_UNESCAPED_UNICODE);
+                                $reference_array = json_decode($reference_json, true); 
+                                $query["doc"]["references"][$i_references]["monogrTitle"] = $reference_array["monogr"]["title"];
+                                if (isset($reference_array["monogr"]["idno"])) {
+                                    $query["doc"]["references"][$i_references]["doi"] = $reference_array["monogr"]["idno"];
+                                }                                
+                                if (isset($reference_array["monogr"]["meeting"])) {
+                                    print_r($reference_array["monogr"]["meeting"]);
+                                    if (is_array($reference_array["monogr"]["meeting"])) {
+                                        $query["doc"]["references"][$i_references]["pubPlace"] = $reference_array["monogr"]["meeting"]["address"]["addrLine"];
+                                    } else {
+                                        $query["doc"]["references"][$i_references]["meeting"] = $reference_array["monogr"]["meeting"];
+                                    }
+                                    
+                                }
+                                if (isset($reference_array["monogr"]["author"])) {
+                                    foreach ($reference_array["monogr"]["author"] as $ref_author) {
+                                        if (isset($ref_author["persName"])) {
+                                            if (is_array($ref_author["persName"]["forename"])) {
+                                                $query["doc"]["references"][$i_references]["authors"][] = $ref_author["persName"]["surname"] .', ' . implode(" ", $ref_author["persName"]["forename"]);
+                                            } else {
+                                                $query["doc"]["references"][$i_references]["authors"][] = $ref_author["persName"]["surname"] . ', ' . $ref_author["persName"]["forename"];
+                                            }
+                                        }                                        
+                                    }
+                                }
+                                if (isset($reference_array["analytic"])) {
+                                    $query["doc"]["references"][$i_references]["analyticTitle"] = $reference_array["analytic"]["title"];
+                                    if (isset($reference_array["analytic"]["idno"])) {
+                                        $query["doc"]["references"][$i_references]["doi"] = $reference_array["analytic"]["idno"];
+                                    }
+                                    if (isset($reference_array["analytic"]["ptr"]["@attributes"]["target"])) {
+                                        $query["doc"]["references"][$i_references]["link"] = $reference_array["analytic"]["ptr"]["@attributes"]["target"];
+                                    }  
+                                }
+                                if (isset($reference_array["monogr"]["imprint"])) {
+                                    $query["doc"]["references"][$i_references]["datePublished"] = $reference_array["monogr"]["imprint"]["date"]["@attributes"]["when"];
+                                    if (isset($reference_array["monogr"]["imprint"]["publisher"])) {
+                                        $query["doc"]["references"][$i_references]["publisher"] = $reference_array["monogr"]["imprint"]["publisher"];
+                                    }
+                                    if (isset($reference_array["monogr"]["imprint"]["pubPlace"])) {
+                                        $query["doc"]["references"][$i_references]["pubPlace"] = $reference_array["monogr"]["imprint"]["pubPlace"]; 
+                                    }                                    
+                                }
+                                print_r($reference_array);
+                                $i_references++;
+                            }                        
+                        }                        
+                        unset($content);
+                        unset($citation_array);
+                    }
+                }
 
-                $resultado = elasticsearch::elastic_update($sha256,$type,$query);
+                print_r($query);
+
+                $resultado = elasticsearch::elastic_update($sha256, $type, $query);
                 print_r($resultado);
 
                 unset($query);

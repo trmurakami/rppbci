@@ -167,12 +167,15 @@
                                 $facets->facet("artigoPublicado.issn",100,"ISSN",null,"_term",$_GET["search"]);
                                 $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null,"_term",$_GET["search"]);
                                 echo '<li>Dados das referências citadas nas publicações</li>';
-                                $facets->facet("references.citations.name",100,"Título",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.analytic.name",100,"Título da publicação fonte",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.datePublished",100,"Data de publicação",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.author.person.name.citation",100,"Autor",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.publisher.organization.location",100,"Local de publicação",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.publisher.organization.name",100,"Editora",null,"_term",$_GET["search"]);
+                                $facets->facet("references.analyticTitle", 100, "Título", null, "_term", $_GET["search"]);
+                                $facets->facet("references.monogrTitle",100,"Título da publicação fonte",null,"_term",$_GET["search"]);
+                                $facets->facet("references.datePublished",100,"Data de publicação",null,"_term",$_GET["search"]);
+                                $facets->facet("references.authors",100,"Autor",null,"_term",$_GET["search"]);
+                                $facets->facet("references.meeting",100,"Nome do evento",null,"_term",$_GET["search"]);
+                                $facets->facet("references.publisher",100,"Editora",null,"_term",$_GET["search"]);
+                                $facets->facet("references.pubPlace",100,"Local de publicação",null,"_term",$_GET["search"]);
+                                $facets->facet("references.doi",100,"DOI",null,"_term",$_GET["search"]);
+                                $facets->facet("references.link",100,"Link",null,"_term",$_GET["search"]);
                                 echo '<li>Citações recebidas (Fonte: AMiner)</li>';
                                 $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);
                             ?>

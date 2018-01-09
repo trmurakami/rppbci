@@ -513,8 +513,10 @@ class facebook {
     
 }
 
-class altmetric_com {
-    static function get_altmetrics ($doi,$id) {
+class altmetric_com
+{
+    static function get_altmetrics ($doi,$id) 
+    {
         
         $ch = curl_init();
         $method = "GET";
@@ -536,9 +538,39 @@ class altmetric_com {
     }     
 }
 
+function grobidQuery($content, $grobid_url) 
+{
+
+    // initialise the curl request
+    $request = curl_init('143.107.154.38:8070/api/processReferences');
+    // send a file
+    curl_setopt($request, CURLOPT_POST, true);
+    curl_setopt(
+        $request,
+        CURLOPT_POSTFIELDS,
+        array('input' => $content)
+    );
+    // output the response
+    curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+    //echo curl_exec($request);
+    $result = curl_exec($request);
+    if (!empty($result)) {
+        $xml = simplexml_load_string($result);
+    } else {
+        $xml = "";
+    } 
+    //foreach ($xml->text->back->div->listBibl->biblStruct as $citation) {
+    //    $citation_array[] =  json_encode($citation, JSON_UNESCAPED_UNICODE);
+    //}
+    return $xml;         
+    curl_close($request);
+
+}
+
 
 /*Deletar Excluídos*/
-function exclude_deleted(){
+function exclude_deleted()
+{
     $ch = curl_init();
     $query = '
                 {
@@ -563,7 +595,4 @@ function exclude_deleted(){
     return $data["_indices"]["rppbci"]["deleted"];
     
 }
-
-
-
 ?>
