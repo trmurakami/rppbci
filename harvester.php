@@ -170,7 +170,7 @@ if (isset($_GET["oai"])) {
                                         $query["doc"]["references"][$i_references]["pubPlace"] = $reference_array["monogr"]["imprint"]["pubPlace"]; 
                                     }                                    
                                 }
-                                print_r($reference_array);
+                                //print_r($reference_array);
                                 $i_references++;
                             }                        
                         }                        
@@ -179,7 +179,7 @@ if (isset($_GET["oai"])) {
                     }
                 }
 
-                print_r($query);
+                //print_r($query);
 
                 $resultado = elasticsearch::elastic_update($sha256, $type, $query);
                 print_r($resultado);
