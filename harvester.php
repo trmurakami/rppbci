@@ -127,8 +127,10 @@ if (isset($_GET["oai"])) {
                             $i_references = 0;
                             foreach ($citation_xml->text->back->div->listBibl->biblStruct as $reference) {
                                 $reference_json =  json_encode($reference, JSON_UNESCAPED_UNICODE);
-                                $reference_array = json_decode($reference_json, true); 
-                                $query["doc"]["references"][$i_references]["monogrTitle"] = $reference_array["monogr"]["title"];
+                                $reference_array = json_decode($reference_json, true);
+                                if (!empty($reference_array["monogr"]["title"])) {
+                                    $query["doc"]["references"][$i_references]["monogrTitle"] = $reference_array["monogr"]["title"];
+                                }
                                 if (isset($reference_array["monogr"]["idno"])) {
                                     $query["doc"]["references"][$i_references]["doi"] = $reference_array["monogr"]["idno"];
                                 }                                

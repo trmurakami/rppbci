@@ -367,8 +367,8 @@
                                             </ul>
                                         </li>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
+                                        <a class="uk-button uk-button-text" href="#" uk-toggle="target: #ref<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Referências'); ?></a>
                                         <div id="citacao<?php echo $conta_cit;?>" hidden="hidden">
-                                            <?php $conta_cit++; ?>
                                         <li class="uk-h6 uk-margin-top">
                                             <div class="uk-alert uk-alert-danger">A citação é gerada automaticamente e pode não estar totalmente de acordo com as normas</div>
                                             <ul>
@@ -384,6 +384,55 @@
                                             </ul>                                              
                                         </li>
                                         </div>
+                                        <div id="ref<?php echo $conta_cit;?>" hidden="hidden">
+                                        <li class="uk-h6 uk-margin-top">
+                                            <div class="uk-alert uk-alert-danger">As referencias são coletadas automaticamente e pode não estar totalmente corretas</div>
+                                            <?php if (isset($r["_source"]["references"])) {
+                                                echo '<ol>';
+                                                foreach ($r["_source"]["references"] as $reference_grobid) {
+                                                    echo '<li class="uk-margin-top">';
+                                                    echo '<ul>';
+                                                    if (!empty($reference_grobid["monogrTitle"])){
+                                                        echo '<li>Título da obra no todo: '.(string)$reference_grobid["monogrTitle"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["analyticTitle"])){
+                                                        echo '<li>Título da analítica: '.(string)$reference_grobid["analyticTitle"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["authors"])){
+                                                        echo '<li>Autores: '. implode(" ;",$reference_grobid["authors"]) .'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["meeting"])){
+                                                        echo '<li>Nome do evento: '.(string)$reference_grobid["meeting"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["publisher"])){
+                                                        echo '<li>Editora: '.(string)$reference_grobid["publisher"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["pubPlace"])){
+                                                        echo '<li>Local de publicação: '.(string)$reference_grobid["pubPlace"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["datePublished"])){
+                                                        echo '<li>Data de publicação: '.(string)$reference_grobid["datePublished"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["link"])){
+                                                        echo '<li>Link: '.(string)$reference_grobid["link"].'</li>';
+                                                    } 
+                                                    if (!empty($reference_grobid["doi"])){
+                                                        echo '<li>DOI: '.(string)$reference_grobid["doi"].'</li>';
+                                                    }                                                                                                                                                                  
+                                                    //print_r($reference_grobid);
+                                                    echo '</ul>';
+                                                    echo '</li>';
+                                                }
+                                                echo '</ol>';
+                                            } ?>
+                                            <ul>
+                                                <li class="uk-margin-top">
+                                                            
+                                                </li>                                               
+                                            </ul>                                              
+                                        </li>
+                                        </div>  
+                                        <?php $conta_cit++; ?>                                      
                                     </ul>
                                 </div>
                             </div>
