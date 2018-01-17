@@ -112,6 +112,7 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["artigoPublicado"]["serie"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-title'};
                 $query["doc"]["url_principal"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'}->attributes('http://www.w3.org/1999/xlink');
 
+                $query["doc"]["origin"] = "OAI-PHM";
                 $query["doc_as_upsert"] = true;
 
 
@@ -173,6 +174,17 @@ if (isset($_GET["oai"])) {
                                     }                                    
                                 }
                                 //print_r($reference_array);
+
+                                /* Verifica se a referencia existe e cria um registro de citação em caso negativo */
+
+                                if (isset($reference_array["analytic"])) {
+                                    queryRef($reference_array["analytic"]["title"]);
+                                } elseif (!empty($reference_array["monogr"]["title"])) {
+                                    queryRef($reference_array["monogr"]["title"]);
+                                }
+
+                                /* FIM */
+
                                 $i_references++;
                             }                        
                         }                        
