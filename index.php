@@ -92,7 +92,7 @@
                     <div class="uk-card">
                         <h3 class="uk-card-title"><?php echo $t->gettext('Bases'); ?></h3>
                         <ul class="uk-list uk-list-divider">
-                            <?php Inicio::facetas_inicio("source"); ?>
+                            <?php Inicio::facetasInicio("source"); ?>
                         </ul>                      
                     </div>
                 </div>

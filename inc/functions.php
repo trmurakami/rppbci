@@ -6,10 +6,22 @@ if (file_exists('functions_core/functions_core.php')) {
     include '../functions_core/functions_core.php';
 }
 
+
+/**
+ * Class Inicio
+ *
+ * @category Início
+ * @package  
+ * @author   Tiago Murakami 
+ * @license  
+ * @link     
+ *
+ */
 class Inicio
 {
     
-    static function contar_registros ($server) {
+    static function contar_registros($server) 
+    {
         global $index;
         global $type;
         global $client;
@@ -33,7 +45,8 @@ class Inicio
 
     } 
     
-    static function top_registros() {
+    static function top_registros() 
+    {
         global $index;
         global $type;
         global $client;
@@ -56,7 +69,7 @@ class Inicio
 
         //print_r($data);
 
-        foreach ($data["hits"]["hits"] as $r){
+        foreach ($data["hits"]["hits"] as $r) {
             //var_dump($r);
 
             echo '<dl class="uk-description-list">'; 
@@ -73,9 +86,13 @@ class Inicio
         }     
     }    
     
-    
-    /*Facetas - Página inicial*/
-    static function facetas_inicio($field) {
+    /**
+     * Facetas - Página inicial
+     *
+     * @param Field $field Campo
+     */
+    static function facetasInicio($field) 
+    {
         global $index;
         global $type;
         global $client;
