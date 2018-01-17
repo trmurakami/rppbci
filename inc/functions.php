@@ -118,10 +118,22 @@ class Inicio
     
 }
 
-class admin {
+/**
+ * Class Admin
+ *
+ * @category Admin
+ * @package  
+ * @author   Tiago Murakami 
+ * @license  
+ * @link     
+ *
+ */
+class Admin
+{
     
     /*Facetas - Página inicial*/
-    static function sources($field) {
+    static function sources($field) 
+    {
         global $index;
         global $type;
         global $client;
@@ -160,7 +172,7 @@ class admin {
                 echo '<td>'.$repository['_source']['qualis2015'].'</td>';
             }
             echo  '<td>'.$repository['_source']['date'].'</td><td>';
-	        echo admin::count_records($repository['_source']['name']);
+	        echo Admin::count_records($repository['_source']['name']);
 	        echo '</td><td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&qualis2015='.$repository['_source']['qualis2015'].'&metadataFormat='.$repository['_source']['metadataFormat'].'">Update</a></td>';
             echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
@@ -195,7 +207,8 @@ class admin {
     }
 }
 
-class processaResultados {
+class processaResultados
+{
     
     /* Function to generate Graph Bar */
     static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size) {

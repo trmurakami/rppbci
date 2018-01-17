@@ -4,7 +4,7 @@
     include('inc/functions.php');
 
     if (!empty($_POST)) {
-        admin::add_divulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
+        Admin::add_divulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
     }
 
     $result_get = get::analisa_get($_GET);
