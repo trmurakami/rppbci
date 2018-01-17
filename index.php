@@ -66,7 +66,7 @@
         <div>
             <div class="uk-card uk-card-primary uk-card-body">
                 <h3 class="uk-card-title">Coleta</h3>
-                <p>Os dados dos periódicos disponíveis em OAI-PHM são coletados utilizando a ferramenta Librecat/Catmandu e armazenados em um banco de dados NoSQL ElasticSearch. Os dados são coletados automaticamente, totalizando: <?php echo inicio::contar_registros($server); ?> documentos.</p>
+                <p>Os dados dos periódicos disponíveis em OAI-PHM são coletados utilizando a ferramenta Librecat/Catmandu e armazenados em um banco de dados NoSQL ElasticSearch. Os dados são coletados automaticamente, totalizando: <?php echo Inicio::contar_registros($server); ?> documentos.</p>
             </div>
         </div>
         <div>
@@ -92,7 +92,7 @@
                     <div class="uk-card">
                         <h3 class="uk-card-title"><?php echo $t->gettext('Bases'); ?></h3>
                         <ul class="uk-list uk-list-divider">
-                            <?php inicio::facetas_inicio("source"); ?>
+                            <?php Inicio::facetas_inicio("source"); ?>
                         </ul>                      
                     </div>
                 </div>
@@ -103,7 +103,7 @@
             <div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-grid-divider" uk-grid>
                 <div>
                     <h1>Altmetrics (Top 10)</h1>
-                    <?php inicio::top_registros(); ?>                
+                    <?php Inicio::top_registros(); ?>                
                 </div>
                 <div>
                     <h1>Altmetrics por periódico</h1>
