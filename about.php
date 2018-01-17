@@ -1,15 +1,16 @@
 <html>
     <head>
-        <?php 
-            include('inc/config.php'); 
-            include('inc/functions.php');
-            include('inc/meta-header.php');
+        <?php
+
+            require 'inc/config.php'; 
+            require 'inc/functions.php';
+            require 'inc/meta-header.php';
         ?>
         <title>Sobre o RPPBCI</title>
     </head>    
     <body>
         <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
-            <?php include('inc/navbar.php')?>
+            <?php require 'inc/navbar.php' ?>
             
             <h2>Sobre o RPPBCI</h2>
             
@@ -23,7 +24,7 @@
 
             <p>Prof. Ronaldo Ferreira de Araújo ( ronaldfa EM gmail.com )</p>
             
-            <?php include('inc/offcanvas.php')?>
+            <?php require 'inc/offcanvas.php'?>
         </div>    
     </body>
 </html>
