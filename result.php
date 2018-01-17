@@ -1,57 +1,53 @@
 <!DOCTYPE html>
 <?php
 
-    require 'inc/config.php'; 
-    require 'inc/functions.php';
+require 'inc/config.php'; 
+require 'inc/functions.php';
 
-    if (!empty($_POST)) {
-        Admin::addDivulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
-    }
+if (!empty($_POST)) {
+    Admin::addDivulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
+}
 
-    $result_get = get::analisa_get($_GET);
-    $query = $result_get['query'];  
-    $limit = $result_get['limit'];
-    $page = $result_get['page'];
-    $skip = $result_get['skip'];
+$result_get = get::analisa_get($_GET);
+$query = $result_get['query'];  
+$limit = $result_get['limit'];
+$page = $result_get['page'];
+$skip = $result_get['skip'];
 
-    if (isset($_GET["sort"])) {        
-        $query["sort"][$_GET["sort"]]["unmapped_type"] = "long";
-        $query["sort"][$_GET["sort"]]["missing"] = "_last";
-        $query["sort"][$_GET["sort"]]["order"] = "desc";
-        $query["sort"][$_GET["sort"]]["mode"] = "max";
-    } else {
-        $query['sort']['facebook.facebook_total']['order'] = "desc";
-        $query['sort']['ano.keyword']['order'] = "desc";
-    }    
+if (isset($_GET["sort"])) {        
+    $query["sort"][$_GET["sort"]]["unmapped_type"] = "long";
+    $query["sort"][$_GET["sort"]]["missing"] = "_last";
+    $query["sort"][$_GET["sort"]]["order"] = "desc";
+    $query["sort"][$_GET["sort"]]["mode"] = "max";
+} else {
+    $query['sort']['facebook.facebook_total']['order'] = "desc";
+    $query['sort']['ano.keyword']['order'] = "desc";
+}    
 
+$params = [];
+$params["index"] = $index;
+$params["type"] = $type;
+$params["size"] = $limit;
+$params["from"] = $skip;
+$params["body"] = $query; 
 
+$cursor = $client->search($params);
+$total = $cursor["hits"]["total"];
 
-    $params = [];
-    $params["index"] = $index;
-    $params["type"] = $type;
-    $params["size"] = $limit;
-    $params["from"] = $skip;
-    $params["body"] = $query; 
-
-    $cursor = $client->search($params);
-    $total = $cursor["hits"]["total"];
-
-   /* Citeproc-PHP*/
-    include 'inc/citeproc-php/CiteProc.php';
-    $csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
-    $csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
-    $csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
-    $csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
-    $lang = "br";
-    $citeproc_abnt = new citeproc($csl_abnt,$lang);
-    $mode = "reference";
+/* Citeproc-PHP*/
+require 'inc/citeproc-php/CiteProc.php';
+$csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
+$csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
+$csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
+$csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
+$lang = "br";
+$citeproc_abnt = new citeproc($csl_abnt, $lang);
+$mode = "reference";
 
 ?>
 <html>
     <head>
-        <?php
-            include('inc/meta-header.php'); 
-        ?>        
+        <?php require 'inc/meta-header.php' ?>
         <title>Resultado da busca</title>
         
         <!-- D3.js Libraries and CSS -->
@@ -71,14 +67,14 @@
     <body>
 
         <?php
-            if (file_exists("inc/analyticstracking.php")){
-                include_once("inc/analyticstracking.php");
-            }
+        if (file_exists("inc/analyticstracking.php")) {
+            include_once "inc/analyticstracking.php";
+        }
         ?> 
 
         <div class="uk-container">
 
-            <?php include('inc/navbar.php'); ?>
+            <?php require 'inc/navbar.php' ?>
             <br/><br/><br/> 
 
             <div class="uk-width-1-1@s uk-width-1-1@m">
@@ -222,7 +218,7 @@
                 <!-- Gráfico do ano - Fim -->      
                 
                 <!-- Navegador de resultados - Início -->
-                <?php ui::pagination ($page, $total, $limit, $t); ?>
+                <?php ui::pagination($page, $total, $limit, $t); ?>
                 <!-- Navegador de resultados - Fim -->                      
 
                     
@@ -277,8 +273,8 @@
                                             </div>
                                             <?php endif; ?>
                                         </p>
-                                        <?php if (isset($_GET["papel"])): ?>
-                                            <?php if ($_GET["papel"] == "admin"): ?>
+                                        <?php if (isset($_GET["papel"])) : ?>
+                                            <?php if ($_GET["papel"] == "admin") : ?>
                                                 <form class="uk-form uk-form-stacked" action="result.php?search[]=" method="POST">
 
                                                     <fieldset data-uk-margin>
@@ -310,11 +306,11 @@
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'],$r["_id"]); ?>
+                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
                                                 </li>
                                                 <li>
                                                     <?php $dois[] = $r["_source"]['doi']; ?>
-                                                     <?php facebook::facebook_doi($dois,$r["_id"]);?>
+                                                     <?php facebook::facebook_doi($dois, $r["_id"]); ?>
                                                      <?php unset($dois); ?>
                                                 </li>
                                             </ul>
@@ -351,10 +347,10 @@
                                                             if (!empty($r["_source"]["aminer"]["doi"])) {
                                                                 echo 'DOI: '.$r["_source"]["aminer"]["doi"].'<br/>';
                                                             }                                           
-                                                            if (!empty($r["_source"]["aminer"]["venue"]["name"])){
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["name"])) {
                                                                 echo 'Título do periódico: '.$r["_source"]["aminer"]["venue"]["name"].'<br/>';
                                                             }
-                                                            if (!empty($r["_source"]["aminer"]["venue"]["volume"])){
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["volume"])) {
                                                                 echo 'Volume: '.$r["_source"]["aminer"]["venue"]["volume"].'<br/>';
                                                             }                                        
                                                             if (!empty($r["_source"]["aminer"]["venue"]["issue"])) {
@@ -393,31 +389,31 @@
                                                 foreach ($r["_source"]["references"] as $reference_grobid) {
                                                     echo '<li class="uk-margin-top">';
                                                     echo '<ul>';
-                                                    if (!empty($reference_grobid["monogrTitle"])){
+                                                    if (!empty($reference_grobid["monogrTitle"])) {
                                                         echo '<li>Título da obra no todo: '.(string)$reference_grobid["monogrTitle"].'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["analyticTitle"])){
+                                                    if (!empty($reference_grobid["analyticTitle"])) {
                                                         echo '<li>Título da analítica: '.(string)$reference_grobid["analyticTitle"].'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["authors"])){
-                                                        echo '<li>Autores: '. implode(" ;",$reference_grobid["authors"]) .'</li>';
+                                                    if (!empty($reference_grobid["authors"])) {
+                                                        echo '<li>Autores: '. implode(" ;", $reference_grobid["authors"]) .'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["meeting"])){
+                                                    if (!empty($reference_grobid["meeting"])) {
                                                         echo '<li>Nome do evento: '.(string)$reference_grobid["meeting"].'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["publisher"])){
+                                                    if (!empty($reference_grobid["publisher"])) {
                                                         echo '<li>Editora: '.(string)$reference_grobid["publisher"].'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["pubPlace"])){
+                                                    if (!empty($reference_grobid["pubPlace"])) {
                                                         echo '<li>Local de publicação: '.(string)$reference_grobid["pubPlace"].'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["datePublished"])){
+                                                    if (!empty($reference_grobid["datePublished"])) {
                                                         echo '<li>Data de publicação: '.(string)$reference_grobid["datePublished"].'</li>';
                                                     }
-                                                    if (!empty($reference_grobid["link"])){
+                                                    if (!empty($reference_grobid["link"])) {
                                                         echo '<li>Link: '.(string)$reference_grobid["link"].'</li>';
                                                     } 
-                                                    if (!empty($reference_grobid["doi"])){
+                                                    if (!empty($reference_grobid["doi"])) {
                                                         echo '<li>DOI: '.(string)$reference_grobid["doi"].'</li>';
                                                     }                                                                                                                                                                  
                                                     //print_r($reference_grobid);
@@ -438,13 +434,13 @@
                                 </div>
                             </div>
                         </li>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                     </ul>
                     </div>
                     <hr class="uk-grid-divider">
                 
                 <!-- Navegador de resultados - Início -->
-                <?php ui::pagination ($page, $total, $limit, $t); ?>
+                <?php ui::pagination($page, $total, $limit, $t); ?>
                 <!-- Navegador de resultados - Fim --> 
 
                     
@@ -463,7 +459,7 @@
         });
         </script>    
 
-<?php include('inc/offcanvas.php'); ?>         
+<?php require 'inc/offcanvas.php'; ?>         
         
     </body>
 </html>
