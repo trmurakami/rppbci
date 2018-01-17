@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <?php
-    include('inc/config.php'); 
-    include('inc/functions.php');
+
+    require 'inc/config.php'; 
+    require 'inc/functions.php';
 
     if (!empty($_POST)) {
-        Admin::add_divulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
+        Admin::addDivulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
     }
 
     $result_get = get::analisa_get($_GET);
@@ -191,7 +192,7 @@
                 <?php if ($year_result_graph == true) : ?>
                     <div class="uk-alert-primary" uk-alert>
                         <a class="uk-alert-close" uk-close></a>
-                        <?php $ano_bar = processaResultados::generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
+                        <?php $ano_bar = ProcessaResultados::generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
                         <div id="ano_chart" class="uk-visible@l"></div>
                         <script type="application/javascript">
                             var graphdef = {

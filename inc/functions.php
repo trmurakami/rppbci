@@ -131,7 +131,11 @@ class Inicio
 class Admin
 {
     
-    /*Facetas - Página inicial*/
+    /** 
+     * Facetas - Página inicial
+     * 
+     * @param Field $field Campo
+     */
     static function sources($field) 
     {
         global $index;
@@ -166,13 +170,12 @@ class Admin
         echo '<tbody>';
         
         foreach ($data["hits"]["hits"] as $repository) {
-            //print_r($repository);
             echo '<tr><td><a href="'.$repository['_id'].'">'.$repository['_source']['name'].'</a></td><td>'.$repository['_source']['metadataFormat'].'</td>';
             if (!empty($repository['_source']['qualis2015'])){
                 echo '<td>'.$repository['_source']['qualis2015'].'</td>';
             }
             echo  '<td>'.$repository['_source']['date'].'</td><td>';
-	        echo Admin::count_records($repository['_source']['name']);
+	        echo Admin::countRecords($repository['_source']['name']);
 	        echo '</td><td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&qualis2015='.$repository['_source']['qualis2015'].'&metadataFormat='.$repository['_source']['metadataFormat'].'">Update</a></td>';
             echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
@@ -182,16 +185,29 @@ class Admin
 
     }
 
-    static function count_records ($name) {
+    /** 
+     * Count records
+     * 
+     * @param Name $name Name
+     */    
+    static function countRecords($name) 
+    {
         global $type;
         $body["query"]["query_string"]["query"] = 'source.keyword:"'.$name.'"';
-        $result = elasticsearch::elastic_search($type,null,0,$body); 
+        $result = elasticsearch::elastic_search($type, null, 0, $body); 
         return $result["hits"]["total"];
     }
 
-    static function add_divulgacao($titulo,$url,$id) {
+    /** 
+     * Adicionar divulgação científica
+     * 
+     * @param Titulo $titulo Título
+     * @param URL $url URL
+     */      
+    static function addDivulgacao($titulo,$url,$id)
+    {
 
-        $result_get = elasticsearch::elastic_get($id,"journals","div_cientifica");
+        $result_get = elasticsearch::elastic_get($id, "journals", "div_cientifica");
         if (count($result_get['_source']['div_cientifica']) > 0) {
             $body["doc"]["div_cientifica"] = $result_get['_source']['div_cientifica'];
         }
@@ -207,11 +223,12 @@ class Admin
     }
 }
 
-class processaResultados
+class ProcessaResultados
 {
     
     /* Function to generate Graph Bar */
-    static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size) {
+    static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size)
+    {
         global $index;
         global $client;
         global $type;
