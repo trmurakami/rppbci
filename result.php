@@ -310,14 +310,14 @@ $mode = "reference";
                                                 </li>
                                                 <li>
                                                     <?php $dois[] = $r["_source"]['doi']; ?>
-                                                     <?php facebook::facebook_doi($dois, $r["_id"]); ?>
+                                                     <?php Facebook::facebook_doi($dois, $r["_id"]); ?>
                                                      <?php unset($dois); ?>
                                                 </li>
                                             </ul>
                                             <?php endif; ?>
                                             <ul>
                                                 <li>
-                                                    <?php facebook::facebook_data($r["_source"]['relation'],$r["_id"]);?>
+                                                    <?php Facebook::facebook_data($r["_source"]['relation'],$r["_id"]);?>
                                                     <!--
                                                     < ?php
                                                         if (!empty($r["_source"]['relation'])){
@@ -332,7 +332,7 @@ $mode = "reference";
                                                         <?php foreach ($r["_source"]['div_cientifica'] as $div_source) :?>
                                                         <?php $url_array[] = $div_source['url']; ?>
                                                         <?php endforeach; ?>
-                                                        <?php facebook::facebook_divulgacao($url_array,$r["_id"]);?>
+                                                        <?php Facebook::facebook_divulgacao($url_array,$r["_id"]);?>
                                                         <?php unset($url_array);?>
                                                     <?php endif; ?>
                                                 </li>

@@ -260,10 +260,21 @@ class ProcessaResultados
     }
 }    
 
-class facebook {
+/**
+ * Class Facebook
+ *
+ * @category External sources
+ * @package  
+ * @author   Tiago Murakami 
+ * @license  
+ * @link     
+ *
+ */
+class Facebook 
+{   
     
-    
-    static function facebook_data($urls,$id) {
+    static function facebook_data($urls,$id) 
+    {
         global $fb;
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://", "", $url);
@@ -360,10 +371,11 @@ class facebook {
         $body["doc"]["facebook"]["date"] = date("Y-m-d");
         $body["doc_as_upsert"] = true;
         
-        elasticsearch::elastic_update($id,"journals",$body);
+        elasticsearch::elastic_update($id, "journals", $body);
     }
 
-    static function facebook_doi($urls,$id) {
+    static function facebook_doi($urls,$id) 
+    {
         global $fb;
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://dx.doi.org/", "", $url);
@@ -454,7 +466,8 @@ class facebook {
         elasticsearch::elastic_update($id,"journals",$body);
     }
 
-    static function facebook_divulgacao($urls,$id) {
+    static function facebook_divulgacao($urls,$id) 
+    {
         global $fb;
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://", "", $url);
