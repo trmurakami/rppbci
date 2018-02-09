@@ -6,7 +6,8 @@ if (file_exists('functions_core/functions_core.php')) {
     include('../functions_core/functions_core.php');
 }
 
-class inicio {
+class inicio 
+{
     
     static function contar_registros ($server) {
         global $index;
@@ -124,7 +125,8 @@ class inicio {
     
 }
 
-class admin {
+class admin 
+{
     
     /*Facetas - Página inicial*/
     static function sources($field) {
@@ -201,7 +203,8 @@ class admin {
     }
 }
 
-class processaResultados {
+class processaResultados 
+{
     
     /* Function to generate Graph Bar */
     static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size) {
@@ -236,7 +239,8 @@ class processaResultados {
     }
 }    
 
-class facebook {
+class facebook 
+{
     
     
     static function facebook_data($urls,$id) {
@@ -537,7 +541,8 @@ class facebook {
     
 }
 
-class altmetric_com {
+class altmetric_com 
+{
     static function get_altmetrics ($doi,$id) {
         
         $ch = curl_init();
@@ -588,7 +593,8 @@ function exclude_deleted(){
     
 }
 
-class USP {
+class USP 
+{
 
     static function query_bdpi($query_title,$query_year,$sha256) { 
         global $type; 
@@ -754,5 +760,24 @@ class USP {
 
 
 }
+
+function dimensionsAPI($doi)
+{
+    // Get cURL resource
+    $curl = curl_init();
+    // Set some options - we are passing in a useragent too here
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => 'https://metrics-api.dimensions.ai/doi/'.$doi.'',
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'
+    )
+    );
+    // Send the request & save response to $resp
+    $resp = curl_exec($curl);
+    $data = json_decode($resp, true);
+    return $data;
+    // Close request to clear up some resources
+    curl_close($curl);    
+}     
 
 ?>

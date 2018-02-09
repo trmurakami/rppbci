@@ -326,6 +326,7 @@
                                                 <li>
                                                     <?php altmetric_com::get_altmetrics($r["_source"]['doi'],$r["_id"]); ?>
                                                 </li>
+                                                <li><div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
                                                 <li>
                                                     <?php $dois[] = $r["_source"]['doi']; ?>
                                                      <?php facebook::facebook_doi($dois,$r["_id"]);?>
@@ -429,7 +430,8 @@
             var url = window.location.href.split('&page')[0];
             window.location=url +'&page='+ (pageIndex+1);
         });
-        </script>    
+        </script>
+        <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>     
 
 <?php include('inc/offcanvas.php'); ?>         
         
