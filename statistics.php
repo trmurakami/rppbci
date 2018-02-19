@@ -1,15 +1,15 @@
 <html>
     <head>
         <?php 
-            include('inc/config.php'); 
-            include('inc/functions.php');
-            include('inc/meta-header.php');
+            require 'inc/config.php'; 
+            require 'inc/functions.php';
+            require 'inc/meta-header.php';
         ?>
         <title>Estatísticas</title>
     </head>    
     <body>
         <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
-            <?php include('inc/navbar.php')?>
+            <?php require 'inc/navbar.php' ?>
             
             <h1>Estatísticas</h1>
             
@@ -79,7 +79,7 @@
             <iframe src="http://bdpife2.sibi.usp.br:5601/app/kibana#/visualize/create?embed=true&type=histogram&indexPattern=<?php echo $index; ?>&_g=()&_a=(filters:!(),linked:!f,query:(query_string:(analyze_wildcard:!t,query:'*')),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(),schema:metric,type:count),(enabled:!t,id:'2',params:(field:altmetric_com.readers.mendeley,order:desc,orderBy:'1',size:100),schema:segment,type:terms),(enabled:!t,id:'3',params:(field:source.keyword,order:desc,orderBy:'1',size:200),schema:group,type:terms)),listeners:(),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,defaultYExtents:!f,legendPosition:right,mode:stacked,scale:linear,setYExtents:!f,times:!()),title:'New+Visualization',type:histogram))" height="600" width="1125" scrolling="no" frameborder="0" seamless="seamless"></iframe>
             
             
-            <?php include('inc/offcanvas.php')?>
+            <?php require 'inc/offcanvas.php' ?>
         </div>    
     </body>
 </html>

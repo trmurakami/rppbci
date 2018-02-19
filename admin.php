@@ -36,7 +36,7 @@
             <h3>Fontes coletadas</h3>
 
 
-            <?php admin::sources("source"); ?>
+            <?php Admin::sources("source"); ?>
         </div>
 
     </body>

@@ -1,14 +1,27 @@
 <?php
 
 if (file_exists('functions_core/functions_core.php')) {
-    include('functions_core/functions_core.php');
+    include 'functions_core/functions_core.php';
 } else {
-    include('../functions_core/functions_core.php');
+    include '../functions_core/functions_core.php';
 }
 
-class inicio {
+
+/**
+ * Class Inicio
+ *
+ * @category Início
+ * @package  
+ * @author   Tiago Murakami 
+ * @license  
+ * @link     
+ *
+ */
+class Inicio
+{
     
-    static function contar_registros ($server) {
+    static function contar_registros($server) 
+    {
         global $index;
         global $type;
         global $client;
@@ -32,7 +45,8 @@ class inicio {
 
     } 
     
-    static function top_registros() {
+    static function top_registros() 
+    {
         global $index;
         global $type;
         global $client;
@@ -55,7 +69,7 @@ class inicio {
 
         //print_r($data);
 
-        foreach ($data["hits"]["hits"] as $r){
+        foreach ($data["hits"]["hits"] as $r) {
             //var_dump($r);
 
             echo '<dl class="uk-description-list">'; 
@@ -72,9 +86,13 @@ class inicio {
         }     
     }    
     
-    
-    /*Facetas - Página inicial*/
-    static function facetas_inicio($field) {
+    /**
+     * Facetas - Página inicial
+     *
+     * @param Field $field Campo
+     */
+    static function facetasInicio($field) 
+    {
         global $index;
         global $type;
         global $client;
@@ -100,10 +118,26 @@ class inicio {
     
 }
 
-class admin {
+/**
+ * Class Admin
+ *
+ * @category Admin
+ * @package  
+ * @author   Tiago Murakami 
+ * @license  
+ * @link     
+ *
+ */
+class Admin
+{
     
-    /*Facetas - Página inicial*/
-    static function sources($field) {
+    /** 
+     * Facetas - Página inicial
+     * 
+     * @param Field $field Campo
+     */
+    static function sources($field) 
+    {
         global $index;
         global $type;
         global $client;
@@ -136,13 +170,12 @@ class admin {
         echo '<tbody>';
         
         foreach ($data["hits"]["hits"] as $repository) {
-            //print_r($repository);
             echo '<tr><td><a href="'.$repository['_id'].'">'.$repository['_source']['name'].'</a></td><td>'.$repository['_source']['metadataFormat'].'</td>';
             if (!empty($repository['_source']['qualis2015'])){
                 echo '<td>'.$repository['_source']['qualis2015'].'</td>';
             }
             echo  '<td>'.$repository['_source']['date'].'</td><td>';
-	        echo admin::count_records($repository['_source']['name']);
+	        echo Admin::countRecords($repository['_source']['name']);
 	        echo '</td><td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&qualis2015='.$repository['_source']['qualis2015'].'&metadataFormat='.$repository['_source']['metadataFormat'].'">Update</a></td>';
             echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
@@ -152,16 +185,29 @@ class admin {
 
     }
 
-    static function count_records ($name) {
+    /** 
+     * Count records
+     * 
+     * @param Name $name Name
+     */    
+    static function countRecords($name) 
+    {
         global $type;
         $body["query"]["query_string"]["query"] = 'source.keyword:"'.$name.'"';
-        $result = elasticsearch::elastic_search($type,null,0,$body); 
+        $result = elasticsearch::elastic_search($type, null, 0, $body); 
         return $result["hits"]["total"];
     }
 
-    static function add_divulgacao($titulo,$url,$id) {
+    /** 
+     * Adicionar divulgação científica
+     * 
+     * @param Titulo $titulo Título
+     * @param URL $url URL
+     */      
+    static function addDivulgacao($titulo,$url,$id)
+    {
 
-        $result_get = elasticsearch::elastic_get($id,"journals","div_cientifica");
+        $result_get = elasticsearch::elastic_get($id, "journals", "div_cientifica");
         if (count($result_get['_source']['div_cientifica']) > 0) {
             $body["doc"]["div_cientifica"] = $result_get['_source']['div_cientifica'];
         }
@@ -177,10 +223,12 @@ class admin {
     }
 }
 
-class processaResultados {
+class ProcessaResultados
+{
     
     /* Function to generate Graph Bar */
-    static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size) {
+    static function generateDataGraphBar($query, $field, $sort, $sort_orientation, $facet_display_name, $size)
+    {
         global $index;
         global $client;
         global $type;
@@ -212,10 +260,21 @@ class processaResultados {
     }
 }    
 
-class facebook {
+/**
+ * Class Facebook
+ *
+ * @category External sources
+ * @package  
+ * @author   Tiago Murakami 
+ * @license  
+ * @link     
+ *
+ */
+class Facebook 
+{   
     
-    
-    static function facebook_data($urls,$id) {
+    static function facebook_data($urls,$id) 
+    {
         global $fb;
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://", "", $url);
@@ -312,10 +371,11 @@ class facebook {
         $body["doc"]["facebook"]["date"] = date("Y-m-d");
         $body["doc_as_upsert"] = true;
         
-        elasticsearch::elastic_update($id,"journals",$body);
+        elasticsearch::elastic_update($id, "journals", $body);
     }
 
-    static function facebook_doi($urls,$id) {
+    static function facebook_doi($urls,$id) 
+    {
         global $fb;
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://dx.doi.org/", "", $url);
@@ -406,7 +466,8 @@ class facebook {
         elasticsearch::elastic_update($id,"journals",$body);
     }
 
-    static function facebook_divulgacao($urls,$id) {
+    static function facebook_divulgacao($urls,$id) 
+    {
         global $fb;
         foreach ($urls as $url) {
             $url_limpa = str_replace("http://", "", $url);
@@ -513,8 +574,10 @@ class facebook {
     
 }
 
-class altmetric_com {
-    static function get_altmetrics ($doi,$id) {
+class altmetric_com
+{
+    static function get_altmetrics ($doi,$id) 
+    {
         
         $ch = curl_init();
         $method = "GET";
@@ -536,9 +599,39 @@ class altmetric_com {
     }     
 }
 
+function grobidQuery($content, $grobid_url) 
+{
+
+    // initialise the curl request
+    $request = curl_init('143.107.154.38:8070/api/processReferences');
+    // send a file
+    curl_setopt($request, CURLOPT_POST, true);
+    curl_setopt(
+        $request,
+        CURLOPT_POSTFIELDS,
+        array('input' => $content)
+    );
+    // output the response
+    curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+    //echo curl_exec($request);
+    $result = curl_exec($request);
+    if (!empty($result)) {
+        $xml = simplexml_load_string($result);
+    } else {
+        $xml = "";
+    } 
+    //foreach ($xml->text->back->div->listBibl->biblStruct as $citation) {
+    //    $citation_array[] =  json_encode($citation, JSON_UNESCAPED_UNICODE);
+    //}
+    return $xml;         
+    curl_close($request);
+
+}
+
 
 /*Deletar Excluídos*/
-function exclude_deleted(){
+function exclude_deleted()
+{
     $ch = curl_init();
     $query = '
                 {
@@ -563,7 +656,4 @@ function exclude_deleted(){
     return $data["_indices"]["rppbci"]["deleted"];
     
 }
-
-
-
 ?>

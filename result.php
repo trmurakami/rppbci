@@ -1,56 +1,53 @@
 <!DOCTYPE html>
 <?php
-    include('inc/config.php'); 
-    include('inc/functions.php');
 
-    if (!empty($_POST)) {
-        admin::add_divulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
-    }
+require 'inc/config.php'; 
+require 'inc/functions.php';
 
-    $result_get = get::analisa_get($_GET);
-    $query = $result_get['query'];  
-    $limit = $result_get['limit'];
-    $page = $result_get['page'];
-    $skip = $result_get['skip'];
+if (!empty($_POST)) {
+    Admin::addDivulgacao($_POST["titulo"],$_POST["url"],$_POST["id"]);
+}
 
-    if (isset($_GET["sort"])) {        
-        $query["sort"][$_GET["sort"]]["unmapped_type"] = "long";
-        $query["sort"][$_GET["sort"]]["missing"] = "_last";
-        $query["sort"][$_GET["sort"]]["order"] = "desc";
-        $query["sort"][$_GET["sort"]]["mode"] = "max";
-    } else {
-        $query['sort']['facebook.facebook_total']['order'] = "desc";
-        $query['sort']['ano.keyword']['order'] = "desc";
-    }    
+$result_get = get::analisa_get($_GET);
+$query = $result_get['query'];  
+$limit = $result_get['limit'];
+$page = $result_get['page'];
+$skip = $result_get['skip'];
 
+if (isset($_GET["sort"])) {        
+    $query["sort"][$_GET["sort"]]["unmapped_type"] = "long";
+    $query["sort"][$_GET["sort"]]["missing"] = "_last";
+    $query["sort"][$_GET["sort"]]["order"] = "desc";
+    $query["sort"][$_GET["sort"]]["mode"] = "max";
+} else {
+    $query['sort']['facebook.facebook_total']['order'] = "desc";
+    $query['sort']['ano.keyword']['order'] = "desc";
+}    
 
+$params = [];
+$params["index"] = $index;
+$params["type"] = $type;
+$params["size"] = $limit;
+$params["from"] = $skip;
+$params["body"] = $query; 
 
-    $params = [];
-    $params["index"] = $index;
-    $params["type"] = $type;
-    $params["size"] = $limit;
-    $params["from"] = $skip;
-    $params["body"] = $query; 
+$cursor = $client->search($params);
+$total = $cursor["hits"]["total"];
 
-    $cursor = $client->search($params);
-    $total = $cursor["hits"]["total"];
-
-   /* Citeproc-PHP*/
-    include 'inc/citeproc-php/CiteProc.php';
-    $csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
-    $csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
-    $csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
-    $csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
-    $lang = "br";
-    $citeproc_abnt = new citeproc($csl_abnt,$lang);
-    $mode = "reference";
+/* Citeproc-PHP*/
+require 'inc/citeproc-php/CiteProc.php';
+$csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
+$csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
+$csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
+$csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
+$lang = "br";
+$citeproc_abnt = new citeproc($csl_abnt, $lang);
+$mode = "reference";
 
 ?>
 <html>
     <head>
-        <?php
-            include('inc/meta-header.php'); 
-        ?>        
+        <?php require 'inc/meta-header.php' ?>
         <title>Resultado da busca</title>
         
         <!-- D3.js Libraries and CSS -->
@@ -70,14 +67,14 @@
     <body>
 
         <?php
-            if (file_exists("inc/analyticstracking.php")){
-                include_once("inc/analyticstracking.php");
-            }
+        if (file_exists("inc/analyticstracking.php")) {
+            include_once "inc/analyticstracking.php";
+        }
         ?> 
 
         <div class="uk-container">
 
-            <?php include('inc/navbar.php'); ?>
+            <?php require 'inc/navbar.php' ?>
             <br/><br/><br/> 
 
             <div class="uk-width-1-1@s uk-width-1-1@m">
@@ -167,12 +164,15 @@
                                 $facets->facet("artigoPublicado.issn",100,"ISSN",null,"_term",$_GET["search"]);
                                 $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null,"_term",$_GET["search"]);
                                 echo '<li>Dados das referências citadas nas publicações</li>';
-                                $facets->facet("references.citations.name",100,"Título",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.analytic.name",100,"Título da publicação fonte",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.datePublished",100,"Data de publicação",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.author.person.name.citation",100,"Autor",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.publisher.organization.location",100,"Local de publicação",null,"_term",$_GET["search"]);
-                                $facets->facet("references.citations.publisher.organization.name",100,"Editora",null,"_term",$_GET["search"]);
+                                $facets->facet("references.analyticTitle", 100, "Título", null, "_term", $_GET["search"]);
+                                $facets->facet("references.monogrTitle",100,"Título da publicação fonte",null,"_term",$_GET["search"]);
+                                $facets->facet("references.datePublished",100,"Data de publicação",null,"_term",$_GET["search"]);
+                                $facets->facet("references.authors",100,"Autor",null,"_term",$_GET["search"]);
+                                $facets->facet("references.meeting",100,"Nome do evento",null,"_term",$_GET["search"]);
+                                $facets->facet("references.publisher",100,"Editora",null,"_term",$_GET["search"]);
+                                $facets->facet("references.pubPlace",100,"Local de publicação",null,"_term",$_GET["search"]);
+                                $facets->facet("references.doi",100,"DOI",null,"_term",$_GET["search"]);
+                                $facets->facet("references.link",100,"Link",null,"_term",$_GET["search"]);
                                 echo '<li>Citações recebidas (Fonte: AMiner)</li>';
                                 $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);
                             ?>
@@ -188,7 +188,7 @@
                 <?php if ($year_result_graph == true) : ?>
                     <div class="uk-alert-primary" uk-alert>
                         <a class="uk-alert-close" uk-close></a>
-                        <?php $ano_bar = processaResultados::generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
+                        <?php $ano_bar = ProcessaResultados::generateDataGraphBar($query, 'ano', "_term", 'desc', 'Ano', 10); ?>
                         <div id="ano_chart" class="uk-visible@l"></div>
                         <script type="application/javascript">
                             var graphdef = {
@@ -218,7 +218,7 @@
                 <!-- Gráfico do ano - Fim -->      
                 
                 <!-- Navegador de resultados - Início -->
-                <?php ui::pagination ($page, $total, $limit, $t); ?>
+                <?php ui::pagination($page, $total, $limit, $t); ?>
                 <!-- Navegador de resultados - Fim -->                      
 
                     
@@ -273,8 +273,8 @@
                                             </div>
                                             <?php endif; ?>
                                         </p>
-                                        <?php if (isset($_GET["papel"])): ?>
-                                            <?php if ($_GET["papel"] == "admin"): ?>
+                                        <?php if (isset($_GET["papel"])) : ?>
+                                            <?php if ($_GET["papel"] == "admin") : ?>
                                                 <form class="uk-form uk-form-stacked" action="result.php?search[]=" method="POST">
 
                                                     <fieldset data-uk-margin>
@@ -306,18 +306,18 @@
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'],$r["_id"]); ?>
+                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
                                                 </li>
                                                 <li>
                                                     <?php $dois[] = $r["_source"]['doi']; ?>
-                                                     <?php facebook::facebook_doi($dois,$r["_id"]);?>
+                                                     <?php Facebook::facebook_doi($dois, $r["_id"]); ?>
                                                      <?php unset($dois); ?>
                                                 </li>
                                             </ul>
                                             <?php endif; ?>
                                             <ul>
                                                 <li>
-                                                    <?php facebook::facebook_data($r["_source"]['relation'],$r["_id"]);?>
+                                                    <?php Facebook::facebook_data($r["_source"]['relation'],$r["_id"]);?>
                                                     <!--
                                                     < ?php
                                                         if (!empty($r["_source"]['relation'])){
@@ -332,7 +332,7 @@
                                                         <?php foreach ($r["_source"]['div_cientifica'] as $div_source) :?>
                                                         <?php $url_array[] = $div_source['url']; ?>
                                                         <?php endforeach; ?>
-                                                        <?php facebook::facebook_divulgacao($url_array,$r["_id"]);?>
+                                                        <?php Facebook::facebook_divulgacao($url_array,$r["_id"]);?>
                                                         <?php unset($url_array);?>
                                                     <?php endif; ?>
                                                 </li>
@@ -347,10 +347,10 @@
                                                             if (!empty($r["_source"]["aminer"]["doi"])) {
                                                                 echo 'DOI: '.$r["_source"]["aminer"]["doi"].'<br/>';
                                                             }                                           
-                                                            if (!empty($r["_source"]["aminer"]["venue"]["name"])){
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["name"])) {
                                                                 echo 'Título do periódico: '.$r["_source"]["aminer"]["venue"]["name"].'<br/>';
                                                             }
-                                                            if (!empty($r["_source"]["aminer"]["venue"]["volume"])){
+                                                            if (!empty($r["_source"]["aminer"]["venue"]["volume"])) {
                                                                 echo 'Volume: '.$r["_source"]["aminer"]["venue"]["volume"].'<br/>';
                                                             }                                        
                                                             if (!empty($r["_source"]["aminer"]["venue"]["issue"])) {
@@ -364,8 +364,8 @@
                                             </ul>
                                         </li>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
+                                        <a class="uk-button uk-button-text" href="#" uk-toggle="target: #ref<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Referências'); ?></a>
                                         <div id="citacao<?php echo $conta_cit;?>" hidden="hidden">
-                                            <?php $conta_cit++; ?>
                                         <li class="uk-h6 uk-margin-top">
                                             <div class="uk-alert uk-alert-danger">A citação é gerada automaticamente e pode não estar totalmente de acordo com as normas</div>
                                             <ul>
@@ -381,17 +381,66 @@
                                             </ul>                                              
                                         </li>
                                         </div>
+                                        <div id="ref<?php echo $conta_cit;?>" hidden="hidden">
+                                        <li class="uk-h6 uk-margin-top">
+                                            <div class="uk-alert uk-alert-danger">As referencias são coletadas automaticamente e pode não estar totalmente corretas</div>
+                                            <?php if (isset($r["_source"]["references"])) {
+                                                echo '<ol>';
+                                                foreach ($r["_source"]["references"] as $reference_grobid) {
+                                                    echo '<li class="uk-margin-top">';
+                                                    echo '<ul>';
+                                                    if (!empty($reference_grobid["monogrTitle"])) {
+                                                        echo '<li>Título da obra no todo: '.(string)$reference_grobid["monogrTitle"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["analyticTitle"])) {
+                                                        echo '<li>Título da analítica: '.(string)$reference_grobid["analyticTitle"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["authors"])) {
+                                                        echo '<li>Autores: '. implode(" ;", $reference_grobid["authors"]) .'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["meeting"])) {
+                                                        echo '<li>Nome do evento: '.(string)$reference_grobid["meeting"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["publisher"])) {
+                                                        echo '<li>Editora: '.(string)$reference_grobid["publisher"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["pubPlace"])) {
+                                                        echo '<li>Local de publicação: '.(string)$reference_grobid["pubPlace"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["datePublished"])) {
+                                                        echo '<li>Data de publicação: '.(string)$reference_grobid["datePublished"].'</li>';
+                                                    }
+                                                    if (!empty($reference_grobid["link"])) {
+                                                        echo '<li>Link: '.(string)$reference_grobid["link"].'</li>';
+                                                    } 
+                                                    if (!empty($reference_grobid["doi"])) {
+                                                        echo '<li>DOI: '.(string)$reference_grobid["doi"].'</li>';
+                                                    }                                                                                                                                                                  
+                                                    //print_r($reference_grobid);
+                                                    echo '</ul>';
+                                                    echo '</li>';
+                                                }
+                                                echo '</ol>';
+                                            } ?>
+                                            <ul>
+                                                <li class="uk-margin-top">
+                                                            
+                                                </li>                                               
+                                            </ul>                                              
+                                        </li>
+                                        </div>  
+                                        <?php $conta_cit++; ?>                                      
                                     </ul>
                                 </div>
                             </div>
                         </li>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                     </ul>
                     </div>
                     <hr class="uk-grid-divider">
                 
                 <!-- Navegador de resultados - Início -->
-                <?php ui::pagination ($page, $total, $limit, $t); ?>
+                <?php ui::pagination($page, $total, $limit, $t); ?>
                 <!-- Navegador de resultados - Fim --> 
 
                     
@@ -410,7 +459,7 @@
         });
         </script>    
 
-<?php include('inc/offcanvas.php'); ?>         
+<?php require 'inc/offcanvas.php'; ?>         
         
     </body>
 </html>
