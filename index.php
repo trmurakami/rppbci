@@ -34,6 +34,10 @@
                                 <label class="uk-form-label" for="form-stacked-text"><?php echo $t->gettext('Termos de busca'); ?></label>
                                 <div class="uk-form-controls">
                                     <input class="uk-input" id="form-stacked-text" type="text" placeholder="<?php echo $t->gettext('Pesquise por título, assunto ou autor'); ?>" name="search[]" data-validation="required">
+                                    <input type="hidden" name="fields[]" value="titulo">
+                                    <input type="hidden" name="fields[]" value="autores.*">
+                                    <input type="hidden" name="fields[]" value="palavras_chave">
+                                    <input type="hidden" name="fields[]" value="resumo">              
                                 </div>
                             </div>
 
@@ -45,11 +49,7 @@
                                         <option disabled selected value><?php echo $t->gettext('Todas as bases'); ?></option>
                                         <option value="base.keyword:&quot;Artigos&quot;" style="color:#333"><?php echo $t->gettext('Artigos'); ?></option>
                                         <option value="base.keyword:&quot;Trabalhos em Eventos&quot;" style="color:#333"><?php echo $t->gettext('Trabalhos em Eventos'); ?></option>
-                                    </select>
-                                <input type="hidden" name="fields[]" value="titulo">
-                                <input type="hidden" name="fields[]" value="autores.*">
-                                <input type="hidden" name="fields[]" value="palavras_chave">
-                                <input type="hidden" name="fields[]" value="resumo">                                                              
+                                    </select>                                                
                                 </div>
                             </div>
                             -->
