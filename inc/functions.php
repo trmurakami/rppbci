@@ -6,7 +6,6 @@ if (file_exists('functions_core/functions_core.php')) {
     include '../functions_core/functions_core.php';
 }
 
-<<<<<<< HEAD
 
 /**
  * Class Inicio
@@ -19,9 +18,6 @@ if (file_exists('functions_core/functions_core.php')) {
  *
  */
 class Inicio
-=======
-class inicio 
->>>>>>> portal_de_revistas/master
 {
     
     static function contar_registros($server) 
@@ -146,7 +142,6 @@ class inicio
     
 }
 
-<<<<<<< HEAD
 /**
  * Class Admin
  *
@@ -158,9 +153,6 @@ class inicio
  *
  */
 class Admin
-=======
-class admin 
->>>>>>> portal_de_revistas/master
 {
     
     /** 
@@ -255,11 +247,7 @@ class admin
     }
 }
 
-<<<<<<< HEAD
 class ProcessaResultados
-=======
-class processaResultados 
->>>>>>> portal_de_revistas/master
 {
     
     /* Function to generate Graph Bar */
@@ -296,7 +284,6 @@ class processaResultados
     }
 }    
 
-<<<<<<< HEAD
 /**
  * Class Facebook
  *
@@ -309,11 +296,6 @@ class processaResultados
  */
 class Facebook 
 {   
-=======
-class facebook 
-{
-    
->>>>>>> portal_de_revistas/master
     
     static function facebook_data($urls,$id) 
     {
@@ -616,16 +598,10 @@ class facebook
     
 }
 
-<<<<<<< HEAD
 class altmetric_com
 {
     static function get_altmetrics ($doi,$id) 
     {
-=======
-class altmetric_com 
-{
-    static function get_altmetrics ($doi,$id) {
->>>>>>> portal_de_revistas/master
         
         $ch = curl_init();
         $method = "GET";
@@ -704,8 +680,6 @@ function exclude_deleted()
     return $data["_indices"]["rppbci"]["deleted"];
     
 }
-<<<<<<< HEAD
-=======
 
 class USP 
 {
@@ -894,5 +868,4 @@ function dimensionsAPI($doi)
     curl_close($curl);    
 }     
 
->>>>>>> portal_de_revistas/master
 ?>
