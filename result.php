@@ -180,6 +180,7 @@
                                 $facets->facet_range("citescore.citescore.2016.citescore",100,"Citescore - 2016");
                                 $facets->facet_range("citescore.citescore.2016.SJR",100,"SJR - 2016");
                                 $facets->facet_range("citescore.citescore.2016.SNIP",100,"SNIP - 2016");
+                                $facets->facet_range("metrics.dimensions.times_cited",100,"Citações no Dimensions");
            
 
                                 echo '<li>Dados das referências citadas nas publicações</li>';
