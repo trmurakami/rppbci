@@ -18,6 +18,32 @@ if (isset($_GET["oai"])) {
     // Store repository data - Início
 
     $body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
+
+    if (isset($_GET["issn"])){
+        $body_repository["doc"]["issn"] = $_GET["issn"];
+
+        $qualis_periodico = USP::qualis_issn($_GET["issn"]);
+        if ($qualis_periodico["hits"]["total"] > 0) {
+            $body_repository["doc"]["qualis_journal"] = $qualis_periodico["hits"]["hits"][0]["_source"];
+        }
+
+        $jcr_periodico = USP::jcr_issn($_GET["issn"]);
+        if ($jcr_periodico["hits"]["total"] > 0) {
+            $query["doc"]["JCR_jornal"] = $jcr_periodico["hits"]["hits"][0]["_source"];
+        }
+
+        $wos_periodico = USP::wos_issn($_GET["issn"]);
+        if ($wos_periodico["hits"]["total"] > 0) {
+            $query["doc"]["WOS_journal"] = $wos_periodico["hits"]["hits"][0]["_source"];
+        }  
+
+        $citescore_periodico = USP::citescore_issn($_GET["issn"]);
+        if ($citescore_periodico["hits"]["total"] > 0) {
+            $query["doc"]["citescore_journal"] = $citescore_periodico["hits"]["hits"][0]["_source"];
+        }          
+
+    }
+
     $body_repository["doc"]["metadataFormat"] = $_GET["metadataFormat"];
     if (isset($_GET["qualis2015"])) {
         $body_repository["doc"]["qualis2015"] = $_GET["qualis2015"];
@@ -81,19 +107,20 @@ if (isset($_GET["oai"])) {
                     $query["doc"]["corrente"] = $_GET["corrente"];
                 }                                  
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-categories'}->{'subj-group'}->{'subject'};
-                $query["doc"]["titulo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
-                $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[0]->{'year'};
+                $query["doc"]["titulo"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
+                $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[1]->{'year'};
                 $query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
                 $query["doc"]["resumo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'abstract'}->{'p'});
 
                 // Palavras-chave
                 if (isset($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'})) {
                     foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'kwd-group'}[0]->{'kwd'} as $palavra_chave) {
-                        $palavraschave_array = explode(".", (string)$palavra_chave);
-                        foreach ($palavraschave_array  as $pc) { 
+                        $palavra_chave_corrigida = str_replace(",",".",(string)$palavra_chave);
+                        $palavra_chave_corrigida = str_replace(";",".",(string)$palavra_chave);
+                        $palavraschave_array = explode(".", $palavra_chave_corrigida);
+                        foreach ($palavraschave_array  as $pc) {                            
                             $query["doc"]["palavras_chave"][] = trim($pc);
                         }
-
                     }
                 }
 
@@ -101,15 +128,18 @@ if (isset($_GET["oai"])) {
                 $i = 0;
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'contrib-group'}->{'contrib'} as $autores) {
 
-                    if ($autores->attributes()->{'contrib-type'} == "author") {
-
-                        $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                    if ($autores->attributes()->{'contrib-type'} == "author"){
+                        $string_author = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                        if ($string_author != "O Editor" || $string_author != "Os Editores") {
+                            $query["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$autores->{'name'}->{'given-names'}.' '.$autores->{'name'}->{'surname'};
+                        }
                         $query["doc"]["autores"][$i]["nomeParaCitacao"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if (isset($autores->{'aff'})) {
                             $result_tematres = authorities::tematres(strip_tags((string)$autores->{'aff'}),$tematres_url);
                             if (!empty($result_tematres["found_term"])) {
                                 $query["doc"]["autores"][$i]["afiliacao"] = $result_tematres["found_term"];
+                                $query["doc"]["autores"][$i]["pais"] = $result_tematres["country"];
                             } else {
                                 $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});                                
                             }
@@ -125,7 +155,62 @@ if (isset($_GET["oai"])) {
 
                 $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'});
                 $query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
-                $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
+                $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};         
+                
+                if (isset($_GET["issn"])){
+
+                    $qualis = USP::qualis_issn($_GET["issn"]);
+                    if ($qualis["hits"]["total"] > 0) {
+                        $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
+                    }
+
+                    $jcr = USP::jcr_issn($_GET["issn"]);
+                    if ($jcr["hits"]["total"] > 0) {
+                        $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
+                    }
+
+                    $wos = USP::wos_issn($_GET["issn"]);
+                    if ($wos["hits"]["total"] > 0) {
+                        $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
+                    }  
+
+                    $citescore = USP::citescore_issn($_GET["issn"]);
+                    if ($citescore["hits"]["total"] > 0) {
+                        $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
+                    }                                      
+
+                } else {
+
+                    $qualis = USP::qualis_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($qualis["hits"]["total"] > 0) {
+                        $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
+                    }
+                     
+                    $jcr = USP::jcr_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($jcr["hits"]["total"] > 0) {
+                        $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
+                    } 
+                    
+                    $wos = USP::wos_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($wos["hits"]["total"] > 0) {
+                        $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
+                    }  
+                    
+                    $citescore = USP::citescore_issn($query["doc"]["artigoPublicado"]["issn"]);
+                    if ($citescore["hits"]["total"] > 0) {
+                        $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
+                    }                     
+                    
+                }
+
+
+
+
+
+                
+                
+
+
                 $query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
                 $query["doc"]["artigoPublicado"]["fasciculo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue'};
                 $query["doc"]["artigoPublicado"]["paginaInicial"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-id'};
@@ -135,7 +220,6 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["origin"] = "OAI-PHM";
                 $query["doc"]["type"] = "article";
                 $query["doc_as_upsert"] = true;
-
 
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'} as $self_uri) {
                     $query["doc"]["relation"][]=(string)$self_uri->attributes('http://www.w3.org/1999/xlink');
