@@ -21,12 +21,22 @@ if (isset($_GET["oai"])) {
     $body_repository["doc"]["metadataFormat"] = $_GET["metadataFormat"];
     if (isset($_GET["qualis2015"])) {
         $body_repository["doc"]["qualis2015"] = $_GET["qualis2015"];
-    }    
+    }
+    if (isset($_GET["area"])) {
+        $body_repository["doc"]["area"] = $_GET["area"];
+    }
+    if (isset($_GET["areaChild"])) {
+        $body_repository["doc"]["areaChild"] = $_GET["areaChild"];
+    }
+    if (isset($_GET["corrente"])) {
+        $body_repository["doc"]["corrente"] = $_GET["corrente"];
+    }                         
     $body_repository["doc"]["date"] = (string)$identify->responseDate;
     $body_repository["doc"]["url"] = (string)$identify->request;
+    $body_repository["doc"]["type"] = "journal";
     $body_repository["doc_as_upsert"] = true;
 
-    $insert_repository_result = elasticsearch::elastic_update($body_repository["doc"]["url"],"repository",$body_repository);
+    $insert_repository_result = elasticsearch::elastic_update($body_repository["doc"]["url"],$type,$body_repository);
     print_r($insert_repository_result);
 
     // Store repository data - Fim
@@ -60,7 +70,16 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
                 if (isset($_GET["qualis2015"])) {
                     $query["doc"]["qualis2015"] = $_GET["qualis2015"];
-                }                
+                }
+                if (isset($_GET["area"])) {
+                    $query["doc"]["area"] = $_GET["area"];
+                }
+                if (isset($_GET["areaChild"])) {
+                    $query["doc"]["areaChild"] = $_GET["areaChild"];
+                }
+                if (isset($_GET["corrente"])) {
+                    $query["doc"]["corrente"] = $_GET["corrente"];
+                }                                  
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-categories'}->{'subj-group'}->{'subject'};
                 $query["doc"]["titulo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
                 $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[0]->{'year'};
@@ -102,6 +121,7 @@ if (isset($_GET["oai"])) {
                         $i++;
                     }
                 }
+                $query["doc"]["numAutores"] = $i;
 
                 $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = str_replace('"','',(string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'});
                 $query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
@@ -113,6 +133,7 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["url_principal"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'}->attributes('http://www.w3.org/1999/xlink');
 
                 $query["doc"]["origin"] = "OAI-PHM";
+                $query["doc"]["type"] = "article";
                 $query["doc_as_upsert"] = true;
 
 
@@ -254,6 +275,7 @@ if (isset($_GET["oai"])) {
                     $i++;
                 }
             }
+            $query["doc"]["numAutores"] = $i;
 
             if (isset($rows->date)) {                
                 $body["doc"]["ano"] = substr((string)$rows->date, 0, 4);
@@ -272,7 +294,8 @@ if (isset($_GET["oai"])) {
             //}
             
             $query["doc"]["artigoPublicado"]["issn"] = $_GET["set"];
-                      
+            $query["doc"]["origin"] = "OAI-PHM";
+            $query["doc"]["type"] = "article";                      
             $body["doc_as_upsert"] = true;
             unset($author);
             //print_r($body);
@@ -301,7 +324,16 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
                 if (isset($_GET["qualis2015"])) {
                     $query["doc"]["qualis2015"] = $_GET["qualis2015"];
-                }                   
+                }
+                if (isset($_GET["area"])) {
+                    $query["doc"]["area"] = $_GET["area"];
+                }
+                if (isset($_GET["areaChild"])) {
+                    $query["doc"]["areaChild"] = $_GET["areaChild"];
+                }
+                if (isset($_GET["corrente"])) {
+                    $query["doc"]["corrente"] = $_GET["corrente"];
+                }                                     
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
                 $query["doc"]["titulo"] = str_replace('"','',(string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
                 $query["doc"]["ano"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'},0,4);
@@ -336,6 +368,7 @@ if (isset($_GET["oai"])) {
                     }
                     $i++;
                 }
+                $query["doc"]["numAutores"] = $i;
 
                 $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$identify->Identify->repositoryName;
                 //$query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
@@ -348,6 +381,9 @@ if (isset($_GET["oai"])) {
 
 
                 $query["doc"]["relation"][]=(string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
+
+                $query["doc"]["origin"] = "OAI-PHM";
+                $query["doc"]["type"] = "article";  
 
                 $query["doc_as_upsert"] = true;
 
@@ -365,7 +401,7 @@ if (isset($_GET["oai"])) {
     echo '<br/>';
     echo $_GET["delete_name"];
 
-    $delete_repository = elasticsearch::elastic_delete($_GET["delete"], "repository");
+    $delete_repository = elasticsearch::elastic_delete($_GET["delete"], $type);
     print_r($delete_repository);
     echo '<br/>';
     $body["query"]["query_string"]["query"] = 'source.keyword:"'.$_GET["delete_name"].'"';

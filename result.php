@@ -156,6 +156,10 @@ $mode = "reference";
                                 $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.afiliacao",120,"Instituição normalizada",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.afiliacao_nao_normalizada",120,"Instituição não normalizada",null,"_term",$_GET["search"]);
+                                $facets->facet_range("numAutores",100,"Número de autores - Range",$_GET["search"]);
+                                $facets->facet("numAutores.keyword",120,"Número de autores","desc","_term",$_GET["search"]);
+                                $facets->facet("area",120,"Área do Conhecimento","desc","_term",$_GET["search"]);
+                                $facets->facet("areaChild",120,"Área de Conhecimento - Nível 2","desc","_term",$_GET["search"]);    
                                 $facets->facet("ano",120,"Ano de publicação","desc","_term",$_GET["search"]);
                                 $facets->facet("palavras_chave",100,"Assuntos",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null,"_term",$_GET["search"]);
@@ -173,8 +177,9 @@ $mode = "reference";
                                 $facets->facet("references.pubPlace",100,"Local de publicação",null,"_term",$_GET["search"]);
                                 $facets->facet("references.doi",100,"DOI",null,"_term",$_GET["search"]);
                                 $facets->facet("references.link",100,"Link",null,"_term",$_GET["search"]);
+                                $facets->facet("corrente",120,"Corrente?","desc","_term",$_GET["search"]);
                                 echo '<li>Citações recebidas (Fonte: AMiner)</li>';
-                                $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);
+                                $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);                                
                             ?>
                             </ul>
                             <hr>            

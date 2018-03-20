@@ -1,7 +1,7 @@
 {
   "require" : {
     "facebook/graph-sdk" : "~5.0",
-    "elasticsearch/elasticsearch": "~5.0",
+    "elasticsearch/elasticsearch": "~6.0",
     "caseyamcl/phpoaipmh": "~2.0",
     "guzzlehttp/guzzle":   "~5.0",
     "gettext/gettext": "^4.1"  
