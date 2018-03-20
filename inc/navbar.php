@@ -34,19 +34,13 @@
         </div>
 
         <div class="uk-navbar-center">
-            <a class="uk-navbar-item uk-logo" href="index.php">RPPBCI</a>
+            <a class="uk-navbar-item uk-logo" href="index.php"></a>
         </div>
         <div class="uk-navbar-right">
-            <ul class="uk-navbar-nav">
-                <li class="uk-active">
-                    <a href="contact.php"><?php echo $t->gettext('Contato'); ?></a>
-                </li>                            
+            <ul class="uk-navbar-nav">                           
                 <li class="uk-active">
                     <a href="about.php"><?php echo $t->gettext('Sobre'); ?></a>     
-                </li>
-                <li class="uk-active">
-                    <a href="http://labimetrics.inf.br">Lab-iMetrics</a>
-                </li>                   
+                </li>                
                 <?php if ($_SESSION['localeToUse'] == 'en_US') : ?>
                     <li><a href="http://<?php echo ''.$_SERVER['SERVER_NAME'].$_SERVER["SCRIPT_NAME"].''; ?>?<?php echo $_SERVER["QUERY_STRING"]; ?>&locale=pt_BR">Português</a></li>
                 <?php else : ?>

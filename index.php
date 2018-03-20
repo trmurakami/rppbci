@@ -20,28 +20,41 @@
     }
     ?>        
         
-    <div class="uk-background-image@s uk-background-cover uk-height-viewport">
-        <div class="uk-container">
-            <?php
-                $background_number = mt_rand(1, 3);
-                $prefix = "background_";
-            ?>    
-            <div class="uk-position-cover uk-overlay uk-overlay-default uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-height-viewport" style="background-image: url(<?php echo ${$prefix . $background_number}; ?>);">
-                <?php require 'inc/navbar.php'; ?>
-                <div class="uk-overlay uk-overlay-primary">
-                <h2 style="color:#fcb421"><?php echo $t->gettext(''.$branch.''); ?></h2>                    
-                    <form class="uk-form-stacked" action="result.php">
-                        <div class="uk-margin">
-                            <label class="uk-form-label" for="form-stacked-text"><?php echo $t->gettext('Termos de busca'); ?></label>
-                            <div class="uk-form-controls">
-                                <input class="uk-input" id="form-stacked-text" type="text" placeholder="<?php echo $t->gettext('Pesquise por título, assunto ou autor'); ?>" name="search[]" data-validation="required">
+        <div class="uk-background-image@s uk-background-cover uk-height-viewport" >
+            <div class="uk-container">
+                <?php
+                    $background_number = mt_rand(1, 3);
+                    $prefix = "background_";
+                ?>    
+                <div class="uk-position-cover uk-overlay uk-overlay-default uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-height-viewport" style="background-image: url(<?php echo ${$prefix . $background_number}; ?>);">
+                    <?php include('inc/navbar.php'); ?>
+                    <div class="uk-overlay uk-overlay-primary">
+                    <h2 style="color:#fcb421"><?php echo $t->gettext(''.$branch.''); ?></h2>                    
+                        <form class="uk-form-stacked" action="result.php">
+
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-text"><?php echo $t->gettext('Termos de busca'); ?></label>
+                                <div class="uk-form-controls">
+                                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="<?php echo $t->gettext('Pesquise por título, assunto ou autor'); ?>" name="search[]" data-validation="required">
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label" for="form-stacked-select"><?php echo $t->gettext('Filtrar busca por revista'); ?></label>
+                                <div class="uk-form-controls">
+                                    <select class="uk-select" id="form-stacked-select" name="search[]">
+                                        <option disabled selected value><?php echo $t->gettext('Todas as revistas'); ?></option>
+                                        <?php inicio::facetas_filter("source"); ?>
+                                    </select>
                                 <input type="hidden" name="fields[]" value="titulo">
                                 <input type="hidden" name="fields[]" value="autores.*">
                                 <input type="hidden" name="fields[]" value="palavras_chave">
-                                <input type="hidden" name="fields[]" value="resumo">              
-                        </div></div>                            
-                        <button class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom"><?php echo $t->gettext('Buscar'); ?></button>
-                    </form>
+                                <input type="hidden" name="fields[]" value="resumo">                                                              
+                                </div>
+                            </div>
+                                                         
+                            <button class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom"><?php echo $t->gettext('Buscar'); ?></button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,14 +98,14 @@
 
         <hr class="uk-grid-divider">
 
-        <div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-grid-divider" uk-grid>
-            <div>
-                <h1>Altmetrics (Top 10)</h1>
-                <?php Inicio::top_registros(); ?>                
-            </div>
-            <div>
-                <h1>Altmetrics por periódico</h1>
-                <iframe src="http://143.107.154.38:5601/app/kibana#/visualize/edit/AV7IY3Ynb3LAPKfeMwlP?embed=true&_g=()&_a=(filters:!(),linked:!f,query:(match_all:()),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(field:facebook.facebook_total),schema:metric,type:sum),(enabled:!t,id:'2',params:(field:source.keyword,order:desc,orderBy:'1',size:50000),schema:segment,type:terms)),listeners:(),params:(addLegend:!t,addTooltip:!t,isDonut:!f,legendPosition:right,type:pie),title:'RPPBCI+-+Almetrics+por+Peri%C3%B3dico',type:pie))" height="600" width="550" scrolling="no" frameborder="0" seamless="seamless"></iframe>
+            <div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-grid-divider" uk-grid>
+                <div>
+                    <h1>Altmetrics (Top 10)</h1>
+                    <?php inicio::top_registros(); ?>                
+                </div>
+                <div>
+                    <h1>Altmetrics por periódico</h1>
+                </div>
             </div>
         </div>
     </div>       

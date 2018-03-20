@@ -150,23 +150,40 @@ $mode = "reference";
                                     $_GET["search"] = null;                                    
                                 }
 
-                                $facets->facet("tipo",10,"Tipo de material",null,"_term",$_GET["search"]);
-                                $facets->facet("source",100,"Título do periódico",null,"_term",$_GET["search"]);
-                                $facets->facet("set",100,"Set",null,"_term",$_GET["search"]);
                                 $facets->facet("autores.nomeCompletoDoAutor",120,"Autores",null,"_term",$_GET["search"]);
-                                $facets->facet("autores.afiliacao",120,"Instituição normalizada",null,"_term",$_GET["search"]);
-                                $facets->facet("autores.afiliacao_nao_normalizada",120,"Instituição não normalizada",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.afiliacao",120,"Afiliação normalizada",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.pais",120,"País da intituição de afiliação",null,"_term",$_GET["search"]);
+                                $facets->facet("autores.afiliacao_nao_normalizada",120,"Afiliação não normalizada",null,"_term",$_GET["search"]);
                                 $facets->facet_range("numAutores",100,"Número de autores - Range",$_GET["search"]);
                                 $facets->facet("numAutores.keyword",120,"Número de autores","desc","_term",$_GET["search"]);
                                 $facets->facet("area",120,"Área do Conhecimento","desc","_term",$_GET["search"]);
-                                $facets->facet("areaChild",120,"Área de Conhecimento - Nível 2","desc","_term",$_GET["search"]);    
+                                $facets->facet("areaChild",120,"Área de Conhecimento - Nível 2","desc","_term",$_GET["search"]);                                    
+                                $facets->facet("source",100,"Título do periódico",null,"_term",$_GET["search"]);
+                                $facets->facet("tipo",10,"Seções",null,"_term",$_GET["search"]);
                                 $facets->facet("ano",120,"Ano de publicação","desc","_term",$_GET["search"]);
                                 $facets->facet("palavras_chave",100,"Assuntos",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.nomeDaEditora",100,"Editora",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.volume",100,"Volume",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.fasciculo",100,"Fascículo",null,"_term",$_GET["search"]);
                                 $facets->facet("artigoPublicado.issn",100,"ISSN",null,"_term",$_GET["search"]);
-                                $facets->facet("qualis2015",100,"Qualis 2015 (Comunicação e Informação)",null,"_term",$_GET["search"]);
+
+                                $facets->facet("qualis.qualis.2012.area",50,$t->gettext('Qualis 2010/2012 - Área'),null,"_term",$_GET["search"]);
+                                $facets->facet("qualis.qualis.2012.nota",50,$t->gettext('Qualis 2010/2012 - Nota'),null,"_term",$_GET["search"]);                                    
+                                $facets->facet("qualis.qualis.2012.area_nota",50,$t->gettext('Qualis 2010/2012 - Área / Nota'),null,"_term",$_GET["search"]);
+                                $facets->facet("qualis.qualis.2016.area",50,$t->gettext('Qualis 2013/2016 - Área'),null,"_term",$_GET["search"]);
+                                $facets->facet("qualis.qualis.2016.nota",50,$t->gettext('Qualis 2013/2016 - Nota'),null,"_term",$_GET["search"]);                                    
+                                $facets->facet("qualis.qualis.2016.area_nota",50,$t->gettext('Qualis 2013/2016 - Área / Nota'),null,"_term",$_GET["search"]);
+
+                                $facets->facet("WOS.coverage",50,$t->gettext('Cobertura na Web of Science'),null,"_term",$_GET["search"]);
+                                $facets->facet_range("JCR.JCR.2016.Journal_Impact_Factor",100,"JCR - Journal Impact Factor - 2016");
+                                $facets->facet_range("JCR.JCR.2016.IF_without_Journal_Self_Cites",100,"JCR - Journal Impact Factor without Journal Self Cites - 2016");
+                                $facets->facet_range("JCR.JCR.2016.Eigenfactor_Score",100,"JCR - Eigenfactor Score - 2016");
+                                $facets->facet_range("citescore.citescore.2016.citescore",100,"Citescore - 2016");
+                                $facets->facet_range("citescore.citescore.2016.SJR",100,"SJR - 2016");
+                                $facets->facet_range("citescore.citescore.2016.SNIP",100,"SNIP - 2016");
+                                $facets->facet_range("metrics.dimensions.times_cited",100,"Citações no Dimensions");
+           
+
                                 echo '<li>Dados das referências citadas nas publicações</li>';
                                 $facets->facet("references.analyticTitle", 100, "Título", null, "_term", $_GET["search"]);
                                 $facets->facet("references.monogrTitle",100,"Título da publicação fonte",null,"_term",$_GET["search"]);
@@ -179,7 +196,9 @@ $mode = "reference";
                                 $facets->facet("references.link",100,"Link",null,"_term",$_GET["search"]);
                                 $facets->facet("corrente",120,"Corrente?","desc","_term",$_GET["search"]);
                                 echo '<li>Citações recebidas (Fonte: AMiner)</li>';
-                                $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);                                
+                                $facets->facet_range("aminer.num_citation",100,"Citações no AMiner",$_GET["search"]);
+                                echo '<li>Registro na BDPI USP</li>';
+                                $facets->facet("bdpi.existe",100,"Registrado na BDPI USP?",null,"_term",$_GET["search"]);
                             ?>
                             </ul>
                             <hr>            
@@ -313,6 +332,7 @@ $mode = "reference";
                                                 <li>
                                                     <?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
                                                 </li>
+                                                <li><div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
                                                 <li>
                                                     <?php $dois[] = $r["_source"]['doi']; ?>
                                                      <?php Facebook::facebook_doi($dois, $r["_id"]); ?>
@@ -367,6 +387,9 @@ $mode = "reference";
                                                         
                                                 <?php endif; ?>
                                             </ul>
+                                        </li>
+                                        <li class="uk-h6 uk-margin-top">
+                                           <?php USP::query_bdpi($r["_source"]['titulo'],$r["_source"]['ano'],$r["_id"]); ?> 
                                         </li>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #ref<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Referências'); ?></a>
@@ -462,7 +485,8 @@ $mode = "reference";
             var url = window.location.href.split('&page')[0];
             window.location=url +'&page='+ (pageIndex+1);
         });
-        </script>    
+        </script>
+        <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>     
 
 <?php require 'inc/offcanvas.php'; ?>         
         
