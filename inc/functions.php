@@ -170,14 +170,15 @@ class Admin
         $query["aggs"]["counts"]["terms"]["order"]["_term"] = "asc";
         $query["aggs"]["counts"]["terms"]["size"] = 10000;
 
+        $query["query"]["bool"]["must"]["query_string"]["query"] = "type:journal";
+
         $params = [];
         $params["index"] = $index;
-        $params["type"] = "repository";
+        $params["type"] = $type;
         $params["size"] = 1000;
         $params["body"] = $query;           
 
         $data = $client->search($params);
-        //print_r($data["hits"]["hits"]);
 
         echo '<table class="uk-table">';
         echo '<thead>';

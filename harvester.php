@@ -140,6 +140,9 @@ if (isset($_GET["oai"])) {
                             if (!empty($result_tematres["found_term"])) {
                                 $query["doc"]["autores"][$i]["afiliacao"] = $result_tematres["found_term"];
                                 $query["doc"]["autores"][$i]["pais"] = $result_tematres["country"];
+                                if ($result_tematres["country"] != "Brasil"){
+                                    $query["doc"]["internacional"] = "Sim";
+                                }
                             } else {
                                 $query["doc"]["autores"][$i]["afiliacao_nao_normalizada"] = strip_tags((string)$autores->{'aff'});                                
                             }
