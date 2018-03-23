@@ -198,6 +198,8 @@ class Admin
             echo '<tr><td><a href="'.$repository['_id'].'">'.$repository['_source']['name'].'</a></td><td>'.$repository['_source']['metadataFormat'].'</td>';
             if (!empty($repository['_source']['qualis2015'])){
                 echo '<td>'.$repository['_source']['qualis2015'].'</td>';
+            } else {
+                echo '<td>Sem informação</td>';
             }
             echo  '<td>'.$repository['_source']['date'].'</td><td>';
 	        echo Admin::countRecords($repository['_source']['name']);
