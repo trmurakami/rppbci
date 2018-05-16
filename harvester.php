@@ -26,7 +26,7 @@ if (isset($_GET["oai"])) {
     $body_repository["doc"]["url"] = (string)$identify->request;
     $body_repository["doc_as_upsert"] = true;
 
-    $insert_repository_result = elasticsearch::elastic_update($body_repository["doc"]["url"],"repository",$body_repository);
+    $insert_repository_result = elasticsearch::elastic_update($body_repository["doc"]["url"],"journals",$body_repository);
     print_r($insert_repository_result);
 
     // Store repository data - Fim

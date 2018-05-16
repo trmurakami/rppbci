@@ -252,32 +252,6 @@ PUT /rppbci/journals/_mapping
                 }
               }
             }
-          },
-          "repository": {
-            "properties": {
-              "date": {
-                "type": "date"
-              },
-              "name": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
-              },
-              "url": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
-              }            
-
-            }
-         }
+          }
     }
 }

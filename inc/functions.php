@@ -148,7 +148,7 @@ class Admin
 
         $params = [];
         $params["index"] = $index;
-        $params["type"] = "repository";
+        $params["type"] = "journals";
         $params["size"] = 1000;
         $params["body"] = $query;           
 
