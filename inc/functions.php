@@ -110,10 +110,34 @@ class Inicio
 
 
         foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
-            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="result.php?&search[]=+'.$field.'.keyword:&quot;'.htmlentities(urlencode($facets['key'])).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
+            echo '<div class="uk-width-medium-1-5"><div class="uk-panel uk-panel-hover" data-my-category="'.$facets['key'][0].'" data-my-category2="'.$facets['doc_count'].'"><p><i class="uk-icon-bookmark"></i> <a href="source.php?&search[]=+'.$field.'.keyword:&quot;'.htmlentities(urlencode($facets['key'])).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'],0,',','.').')</a></p></div></div>';
         }
 
     } 
+
+    /*Filtro - Página inicial*/
+    static function facetas_filter($field) {
+        global $index;
+        global $type;
+        global $client;
+
+        $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["counts"]["terms"]["size"] = 1000;
+
+        $params = [];
+        $params["index"] = $index;
+        $params["type"] = $type;
+        $params["size"] = 10;
+        $params["body"] = $query;           
+
+        $data = $client->search($params);
+
+
+        foreach ($data["aggregations"]["counts"]["buckets"] as $facets) {
+            echo '<option value="source.keyword:&quot;'.$facets['key'].'&quot;" style="color:#333">'.$facets['key'].'</option>';
+        }
+
+    }     
      
     
 }
@@ -146,14 +170,15 @@ class Admin
         $query["aggs"]["counts"]["terms"]["order"]["_term"] = "asc";
         $query["aggs"]["counts"]["terms"]["size"] = 10000;
 
+        $query["query"]["bool"]["must"]["query_string"]["query"] = "type:journal";
+
         $params = [];
         $params["index"] = $index;
-        $params["type"] = "journals";
+        $params["type"] = $type;
         $params["size"] = 1000;
         $params["body"] = $query;           
 
         $data = $client->search($params);
-        //print_r($data["hits"]["hits"]);
 
         echo '<table class="uk-table">';
         echo '<thead>';
@@ -173,6 +198,8 @@ class Admin
             echo '<tr><td><a href="'.$repository['_id'].'">'.$repository['_source']['name'].'</a></td><td>'.$repository['_source']['metadataFormat'].'</td>';
             if (!empty($repository['_source']['qualis2015'])){
                 echo '<td>'.$repository['_source']['qualis2015'].'</td>';
+            } else {
+                echo '<td>Sem informação</td>';
             }
             echo  '<td>'.$repository['_source']['date'].'</td><td>';
 	        echo Admin::countRecords($repository['_source']['name']);
@@ -656,4 +683,192 @@ function exclude_deleted()
     return $data["_indices"]["rppbci"]["deleted"];
     
 }
+
+class USP 
+{
+
+    static function query_bdpi($query_title,$query_year,$sha256) { 
+        global $type; 
+        
+        $query_title =  str_replace('"','',$query_title);
+        $query = '
+        {
+            "min_score": 35,
+            "query":{
+                "bool": {
+                    "should": [	
+                        {
+                            "multi_match" : {
+                                "query":      "'.$query_title.'",
+                                "type":       "cross_fields",
+                                "fields":     [ "name" ],
+                                "minimum_should_match": "85%" 
+                            }
+                        },	    
+                        {
+                            "multi_match" : {
+                                "query":      "'.$query_year.'",
+                                "type":       "best_fields",
+                                "fields":     [ "datePublished" ],
+                                "operator":   "and",
+                                "minimum_should_match": "75%" 
+                            }
+                        }
+                    ],
+                    "minimum_should_match" : 2               
+                }
+            }
+        }
+        ';
+
+        $ch = curl_init();
+        $method = "POST";
+        $url = "http://172.31.0.90/sibi/producao/_search";
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_PORT, 9200);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($result, true);
+
+        if ($data["hits"]["total"] > 0){
+            echo '<div class="uk-alert">';
+            echo '<h3>Registro na Biblioteca Digital de Produção Intelectual da USP</h3>';
+            foreach ($data["hits"]["hits"] as $match){
+                echo '<p>Nota de proximidade: '.$match["_score"].' - <a href="http://bdpi.usp.br/single.php?_id='.$match["_id"].'">'.$match["_source"]["type"].' - '.$match["_source"]["name"].' ('.$match["_source"]["datePublished"].')</a><br/> Autores: ';   
+                foreach ($match["_source"]['author'] as $autores) {
+                    echo ''.$autores['person']['name'].', ';
+                }
+                if (isset($match["_source"]["doi"])){
+                    $doc["doc"]["bdpi"]["doi_bdpi"] = $match["_source"]["doi"];
+                } else {
+                    
+                }
+                if (!isset($match["_source"]["USP"]["views_counter"])){
+                    $match["_source"]["USP"]["views_counter"] = 0;
+                }
+                echo '<br/>Quantidade de visualizações de registro na BDPI USP: '.$match["_source"]["USP"]["views_counter"].'';
+                $doc["doc"]["bdpi"]["views_counter"] = $match["_source"]["USP"]["views_counter"];
+                echo '</p>';
+            }
+            echo '</div>';            
+
+            $doc["doc"]["bdpi"]["existe"] = "Sim";
+            $doc["doc_as_upsert"] = true;
+            //print_r($doc);
+            $result_elastic = elasticsearch::elastic_update($sha256,$type,$doc);
+        }
+        return $data;
+    }
+
+    /*
+    * Consulta o Qualis de uma Obra *
+    */
+    static function qualis_issn ($issn) {
+
+        $query["query"]["ids"]["values"][] = $issn;
+
+        $ch = curl_init();
+        $method = "POST";
+        $url = "http://172.31.0.90/serial_metrics/qualis/_search";
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_PORT, 9200);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($result, true);   
+        return $data;
+    }
+    
+    /*
+    * Consulta o JCR de uma Obra *
+    */
+    static function jcr_issn ($issn) {
+
+        $query["query"]["ids"]["values"][] = $issn;
+
+        $ch = curl_init();
+        $method = "POST";
+        $url = "http://172.31.0.90/serial_jcr/JCR/_search";
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_PORT, 9200);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($result, true);   
+        return $data;
+    }
+     
+    /*
+    * Consulta indexação na Web of Science de uma Obra *
+    */
+    static function wos_issn ($issn) {
+
+        $query["query"]["ids"]["values"][] = $issn;
+        
+        $ch = curl_init();
+        $method = "POST";
+        $url = "http://172.31.0.90/serial_web_of_science/WOS/_search";
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_PORT, 9200);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($result, true);   
+        return $data;
+
+    }    
+
+    /*
+    * Consulta indexação na Web of Science de uma Obra *
+    */
+    static function citescore_issn ($issn) {
+
+        $query["query"]["ids"]["values"][] = $issn;
+        
+        $ch = curl_init();
+        $method = "POST";
+        $url = "http://172.31.0.90/citescore/issn/_search";
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_PORT, 9200);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($result, true);   
+        return $data;
+        
+    }        
+
+
+}
+
+function dimensionsAPI($doi)
+{
+    // Get cURL resource
+    $curl = curl_init();
+    // Set some options - we are passing in a useragent too here
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => 'https://metrics-api.dimensions.ai/doi/'.$doi.'',
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'
+    )
+    );
+    // Send the request & save response to $resp
+    $resp = curl_exec($curl);
+    $data = json_decode($resp, true);
+    return $data;
+    // Close request to clear up some resources
+    curl_close($curl);    
+}     
+
 ?>
