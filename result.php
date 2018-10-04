@@ -342,56 +342,56 @@ $mode = "reference";
                                                 </form>
                                             <?php endif; ?>
                                         <?php endif; ?>
-
+                                        
+                                        <!--
                                         <li class="uk-h6 uk-margin-top">
                                             <p>Métricas:</p>
-                                             <?php if (!empty($r["_source"]['doi'])) : ?>
+                                             < ?php if (!empty($r["_source"]['doi'])) : ?>
                                             <ul>
                                                 <li>
-                                                    <div data-badge-popover="right" data-badge-type="1" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
+                                                    <div data-badge-popover="right" data-badge-type="1" data-doi="< ?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
                                                 </li>
                                                 <li>
-                                                    <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
+                                                    <a href="https://plu.mx/plum/a/?doi=< ?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
+                                                    < ?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
                                                 </li>
-                                                <li><div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
+                                                <li><div><span class="__dimensions_badge_embed__" data-doi="< ?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
                                                 <li>
-                                                    <?php $dois[] = $r["_source"]['doi']; ?>
-                                                     <?php Facebook::facebook_doi($dois, $r["_id"]); ?>
-                                                     <?php unset($dois); ?>
+                                                    < ?php $dois[] = $r["_source"]['doi']; ?>
+                                                     < ?php Facebook::facebook_doi($dois, $r["_id"]); ?>
+                                                     < ?php unset($dois); ?>
                                                 </li>
                                             </ul>
-                                            <?php endif; ?>
+                                            < ?php endif; ?>
                                             <ul>
                                                 <li>
-                                                    <?php Facebook::facebook_data($r["_source"]['relation'], $r["_id"]);?>
-                                                    <!--
+                                                    < ?php Facebook::facebook_data($r["_source"]['relation'], $r["_id"]);?>
                                                     < ?php
                                                         if (!empty($r["_source"]['relation'])){
                                                             facebook::facebook_api_reactions($r["_source"]['relation'],$fb,$server,$r['_id']);
                                                             unset($facebook_url_array);
                                                         }
                                                     ?>
-                                                    -->
+                                                    
                                                 </li>
                                                 <li>
-                                                    <?php if (isset($r["_source"]['div_cientifica'])) : ?>
-                                                        <?php foreach ($r["_source"]['div_cientifica'] as $div_source) :?>
-                                                        <?php $url_array[] = $div_source['url']; ?>
-                                                        <?php endforeach; ?>
-                                                        <?php Facebook::facebook_divulgacao($url_array, $r["_id"]);?>
-                                                        <?php unset($url_array);?>
-                                                    <?php endif; ?>
+                                                    < ?php if (isset($r["_source"]['div_cientifica'])) : ?>
+                                                        < ?php foreach ($r["_source"]['div_cientifica'] as $div_source) :?>
+                                                        < ?php $url_array[] = $div_source['url']; ?>
+                                                        < ?php endforeach; ?>
+                                                        < ?php Facebook::facebook_divulgacao($url_array, $r["_id"]);?>
+                                                        < ?php unset($url_array);?>
+                                                    < ?php endif; ?>
                                                 </li>
-                                                <?php if (isset($r["_source"]["aminer"]["num_citation"])) : ?>
+                                                < ?php if (isset($r["_source"]["aminer"]["num_citation"])) : ?>
                                                         <li>
                                                             <h4>Dados da API do AMiner:</h4>
-                                                            <p>Título: <a href="https://aminer.org/archive/<?php echo $r["_source"]["aminer"]["id"];?>"><?php echo $r["_source"]["aminer"]["title"]; ?></a></p>
-                                                            <p>Número de citações no AMiner: <?php echo $r["_source"]["aminer"]["num_citation"]; ?></p>
+                                                            <p>Título: <a href="https://aminer.org/archive/< ?php echo $r["_source"]["aminer"]["id"];?>"><?php echo $r["_source"]["aminer"]["title"]; ?></a></p>
+                                                            <p>Número de citações no AMiner: < ?php echo $r["_source"]["aminer"]["num_citation"]; ?></p>
                                                             <p>
-                                                            <?php
+                                                            < ?php
 
                                                             if (!empty($r["_source"]["aminer"]["doi"])) {
                                                                 echo 'DOI: '.$r["_source"]["aminer"]["doi"].'<br/>';
@@ -409,12 +409,15 @@ $mode = "reference";
                                                             </p>
                                                         </li>
 
-                                                <?php endif; ?>
+                                                < ?php endif; ?>
                                             </ul>
                                         </li>
+                                        -->
+                                        <!--
                                         <li class="uk-h6 uk-margin-top">
-                                           <?php USP::query_bdpi($r["_source"]['titulo'], $r["_source"]['ano'], $r["_id"]); ?>
+                                           < ?php USP::query_bdpi($r["_source"]['titulo'], $r["_source"]['ano'], $r["_id"]); ?>
                                         </li>
+                                        -->
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #ref<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Referências'); ?></a>
                                         <div id="citacao<?php echo $conta_cit;?>" hidden="hidden">

@@ -330,7 +330,18 @@ class Facebook
         $batch = [
             $request
         ];
-        $responses = $fb->sendBatchRequest($batch);
+        //$responses = $fb->sendBatchRequest($batch);
+        try {
+            $responses = $fb->sendBatchRequest($batch);
+        } catch(Facebook\Exceptions\FacebookResponseException $e) {
+            // When Graph returns an error
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch(Facebook\Exceptions\FacebookSDKException $e) {
+            // When validation fails or other local issues
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }        
         $graphObject = $responses->getGraphObject();        
         $fb_reaction_count = 0;
         $fb_comment_count = 0;
