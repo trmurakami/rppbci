@@ -321,6 +321,31 @@ $mode = "reference";
                                             </div>
                                             <?php endif; ?>
                                         </p>
+
+                                        <p class="uk-margin-remove">
+                                            <?php if (!empty($r["_source"]['facebook'])) : ?>
+                                                <table class="uk-table"><caption>Interações no Facebook</caption>        
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Reactions</th>
+                                                            <th>Comentários</th>
+                                                            <th>Compartilhamentos</th>                        
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                           <td><?php echo $r["_source"]['facebook']['reaction_count'];?></td>
+                                                           <td><?php echo $r["_source"]['facebook']['comment_count'];?></td>
+                                                           <td><?php echo $r["_source"]['facebook']['share_count'];?></td>
+                                                           <td><?php echo $r["_source"]['facebook']['facebook_total'];?></td>
+                                                        </tr>
+                                                    </tbody>   
+                                                </table><br/>
+                                            <?php endif; ?>
+                                        </p>
+
+
                                         <?php if (isset($_GET["papel"])) : ?>
                                             <?php if ($_GET["papel"] == "admin") : ?>
                                                 <form class="uk-form uk-form-stacked" action="result.php?search[]=" method="POST">

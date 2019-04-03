@@ -11,19 +11,19 @@
     $params = [];
     $params["index"] = $index;
     $params["type"] = $type;
-    $params["size"] = 100;
+    $params["size"] = 20;
     $params["body"] = $query;
 
     $cursor = $client->search($params);
     $total = $cursor["hits"]["total"];
 
-    echo 'Faltam: '.$total.'<br/><br/>';
+    //echo 'Faltam: '.$total.'<br/><br/>';
 
     foreach ($cursor["hits"]["hits"] as $r) {
-        print_r($r["_id"]);
-        echo "<br/>";
-        print_r($r["_source"]['relation']);
-        echo "<br/>";
+        //print_r($r["_id"]);
+        //echo "<br/>";
+        //print_r($r["_source"]['relation']);
+        //echo "<br/>";
         //print_r($r["_source"]['doi']);
         //echo "<br/>";        
 
@@ -34,6 +34,9 @@
         sleep(13);
 
     }   
+
+
+    header("Refresh: 0");
     
 
 
