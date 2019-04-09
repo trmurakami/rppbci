@@ -29,6 +29,7 @@
                         <select name="metadataFormat">
                             <option value="nlm">nlm (padrão)</option>
                             <option value="rfc1807">rfc1807</option>
+                            <option value="oai_dc">oai_dc</option>
                         </select>                        
                         <button class="uk-button uk-button-primary uk-button-large">Inserir</button>
                     </fieldset>
