@@ -27,9 +27,11 @@
         <div class="uk-navbar-left">
             <ul class="uk-navbar-nav">
                 <li class="uk-active"><a href="index.php"><?php echo $t->gettext('Início'); ?></a></li>
+                <!--
                 <li class="uk-active">
                     <a href="statistics.php"><?php echo $t->gettext('Estatísticas'); ?></a>     
                 </li> 
+                -->
              </ul>
         </div>
 
@@ -40,13 +42,14 @@
             <ul class="uk-navbar-nav">                           
                 <li class="uk-active">
                     <a href="about.php"><?php echo $t->gettext('Sobre'); ?></a>     
-                </li>                
+                </li> 
+                <!--               
                 <?php if ($_SESSION['localeToUse'] == 'en_US') : ?>
                     <li><a href="http://<?php echo ''.$_SERVER['SERVER_NAME'].$_SERVER["SCRIPT_NAME"].''; ?>?<?php echo $_SERVER["QUERY_STRING"]; ?>&locale=pt_BR">Português</a></li>
                 <?php else : ?>
                     <li><a href="http://<?php echo ''.$_SERVER['SERVER_NAME'].$_SERVER["SCRIPT_NAME"].''; ?>?<?php echo $_SERVER["QUERY_STRING"]; ?>&locale=en_US">English</a></li>
                 <?php endif ; ?>                
-                
+                -->
 
             </ul>
         </div>            
