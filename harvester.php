@@ -19,31 +19,6 @@ if (isset($_GET["oai"])) {
 
     $body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
 
-    if (isset($_GET["issn"])) {
-        $body_repository["doc"]["issn"] = $_GET["issn"];
-
-        $qualis_periodico = USP::qualis_issn($_GET["issn"]);
-        if ($qualis_periodico["hits"]["total"] > 0) {
-            $body_repository["doc"]["qualis_journal"] = $qualis_periodico["hits"]["hits"][0]["_source"];
-        }
-
-        $jcr_periodico = USP::jcr_issn($_GET["issn"]);
-        if ($jcr_periodico["hits"]["total"] > 0) {
-            $query["doc"]["JCR_jornal"] = $jcr_periodico["hits"]["hits"][0]["_source"];
-        }
-
-        $wos_periodico = USP::wos_issn($_GET["issn"]);
-        if ($wos_periodico["hits"]["total"] > 0) {
-            $query["doc"]["WOS_journal"] = $wos_periodico["hits"]["hits"][0]["_source"];
-        }
-
-        $citescore_periodico = USP::citescore_issn($_GET["issn"]);
-        if ($citescore_periodico["hits"]["total"] > 0) {
-            $query["doc"]["citescore_journal"] = $citescore_periodico["hits"]["hits"][0]["_source"];
-        }
-
-    }
-
     $body_repository["doc"]["metadataFormat"] = $_GET["metadataFormat"];
     if (isset($_GET["qualis2015"])) {
         $body_repository["doc"]["qualis2015"] = $_GET["qualis2015"];
@@ -159,53 +134,6 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'});
                 $query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
                 $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
-
-                if (isset($_GET["issn"])) {
-
-                    $qualis = USP::qualis_issn($_GET["issn"]);
-                    if ($qualis["hits"]["total"] > 0) {
-                        $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
-                    }
-
-                    $jcr = USP::jcr_issn($_GET["issn"]);
-                    if ($jcr["hits"]["total"] > 0) {
-                        $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
-                    }
-
-                    $wos = USP::wos_issn($_GET["issn"]);
-                    if ($wos["hits"]["total"] > 0) {
-                        $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
-                    }
-
-                    $citescore = USP::citescore_issn($_GET["issn"]);
-                    if ($citescore["hits"]["total"] > 0) {
-                        $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
-                    }
-
-                } else {
-
-                    $qualis = USP::qualis_issn($query["doc"]["artigoPublicado"]["issn"]);
-                    if ($qualis["hits"]["total"] > 0) {
-                        $query["doc"]["qualis"] = $qualis["hits"]["hits"][0]["_source"];
-                    }
-
-                    $jcr = USP::jcr_issn($query["doc"]["artigoPublicado"]["issn"]);
-                    if ($jcr["hits"]["total"] > 0) {
-                        $query["doc"]["JCR"] = $jcr["hits"]["hits"][0]["_source"];
-                    }
-
-                    $wos = USP::wos_issn($query["doc"]["artigoPublicado"]["issn"]);
-                    if ($wos["hits"]["total"] > 0) {
-                        $query["doc"]["WOS"] = $wos["hits"]["hits"][0]["_source"];
-                    }
-
-                    $citescore = USP::citescore_issn($query["doc"]["artigoPublicado"]["issn"]);
-                    if ($citescore["hits"]["total"] > 0) {
-                        $query["doc"]["citescore"] = $citescore["hits"]["hits"][0]["_source"];
-                    }
-
-                }
-
                 $query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
                 $query["doc"]["artigoPublicado"]["fasciculo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue'};
                 $query["doc"]["artigoPublicado"]["paginaInicial"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-id'};
