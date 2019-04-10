@@ -344,7 +344,8 @@ $mode = "reference";
                                                     <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
+                                                    <div data-badge-details="right" data-badge-type="2" data-doi="<?php echo $r["_source"]['doi'];?>" data-condensed="true" data-hide-no-mentions="true" class="altmetric-embed"></div>
+                                                    <!-- < ?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?> -->
                                                 </li>
                                                 <li><div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
                                             </ul>
