@@ -333,28 +333,24 @@ $mode = "reference";
                                             <?php endif; ?>
                                         <?php endif; ?>
                                         
-                                        <!--
                                         <li class="uk-h6 uk-margin-top">
                                             <p>Métricas:</p>
-                                             < ?php if (!empty($r["_source"]['doi'])) : ?>
+                                             <?php if (!empty($r["_source"]['doi'])) : ?>
                                             <ul>
                                                 <li>
-                                                    <div data-badge-popover="right" data-badge-type="1" data-doi="< ?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
+                                                    <div data-badge-popover="right" data-badge-type="1" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
                                                 </li>
                                                 <li>
-                                                    <a href="https://plu.mx/plum/a/?doi=< ?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
+                                                    <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                                 </li>
                                                 <li>
-                                                    < ?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
+                                                    <?php altmetric_com::get_altmetrics($r["_source"]['doi'], $r["_id"]); ?>
                                                 </li>
-                                                <li><div><span class="__dimensions_badge_embed__" data-doi="< ?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
-                                                <li>
-                                                    < ?php $dois[] = $r["_source"]['doi']; ?>
-                                                     < ?php Facebook::facebook_doi($dois, $r["_id"]); ?>
-                                                     < ?php unset($dois); ?>
-                                                </li>
+                                                <li><div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
                                             </ul>
-                                            < ?php endif; ?>
+                                            <?php endif; ?>
+                                            
+                                            <!--
                                             <ul>
                                                 <li>
                                                     < ?php Facebook::facebook_data($r["_source"]['relation'], $r["_id"]);?>
@@ -408,6 +404,7 @@ $mode = "reference";
                                            < ?php USP::query_bdpi($r["_source"]['titulo'], $r["_source"]['ano'], $r["_id"]); ?>
                                         </li>
                                         -->
+                                        </li>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #citacao<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Como citar'); ?></a>
                                         <a class="uk-button uk-button-text" href="#" uk-toggle="target: #ref<?php echo $conta_cit;?>; animation: uk-animation-fade"><?php echo $t->gettext('Referências'); ?></a>
                                         <div id="citacao<?php echo $conta_cit;?>" hidden="hidden">
