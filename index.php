@@ -100,7 +100,7 @@
 
             <div class="uk-child-width-1-1@m uk-grid-small uk-grid-match uk-grid-divider" uk-grid>
                 <div>
-                    <h1>Altmetrics (Top 10)</h1>
+                    <h1>Interações (Top 10)</h1>
                     <?php inicio::top_registros(); ?>                
                 </div>
             </div>

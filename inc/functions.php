@@ -98,6 +98,7 @@ class Inicio
         global $client;
 
         $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["counts"]["terms"]["order"]["_term"] = "asc";
         $query["aggs"]["counts"]["terms"]["size"] = 1000;
 
         $params = [];
