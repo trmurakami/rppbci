@@ -170,6 +170,8 @@ class Admin
         $query["aggs"]["counts"]["terms"]["order"]["_term"] = "asc";
         $query["aggs"]["counts"]["terms"]["size"] = 10000;
 
+        $query["sort"]["name.keyword"] = "asc";
+
         $query["query"]["bool"]["must"]["query_string"]["query"] = "type:journal";
 
         $params = [];
@@ -179,6 +181,8 @@ class Admin
         $params["body"] = $query;           
 
         $data = $client->search($params);
+
+        //print_r($data);
 
         echo '<table class="uk-table">';
         echo '<thead>';
