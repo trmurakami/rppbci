@@ -38,6 +38,10 @@
 
 
             <h3>Fontes coletadas</h3>
+            <div class="uk-alert-primary" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p><a href="tools/export.php">Exportar todos os registros</a></p>
+            </div>
 
 
             <?php Admin::sources("source"); ?>
