@@ -9,29 +9,28 @@ if (!empty($_POST)) {
 }
 
 $result_get = Requests::getParser($_GET);
-$query = $result_get['query'];
 $limit = $result_get['limit'];
 $page = $result_get['page'];
-$skip = $result_get['skip'];
-
+$params = [];
+$params["index"] = $index;
+$params["body"] = $result_get['query'];
+$cursorTotal = $client->count($params);
+$total = $cursorTotal["count"];
 if (isset($_GET["sort"])) {
-    $query["sort"][$_GET["sort"]]["unmapped_type"] = "long";
-    $query["sort"][$_GET["sort"]]["missing"] = "_last";
-    $query["sort"][$_GET["sort"]]["order"] = "desc";
-    $query["sort"][$_GET["sort"]]["mode"] = "max";
+    $result_get['query']["sort"][$_GET["sort"]]["unmapped_type"] = "long";
+    $result_get['query']["sort"][$_GET["sort"]]["missing"] = "_last";
+    $result_get['query']["sort"][$_GET["sort"]]["order"] = "desc";
+    $result_get['query']["sort"][$_GET["sort"]]["mode"] = "max";
 } else {
     //$query['sort']['facebook.facebook_total']['order'] = "desc";
     //$query['sort']['ano.keyword']['order'] = "desc";
 }
-
-$params = [];
-$params["index"] = $index;
+$params["body"] = $result_get['query'];
 $params["size"] = $limit;
-$params["from"] = $skip;
-$params["body"] = $query;
-
+$params["from"] = $result_get['skip'];
 $cursor = $client->search($params);
-$total = $cursor["hits"]["total"];
+
+
 
 /* Citeproc-PHP*/
 require 'inc/citeproc-php/CiteProc.php';
@@ -84,13 +83,11 @@ $mode = "reference";
             <div class="row">
                 <div class="col-8">                
                     <!-- PAGINATION -->
-                    <?php //UI::pagination($page, $total, $limit, $t); ?>
+                    <?php UI::pagination($page, $total, $limit); ?>
                     <!-- /PAGINATION --> 
                     <br/>  
 
                     <!-- Resultados -->
-                    <div class="uk-width-1-1 uk-margin-top uk-description-list-line">
-                        <ul class="uk-list uk-list-divider">
                         <?php $conta_cit = 1; ?>
                         <?php foreach ($cursor["hits"]["hits"] as $r) : ?>                       
 
@@ -100,14 +97,37 @@ $mode = "reference";
                                 <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url_principal']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
 
                                 <?php if (!empty($r["_source"]['autores'])) : ?>
-                                    <?php foreach ($r["_source"]['autores'] as $autores) {
-                                        $authors_array[]=''.$autores["nomeCompletoDoAutor"].'';
-                                    }
-                                    $array_aut = implode(", ",$authors_array);
-                                    unset($authors_array);
-                                    echo '<p class="text-muted"><b>Autores:</b> '.''. $array_aut.'</p>';
+                                    <?php 
+                                        foreach ($r["_source"]['autores'] as $autores) {
+                                            $authors_array[]=''.$autores["nomeCompletoDoAutor"].'';
+                                        }
+                                        $array_aut = implode(", ",$authors_array);
+                                        unset($authors_array);
+                                        echo '<p class="text-muted"><b>Autores:</b> '.''. $array_aut.'</p>';
                                     ?>
-                                <?php endif; ?>                            
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['palavras_chave'])) : ?>
+                                    <?php 
+                                        foreach ($r["_source"]['palavras_chave'] as $assunto) {
+                                            $assunto_array[]=''.$assunto.'';
+                                        }
+                                        $array_assunto = implode(", ",$assunto_array);
+                                        unset($assunto_array);
+                                        echo '<p class="text-muted"><b>Assuntos:</b> '.''. $array_assunto.'</p>';
+                                    ?>
+                                <?php endif; ?>
+                                
+                                <?php if (!empty($r["_source"]['url_principal'])||!empty($r["_source"]['doi'])) : ?>
+                                    <div class="btn-group" role="group" aria-label="Online Access">
+                                        <?php if (!empty($r["_source"]['url_principal'])) : ?>
+                                            <a class="btn btn-primary" href="<?php echo $r["_source"]['url_principal'];?>" target="_blank">Acesso online à fonte</a>
+                                        <?php endif; ?>
+                                        <?php if (!empty($r["_source"]['doi'])) : ?>
+                                            <a class="btn btn-primary" href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank">Resolver DOI</a>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>                                                                
                             
                             </div>
                         </div>
@@ -122,40 +142,6 @@ $mode = "reference";
                             <div class="uk-width-4-5@m">
                                 <article class="uk-article">
                                 <p class="uk-text-lead uk-margin-remove" style="font-size:115%"><a href="< ?php echo $r['_source']['url_principal'];?>">< ?php echo $r["_source"]['name'];?>< ?php if (!empty($r["_source"]['ano'])) { echo ' ('.$r["_source"]['ano'].')'; } ?></a></p>
-
-                                    <ul class="uk-list uk-margin-top">
-                                        <p class="uk-margin-remove">
-                                            Autores:
-                                            < ?php if (!empty($r["_source"]['autores'])) : ?>
-                                                < ?php foreach ($r["_source"]['autores'] as $autores) {
-                                                    $authors_array[]='<a href="result.php?search[]=autores.nomeCompletoDoAutor.keyword:&quot;'.$autores["nomeCompletoDoAutor"].'&quot;">'.$autores["nomeCompletoDoAutor"].'</a>';
-                                                }
-                                                $array_aut = implode(", ",$authors_array);
-                                                unset($authors_array);
-                                                print_r($array_aut);
-                                                ?>
-                                            < ?php endif; ?>
-                                        </p>
-                                        <p class="uk-margin-remove">
-                                            Assuntos:
-                                            < ?php if (!empty($r["_source"]['palavras_chave'])) : ?>
-                                            < ?php foreach ($r["_source"]['palavras_chave'] as $assunto) : ?>
-                                                <a href="result.php?search[]=palavras_chave.keyword:&quot;< ?php echo $assunto;?>&quot;">< ?php echo $assunto;?></a>
-                                            < ?php endforeach;?>
-                                            < ?php endif; ?>
-                                        </p>
-                                        <p class="uk-margin-remove">
-                                            < ?php if (!empty($r["_source"]['url_principal'])||!empty($r["_source"]['doi'])) : ?>
-                                            <div class="uk-button-group" style="padding:15px 15px 15px 0;">
-                                                < ?php if (!empty($r["_source"]['url_principal'])) : ?>
-                                                <a class="uk-button-small uk-button-primary" href="< ?php echo $r["_source"]['url_principal'];?>" target="_blank">Acesso online à fonte</a>
-                                                < ?php endif; ?>
-                                                < ?php if (!empty($r["_source"]['doi'])) : ?>
-                                                <a class="uk-button-small uk-button-primary" href="http://dx.doi.org/< ?php echo $r["_source"]['doi'];?>" target="_blank">Resolver DOI</a>
-                                                < ?php endif; ?>
-                                            </div>
-                                            < ?php endif; ?>
-                                        </p>
 
                                         <p class="uk-margin-remove">
                                             < ?php if (!empty($r["_source"]['facebook'])) : ?>
@@ -349,15 +335,10 @@ $mode = "reference";
                         </li>
 -->
                     <?php endforeach; ?>
-                    </ul>
-                    </div>
-                    <hr class="uk-grid-divider">
 
                     <!-- /RECORDS -->
-
-                    <br/>
                     <!-- PAGINATION -->
-                    <?php //UI::pagination($page, $total, $limit, $t); ?>
+                    <?php UI::pagination($page, $total, $limit); ?>
                     <!-- /PAGINATION -->                                 
                 
                 </div>
@@ -369,7 +350,7 @@ $mode = "reference";
                             <ul class="uk-nav-default uk-nav-parent-icon" uk-nav="multiple: true">
                             <?php
                                 $facets = new facets();
-                                $facets->query = $query;
+                                $facets->query = $result_get['query'];
 
                                 if (!isset($_GET["search"])) {
                                     $_GET["search"] = null;
