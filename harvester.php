@@ -37,7 +37,7 @@ if (isset($_GET["oai"])) {
     $body_repository["doc"]["type"] = "journal";
     $body_repository["doc_as_upsert"] = true;
 
-    $insert_repository_result = elasticsearch::elastic_update($body_repository["doc"]["url"], $type, $body_repository);
+    //$insert_repository_result = Elasticsearch::update($body_repository["doc"]["url"], $body_repository);
     print_r($insert_repository_result);
 
     // Store repository data - Fim
@@ -82,7 +82,7 @@ if (isset($_GET["oai"])) {
                     $query["doc"]["corrente"] = $_GET["corrente"];
                 }
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-categories'}->{'subj-group'}->{'subject'};
-                $query["doc"]["titulo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
+                $query["doc"]["name"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
                 $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[1]->{'year'};
                 $query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
                 $query["doc"]["resumo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'abstract'}->{'p'});
@@ -223,7 +223,7 @@ if (isset($_GET["oai"])) {
 
                 //print_r($query);
 
-                $resultado = elasticsearch::elastic_update($sha256, $type, $query);
+                $resultado = Elasticsearch::update($sha256, $query);
                 print_r($resultado);
 
                 unset($query);
@@ -342,7 +342,7 @@ if (isset($_GET["oai"])) {
                     $query["doc"]["corrente"] = $_GET["corrente"];
                 }
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
-                $query["doc"]["titulo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
+                $query["doc"]["name"] = str_replace('"', '', (string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
                 $query["doc"]["ano"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'}, 0, 4);
                 //$query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
                 $query["doc"]["resumo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'rfc1807'}->{'abstract'});

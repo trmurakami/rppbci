@@ -1,11 +1,98 @@
 <?php
 
-if (file_exists('functions_core/functions_core.php')) {
-    include 'functions_core/functions_core.php';
+if (file_exists('uspfind_core/uspfind_core.php')) {
+    include 'uspfind_core/uspfind_core.php';
 } else {
-    include '../functions_core/functions_core.php';
+    include '../uspfind_core/uspfind_core.php';
 }
 
+
+class ElasticsearchInstall {
+
+    /**
+     * Cria o indice
+     *
+     * @param string   $indexName  Nome do indice
+     *
+     */
+    static function createIndex($indexName, $client)
+    {
+        $createIndexParams = [
+            'index' => $indexName,
+            'body' => [
+                'settings' => [
+                    'number_of_shards' => 1,
+                    'number_of_replicas' => 0,
+                    'analysis' => [
+                        'filter' => [
+                            'portuguese_stop' => [
+                                'type' => 'stop',
+                                'stopwords' => 'portuguese'
+                            ],
+                            'my_ascii_folding' => [
+                                'type' => 'asciifolding',
+                                'preserve_original' => true
+                            ],
+                            'portuguese_stemmer' => [
+                                'type' => 'stemmer',
+                                'language' =>  'light_portuguese'
+                            ]
+                        ],
+                        'analyzer' => [
+                            'portuguese' => [
+                                'tokenizer' => 'standard',
+                                'filter' =>  [ 
+                                    'lowercase', 
+                                    'my_ascii_folding',
+                                    'portuguese_stop',
+                                    'portuguese_stemmer'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $responseCreateIndex = $client->indices()->create($createIndexParams);
+    }
+    
+  
+    /**
+     * Cria o mapeamento
+     *
+     * @param string   $indexName  Nome do indice
+     *
+     */
+    static function mappingsIndex($indexName, $client, $mappings = null)
+    {
+        if (isset($mappings)) {
+            $mappingsParams = $mappings;
+        } else {
+            $mappingsParams = [
+                'index' => $indexName,
+                'body' => [
+                    'properties' => [
+                        'name' => [
+                            'type' => 'text',
+                            'analyzer' => 'portuguese',
+                            'fields' => [
+                                'keyword' => [
+                                    'type' => 'keyword',
+                                    'ignore_above' => 256
+                                ]
+                            ]
+                        ], 
+                        'datePublished' => [
+                            'type' => 'integer'
+                        ]                                         
+                    ]
+                ]
+            ];
+        }
+        // Update the index mapping
+        $client->indices()->putMapping($mappingsParams);
+    }      
+}
 
 /**
  * Class Inicio
@@ -414,7 +501,7 @@ class Facebook
         $body["doc"]["facebook"]["date"] = date("Y-m-d");
         $body["doc_as_upsert"] = true;
         
-        elasticsearch::elastic_update($id, "journals", $body);
+        Elasticsearch::update($id, $body);
     }
 
     static function facebook_doi($urls,$id) 
@@ -885,6 +972,94 @@ function dimensionsAPI($doi)
     return $data;
     // Close request to clear up some resources
     curl_close($curl);    
-}     
+}   
+
+class Homepage
+{
+    /**
+     * Function last records
+     *
+     * @return array Last records
+     */
+    static function getLastRecords()
+    {
+
+        global $client;
+        global $index;
+        $params = [];
+        $params["index"] = $index;
+        $params["size"] = 0;
+        $query["query"]["bool"]["must"]["query_string"]["query"] = "*";
+        $query["sort"]["_uid"]["unmapped_type"] = "long";
+        $query["sort"]["_uid"]["missing"] = "_last";
+        $query["sort"]["_uid"]["order"] = "desc";
+        $query["sort"]["_uid"]["mode"] = "max";         
+        $params["body"] = $query; 
+        $response = Elasticsearch::search(null, 10, $query);
+
+        foreach ($response["hits"]["hits"] as $r) {
+
+            echo '
+            
+            <div class="card bg-light mb-3">
+            <div class="card-header">'.$r["_source"]['source'].' | '.$r["_source"]['type'].'</div>
+            <div class="card-body">
+                <div class="row no-gutters">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-11">
+                    <div class="card-body">';
+
+                    if (!empty($r["_source"]['name'])) {
+                        echo '<h5 class="card-title"><a href="item/'.$r['_id'].'">'.$r["_source"]['name'].'';
+                        if (!empty($r["_source"]['datePublished'])) {
+                            echo ' ('.$r["_source"]['datePublished'].')';
+                        }
+                        echo '</a></h5>';
+                    };
+
+                    if (!empty($r["_source"]['author'])) {
+                        foreach ($r["_source"]['author'] as $autores) {
+                            if (!empty($autores["person"]["orcid"])) {
+                                $orcidLink = '<a href="'.$autores["person"]["orcid"].'"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"></a>';
+                            } else {
+                                $orcidLink = '';
+                            }
+                            $autArray[] = '<a href="result.php?filter[]=author.person.name:&quot;'.$autores["person"]["name"].'&quot;">'.$autores["person"]["name"].'</a> '.$orcidLink.'';
+                            unset($orcidLink);
+                        }
+                        echo '<p class="card-text"><small class="text-muted">'.implode(" | ", $autArray).'</small></p>';
+                        unset($autArray);
+                    };
+
+                    echo '
+                    </div></div>
+                </div>
+                </div>
+            </div>            
+            ';
+        }
+
+    }
+    
+    static function fieldAgg($field)
+    {
+        global $type;
+        $query = '{
+            "aggs": {
+                "group_by_state": {
+                    "terms": {
+                        "field": "'.$field.'.keyword",
+                        "size" : 5
+                    }
+                }
+            }
+        }';
+        $response = Elasticsearch::search(null, 0, $query);
+        foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
+            echo '<li class="list-group-item"><a href="result.php?filter[]=base:&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
+        }
+    }    
+}
 
 ?>
