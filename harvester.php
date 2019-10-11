@@ -83,7 +83,7 @@ if (isset($_GET["oai"])) {
                 }
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-categories'}->{'subj-group'}->{'subject'};
                 $query["doc"]["name"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'title-group'}->{'article-title'});
-                $query["doc"]["ano"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[1]->{'year'};
+                $query["doc"]["datePublished"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'pub-date'}[1]->{'year'};
                 $query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
                 $query["doc"]["resumo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'abstract'}->{'p'});
 
@@ -285,7 +285,7 @@ if (isset($_GET["oai"])) {
             $query["doc"]["numAutores"] = $i;
 
             if (isset($rows->date)) {
-                $body["doc"]["ano"] = substr((string)$rows->date, 0, 4);
+                $body["doc"]["datePublished"] = substr((string)$rows->date, 0, 4);
             }
 
             if (isset($rows->relation)) {
@@ -343,7 +343,7 @@ if (isset($_GET["oai"])) {
                 }
                 $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
                 $query["doc"]["name"] = str_replace('"', '', (string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
-                $query["doc"]["ano"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'}, 0, 4);
+                $query["doc"]["datePublished"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'}, 0, 4);
                 //$query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
                 $query["doc"]["resumo"] = str_replace('"', '', (string)$rec->{'metadata'}->{'rfc1807'}->{'abstract'});
 

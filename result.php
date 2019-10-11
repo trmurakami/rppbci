@@ -97,7 +97,7 @@ $mode = "reference";
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?></h6>
-                                <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url_principal']; ?>"><?php echo $r["_source"]['name']; ?> (< ?php echo $r["_source"]['datePublished'];?>)</a></h5>
+                                <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url_principal']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
 
                                 <?php if (!empty($r["_source"]['autores'])) : ?>
                                     <?php foreach ($r["_source"]['autores'] as $autores) {
@@ -408,7 +408,11 @@ $mode = "reference";
                 </div>
             </div>
             <hr class="uk-grid-divider">
-<!-- < ?php include('inc/footer.php'); ?> -->
+
+
+<!-- FOOTER -->
+<?php require 'inc/footer.php'; ?>
+<!-- /FOOTER -->            
         </div>
 
 
@@ -421,7 +425,6 @@ $mode = "reference";
         </script>
         <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
 
-<?php require 'inc/offcanvas.php'; ?>
 
     </body>
 </html>
