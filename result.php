@@ -117,15 +117,8 @@ $mode = "reference";
                                     ?>
                                 <?php endif; ?>
                                 
-                                <?php if (!empty($r["_source"]['url_principal'])||!empty($r["_source"]['doi'])) : ?>
-                                    <div class="btn-group" role="group" aria-label="Online Access">
-                                        <?php if (!empty($r["_source"]['url_principal'])) : ?>
-                                            <a class="btn btn-primary" href="<?php echo $r["_source"]['url_principal'];?>" target="_blank">Acesso online à fonte</a>
-                                        <?php endif; ?>
-                                        <?php if (!empty($r["_source"]['doi'])) : ?>
-                                            <a class="btn btn-primary" href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank">Resolver DOI</a>
-                                        <?php endif; ?>
-                                    </div>
+                                <?php if (!empty($r["_source"]['doi'])) : ?>
+                                    <p>DOI: <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['facebook'])) : ?>

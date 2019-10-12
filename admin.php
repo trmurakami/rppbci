@@ -25,7 +25,10 @@
                         <input type="text" placeholder="Informe o Qualis 2015 da publicação" name="qualis2015" class="uk-form-large uk-form-width-large">
                         <input type="text" placeholder="Informe a Área de Conhecimento" name="area" class="uk-form-large uk-form-width-large">
                         <input type="text" placeholder="Informe a Área de Conhecimento - Nível 2" name="areaChild" class="uk-form-large uk-form-width-large">
-                        <input type="text" placeholder="Informe se o Periódico é corrente ou não corrente" name="corrente" class="uk-form-large uk-form-width-large">
+                        <select name="corrente">
+                            <option value="corrente">corrente</option>
+                            <option value="não corrente">não corrente</option>
+                        </select>                           
                         <select name="metadataFormat">
                             <option value="nlm">nlm (padrão)</option>
                             <option value="rfc1807">rfc1807</option>
