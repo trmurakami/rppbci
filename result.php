@@ -22,8 +22,8 @@ if (isset($_GET["sort"])) {
     $result_get['query']["sort"][$_GET["sort"]]["order"] = "desc";
     $result_get['query']["sort"][$_GET["sort"]]["mode"] = "max";
 } else {
-    //$query['sort']['facebook.facebook_total']['order'] = "desc";
-    //$query['sort']['ano.keyword']['order'] = "desc";
+    //$query['sort']['facebook']['facebook_total']['order'] = "desc";
+    $query['sort']['datePublished']['order'] = "desc";
 }
 $params["body"] = $result_get['query'];
 $params["size"] = $limit;
@@ -93,7 +93,7 @@ $mode = "reference";
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?></h6>
-                                <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url_principal']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
+                                <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
 
                                 <?php if (!empty($r["_source"]['autores'])) : ?>
                                     <?php 
@@ -120,8 +120,10 @@ $mode = "reference";
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                     <p>DOI: <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
                                 <?php endif; ?>
+                                <?php print_r($r["_source"]); ?>
 
-                                <?php if (!empty($r["_source"]['facebook'])) : ?>
+                                <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
+                                    
                                     <table class="table"><caption>Interações no Facebook</caption>        
                                         <thead>
                                             <tr>
@@ -161,7 +163,7 @@ $mode = "reference";
                             </div>
                             <div class="uk-width-4-5@m">
                                 <article class="uk-article">
-                                <p class="uk-text-lead uk-margin-remove" style="font-size:115%"><a href="< ?php echo $r['_source']['url_principal'];?>">< ?php echo $r["_source"]['name'];?>< ?php if (!empty($r["_source"]['ano'])) { echo ' ('.$r["_source"]['ano'].')'; } ?></a></p>
+                                <p class="uk-text-lead uk-margin-remove" style="font-size:115%"><a href="< ?php echo $r['_source']['url'];?>">< ?php echo $r["_source"]['name'];?>< ?php if (!empty($r["_source"]['datePublished'])) { echo ' ('.$r["_source"]['datePublished'].')'; } ?></a></p>
 
                                         <p class="uk-margin-remove">
 

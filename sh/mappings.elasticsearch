@@ -34,7 +34,7 @@ PUT /rppbci/journals/_mapping
 {
          "journals": {
             "properties": {
-              "ano": {
+              "datePublished": {
                 "type": "text",
                 "fields": {
                   "keyword": {
@@ -242,7 +242,7 @@ PUT /rppbci/journals/_mapping
                   }
                 }
               },
-              "url_principal": {
+              "url": {
                 "type": "text",
                 "fields": {
                   "keyword": {

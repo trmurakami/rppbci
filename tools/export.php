@@ -46,8 +46,8 @@ foreach ($cursor["hits"]["hits"] as $r) {
     $fields[] = $r["_source"]['titulo'];
     $fields[] = implode("|", $autores_array);
     $fields[] = $r["_source"]['numAutores'];
-    $fields[] = $r["_source"]['ano'];
-    $fields[] = $r["_source"]['url_principal'];
+    $fields[] = $r["_source"]['datePublished'];
+    $fields[] = $r["_source"]['url'];
     $fields[] = $r["_source"]['facebook']['facebook_total'];
     $fields[] = $r["_source"]['facebook']['comment_count'];
     $fields[] = $r["_source"]['facebook']['share_count'];
@@ -84,8 +84,8 @@ while (isset($cursor['hits']['hits']) && count($cursor['hits']['hits']) > 0) {
         $fields[] = $r["_source"]['titulo'];
         $fields[] = implode("|", $autores_array);
         $fields[] = $r["_source"]['numAutores'];
-        $fields[] = $r["_source"]['ano'];
-        $fields[] = $r["_source"]['url_principal'];
+        $fields[] = $r["_source"]['datePublished'];
+        $fields[] = $r["_source"]['url'];
         $fields[] = $r["_source"]['facebook']['facebook_total'];
         $fields[] = $r["_source"]['facebook']['comment_count'];
         $fields[] = $r["_source"]['facebook']['share_count'];

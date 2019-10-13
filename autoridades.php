@@ -18,7 +18,7 @@
                 $body["sort"][$_GET["sort"]]["mode"] = "max";
             } else {
                 //$query['sort']['facebook.facebook_total']['order'] = "desc";
-                $body['sort']['ano.keyword']['order'] = "asc";
+                $body['sort']['datePublished.keyword']['order'] = "asc";
             }                
 
             $params = [];

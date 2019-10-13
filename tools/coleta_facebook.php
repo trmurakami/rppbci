@@ -10,12 +10,10 @@
 
     $params = [];
     $params["index"] = $index;
-    $params["type"] = $type;
     $params["size"] = 20;
     $params["body"] = $query;
 
     $cursor = $client->search($params);
-    $total = $cursor["hits"]["total"];
 
     //echo 'Faltam: '.$total.'<br/><br/>';
 
@@ -36,7 +34,7 @@
     }   
 
 
-    header("Refresh: 0");
+    //header("Refresh: 0");
     
 
 

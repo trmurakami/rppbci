@@ -161,7 +161,7 @@ class Inicio
 
             echo '<dl class="uk-description-list">'; 
             //print_r($r);
-            echo '<dt><a href="'.$r['_source']['url_principal'].'">'.$r['_source']['titulo'].' ('.$r['_source']['ano'].' - '.$r['_source']['source'].') - <b>'.$r['_source']['facebook']['facebook_total'].' interações</b></a></dt>';
+            echo '<dt><a href="'.$r['_source']['url'].'">'.$r['_source']['titulo'].' ('.$r['_source']['datePublished'].' - '.$r['_source']['source'].') - <b>'.$r['_source']['facebook']['facebook_total'].' interações</b></a></dt>';
             echo '<dd>';
             if (!empty($r["_source"]['autores'])) {                  
                 foreach ($r["_source"]['autores'] as $autores) {
@@ -369,7 +369,7 @@ class ProcessaResultados
         foreach ($facet['aggregations']['counts']['buckets'] as $facets) {
             array_push($data_array,'{"name":"'.$facets['key'].'","value":'.$facets['doc_count'].'}');
         };
-        if ($field == "ano" ) {
+        if ($field == "datePublished" ) {
             $data_array_inverse = array_reverse($data_array);
             $comma_separated = implode(",", $data_array_inverse);
         } else {
@@ -392,7 +392,7 @@ class ProcessaResultados
 class Facebook 
 {   
     
-    static function facebook_data($urls,$id) 
+    static function facebook_data($urls, $id) 
     {
         global $fb;
         foreach ($urls as $url) {

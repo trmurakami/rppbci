@@ -5,7 +5,7 @@
     include('inc/functions.php');
     $query["query"]["query_string"]["query"] = "-_exists_:aminer";    
     $query['sort'] = [
-        ['ano.keyword' => ['order' => 'desc']],
+        ['datePublished.keyword' => ['order' => 'desc']],
     ];      
 
     $params = [];

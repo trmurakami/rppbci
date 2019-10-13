@@ -6,7 +6,7 @@
 
     $query["query"]["query_string"]["query"] = "+_exists_:doi -_exists_:metrics.dimensions"; 
     $query['sort'] = [
-        ['ano.keyword' => ['order' => 'desc']],
+        ['datePublished.keyword' => ['order' => 'desc']],
     ];    
 
     $params = [];

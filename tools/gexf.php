@@ -26,7 +26,7 @@
             $query["sort"][$_GET["sort"]]["mode"] = "max";
         } else {
 
-            $query['sort']['ano.keyword']['order'] = "desc";
+            $query['sort']['datePublished.keyword']['order'] = "desc";
         }
 
         $params = [];

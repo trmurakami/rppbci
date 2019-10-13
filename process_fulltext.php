@@ -4,7 +4,7 @@
 require 'inc/config.php';
 require 'inc/functions.php';
 $query["query"]["query_string"]["query"] = "-_exists_:references";
-$query['sort']['ano.keyword']['order'] = 'desc';
+$query['sort']['datePublished.keyword']['order'] = 'desc';
 
 $params = [];
 $params["index"] = $index;
