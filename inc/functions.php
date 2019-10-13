@@ -83,7 +83,20 @@ class ElasticsearchInstall {
                             ]
                         ], 
                         'datePublished' => [
-                            'type' => 'integer'
+                            'type' => 'text',
+                            'fields' => [
+                                'keyword' => [
+                                    'type' => 'keyword',
+                                    'ignore_above' => 256
+                                ]
+                            ]                            
+                        ],
+                        'facebook' => [
+                            'properties' => [
+                                'facebook_total' => [
+                                    'type' => 'integer'
+                                ]
+                            ]
                         ]                                         
                     ]
                 ]

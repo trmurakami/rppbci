@@ -22,8 +22,8 @@ if (isset($_GET["sort"])) {
     $result_get['query']["sort"][$_GET["sort"]]["order"] = "desc";
     $result_get['query']["sort"][$_GET["sort"]]["mode"] = "max";
 } else {
-    //$query['sort']['facebook']['facebook_total']['order'] = "desc";
-    $query['sort']['datePublished']['order'] = "desc";
+    $result_get['query']["sort"]['facebook.facebook_total'] = "desc";
+    $result_get['query']["sort"]['datePublished.keyword'] = "desc";
 }
 $params["body"] = $result_get['query'];
 $params["size"] = $limit;
@@ -92,30 +92,41 @@ $mode = "reference";
 
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?></h6>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?><?php echo " - v.".$r["_source"]["isPartOf"]["volume"]; ?><?php echo " - n.".$r["_source"]["isPartOf"]["issue"]; ?></h6>
                                 <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
 
-                                <?php if (!empty($r["_source"]['autores'])) : ?>
+                                <?php if (!empty($r["_source"]["author"])) : ?>
                                     <?php 
-                                        foreach ($r["_source"]['autores'] as $autores) {
-                                            $authors_array[]=''.$autores["nomeCompletoDoAutor"].'';
+                                        foreach ($r["_source"]["author"] as $autores) {
+                                            if (!empty($autores["organization"]["name"])){
+                                                $authors_array[]=''.$autores["person"]["name"].' ('.$autores["organization"]["name"].')';
+                                            } else {
+                                                $authors_array[]=''.$autores["person"]["name"].'';
+                                            }
+                                            
                                         }
-                                        $array_aut = implode(", ",$authors_array);
+                                        $array_aut = implode("; ",$authors_array);
                                         unset($authors_array);
                                         echo '<p class="text-muted"><b>Autores:</b> '.''. $array_aut.'</p>';
                                     ?>
                                 <?php endif; ?>
 
-                                <?php if (!empty($r["_source"]['palavras_chave'])) : ?>
+                                <?php if (!empty($r["_source"]['about'])) : ?>
                                     <?php 
-                                        foreach ($r["_source"]['palavras_chave'] as $assunto) {
+                                        foreach ($r["_source"]['about'] as $assunto) {
                                             $assunto_array[]=''.$assunto.'';
                                         }
-                                        $array_assunto = implode(", ",$assunto_array);
+                                        $array_assunto = implode("; ",$assunto_array);
                                         unset($assunto_array);
                                         echo '<p class="text-muted"><b>Assuntos:</b> '.''. $array_assunto.'</p>';
                                     ?>
                                 <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['description'])) : ?>
+                                    <?php 
+                                        echo '<p class="text-muted"><b>Resumo:</b> '.''. $r["_source"]['description'].'</p>';
+                                    ?>
+                                <?php endif; ?>                                
                                 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                     <p>DOI: <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
@@ -247,20 +258,17 @@ $mode = "reference";
                                     $_GET["search"] = null;
                                 }
 
-                                $facets->facet("autores.nomeCompletoDoAutor", 120, "Autores", null, "_term", $_GET["search"]);
-                                $facets->facet("autores.afiliacao", 120, "Afiliação normalizada", null, "_term", $_GET["search"]);
-                                $facets->facet("autores.pais", 120, "País da intituição de afiliação", null, "_term", $_GET["search"]);
-                                $facets->facet("internacional", 120, "Possui autores estrangeiros?", null, "_term", $_GET["search"]);
-                                $facets->facet("autores.afiliacao_nao_normalizada", 120, "Afiliação não normalizada", null, "_term", $_GET["search"]);
-                                //$facets->facet_range("numAutores", 100, "Número de autores - Range", $_GET["search"]);
                                 $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET["search"]);
-                                $facets->facet("tipo", 10, "Seções", null, "_term", $_GET["search"]);
                                 $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET["search"]);
-                                $facets->facet("palavras_chave", 100, "Assuntos", null, "_term", $_GET["search"]);
-                                $facets->facet("artigoPublicado.nomeDaEditora", 100, "Editora", null, "_term", $_GET["search"]);
-                                $facets->facet("artigoPublicado.volume", 100, "Volume", null, "_term", $_GET["search"]);
-                                $facets->facet("artigoPublicado.fasciculo", 100, "Fascículo", null, "_term", $_GET["search"]);
-                                $facets->facet("artigoPublicado.issn", 100, "ISSN", null, "_term", $_GET["search"]);
+                                $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET["search"]);
+                                $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET["search"]);
+                                //$facets->facet_range("numAutores", 100, "Número de autores - Range", $_GET["search"]);                                
+                                $facets->facet("originalType", 10, "Seções", null, "_term", $_GET["search"]);                                
+                                $facets->facet("about", 100, "Assuntos", null, "_term", $_GET["search"]);
+                                $facets->facet("isPartOf.name", 100, "Editora", null, "_term", $_GET["search"]);
+                                $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET["search"]);
+                                $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET["search"]);
+                                $facets->facet("isPartOf.issn", 100, "ISSN", null, "_term", $_GET["search"]);
                             ?>
                             </ul>
                             <hr>

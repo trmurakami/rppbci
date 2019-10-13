@@ -10,7 +10,9 @@
         <script type="text/javascript" src="inc/uikit/js/components/parallax.min.js"></script>
     </head>
     <body>
-        <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+    <main role="main">
+        <div class="container">    
+        
             <?php include('inc/navbar.php')?>
 
             <h2>Administração</h2>
@@ -49,6 +51,8 @@
 
             <?php Admin::sources("source"); ?>
         </div>
+
+    </main>
 
     </body>
 </html>

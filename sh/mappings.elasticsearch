@@ -183,7 +183,7 @@ PUT /rppbci/journals/_mapping
                   }
                 }
               },
-              "palavras_chave": {
+              "about": {
                 "type": "text",
                 "analyzer": "portuguese",
                 "fields": {
