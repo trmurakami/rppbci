@@ -35,6 +35,11 @@ require 'inc/functions.php';
             font-size: 3.5rem;
         }
         }
+
+        .jumbotron {
+          background-image: url("<?php echo $background_1 ?>");
+          background-size: cover;
+        }        
     </style>
     <!-- Custom styles for this template -->
     <link href="jumbotron.css" rel="stylesheet">
@@ -48,6 +53,7 @@ require 'inc/functions.php';
 <main role="main">
 
     <div class="jumbotron">
+        <br/><br/><br/><br/><br/><br/><br/><br/><br/>
         <div class="container">
         <h1 class="display-5"><?php echo $branch; ?></h1>
         <p><?php echo $branch_description; ?></p>
@@ -59,15 +65,10 @@ require 'inc/functions.php';
                 <small id="searchHelp" class="form-text text-muted"><?php echo $t->gettext('Dica: Use * para busca por radical. Ex: biblio*.'); ?></small>
             </div>                       
             <button type="submit" class="btn btn-primary"><?php echo $t->gettext('Pesquisar'); ?></button>
+            
         </form>
-
-
-        </div>
-    </div>
-
-  <div class="container">
-    <!-- Example row of columns -->
-    <div class="row">
+        <br/><br/>
+        <div class="row">
       <!--
       <div class="col-md-4">
         <h2>Heading</h2>
@@ -91,8 +92,19 @@ require 'inc/functions.php';
         <ul class="list-group">
             <?php Homepage::sumFieldAgg("source"); ?>
         </ul>
-      </div>      
+      </div> 
+      </div>
+
+        <br/><br/><br/><br/>
+
+
+        </div>
     </div>
+
+  <div class="container">
+    <!-- Example row of columns -->
+     
+    
 
     <hr>
 
