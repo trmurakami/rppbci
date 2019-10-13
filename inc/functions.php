@@ -353,6 +353,24 @@ class Admin
         print_r($result_insert);    
 
     }
+
+    /** 
+     * Status da Coleta do Facebook
+     * 
+     */      
+    static function facebookStatus()
+    {
+        global $index;
+        global $client;
+        $querySum["query"]["bool"]["must"]["query_string"]["query"] = "_exists_:facebook";
+        $paramsSum = [];
+        $paramsSum["index"] = $index;
+        $paramsSum["body"] = $querySum;
+        $cursorTotalSum = $client->count($paramsSum);
+        $totalSum = $cursorTotalSum["count"];
+        return $totalSum;
+
+    }    
 }
 
 class ProcessaResultados

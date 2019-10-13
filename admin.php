@@ -18,38 +18,62 @@
 
             <h2>Administração</h2>
 
-                <form class="uk-form" action="harvester.php" method="get">
+                <form action="harvester.php" method="get">
 
-                    <fieldset data-uk-margin>
-                        <legend>Adicione uma nova fonte</legend>
+                    <div class="form-group">
+                        <label for="oai">OAI</label>
+                        <input type="text" class="form-control" id="oai" aria-describedby="oaiHelp" name="oai" placeholder="Incluir a URL do OAI">
+                        <small id="oaiHelp" class="form-text text-muted">Incluir a URL do OAI</small>
+                    </div>
 
-                        <input type="text" placeholder="Incluir o endereço do oai" name="oai" class="uk-form-large uk-form-width-large">
-                        <input type="text" placeholder="Set_oai. Em branco por padrão" name="set" class="uk-form-large uk-form-width-large">
-                        <input type="text" placeholder="Informe o Qualis 2015 da publicação" name="qualis2015" class="uk-form-large uk-form-width-large">
-                        <input type="text" placeholder="Informe a Área de Conhecimento" name="area" class="uk-form-large uk-form-width-large">
-                        <input type="text" placeholder="Informe a Área de Conhecimento - Nível 2" name="areaChild" class="uk-form-large uk-form-width-large">
-                        <select name="corrente">
+                    <div class="form-group">
+                        <label for="set">SET-OAI</label>
+                        <input type="text" class="form-control" id="set" aria-describedby="setHelp" name="set" placeholder="Incluir um SET-OAI. Em branco por padrão">
+                        <small id="setHelp" class="form-text text-muted">Incluir um SET-OAI. Em branco por padrão</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="area">Área de Conhecimento</label>
+                        <input type="text" class="form-control" id="area" aria-describedby="areaHelp" name="area" placeholder="Informe a Área de Conhecimento">
+                        <small id="areaHelp" class="form-text text-muted">Informe a Área de Conhecimento</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="areaChild">Área de Conhecimento - Nível 2</label>
+                        <input type="text" class="form-control" id="areaChild" aria-describedby="areaChildHelp" name="areaChild" placeholder="Informe a Área de Conhecimento - Nível 2">
+                        <small id="areaChildHelp" class="form-text text-muted">Informe a Área de Conhecimento - Nível 2</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="corrente">Corrente / Não corrente</label>
+                        <select class="form-control" id="corrente" name="corrente">
                             <option value="corrente">corrente</option>
                             <option value="não corrente">não corrente</option>
-                        </select>                           
-                        <select name="metadataFormat">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="metadataFormat">Formato de metadados</label>
+                        <select class="form-control" id="metadataFormat" name="metadataFormat">
                             <option value="nlm">nlm (padrão)</option>
                             <option value="rfc1807">rfc1807</option>
                             <option value="oai_dc">oai_dc</option>
-                        </select>                        
-                        <button class="uk-button uk-button-primary uk-button-large">Inserir</button>
-                    </fieldset>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary">Inserir</button>  
 
                 </form>
-
+            <h3>Status da coleta do Facebook</h3>
+            <?php $totalFacebook = Admin::facebookStatus(); ?>
+            <p>Registros coletados no Facebook: <?php echo $totalFacebook; ?></p>
+            <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
             <h3>Fontes coletadas</h3>
             <div class="uk-alert-primary" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p><a href="tools/export.php">Exportar todos os registros</a></p>
             </div>
-
-
             <?php Admin::sources("source"); ?>
             <?php require 'inc/footer.php'?>
         </div>
