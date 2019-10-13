@@ -164,11 +164,11 @@ if (isset($_GET["oai"])) {
             //var_dump ($rows);
 
             if (isset($rows->publisher)) {
-                $body["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rows->publisher;
+                $body["doc"]["isPartOf"]["publisher"]["organization"]["name"] = (string)$rows->publisher;
             }
 
             if (isset($rows->title)) {
-                $body["doc"]["titulo"] = (string)$rows->title[0];
+                $body["doc"]["name"] = (string)$rows->title[0];
             }
 
             if (isset($rows->relation)) {
@@ -185,9 +185,9 @@ if (isset($_GET["oai"])) {
 
             if (isset($rows->source)) {
                 if (isset($_GET["title"])) {
-                    $body["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = mb_convert_encoding($_GET["title"], "UTF-8", "HTML-ENTITIES");
+                    $body["doc"]["isPartOf"]["name"] = mb_convert_encoding($_GET["title"], "UTF-8", "HTML-ENTITIES");
                 } else {
-                    $body["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$rows->source;
+                    $body["doc"]["isPartOf"]["name"] = (string)$rows->source;
                 }
 
             }
@@ -196,7 +196,7 @@ if (isset($_GET["oai"])) {
             if (isset($rows->creator)) {
                 $i = 0;
                 foreach ($rows->creator as $author) {
-                    $body["doc"]["autores"][$i]["nomeCompletoDoAutor"] = (string)$author;
+                    $body["doc"]["author"][$i]["person"]["name"] = (string)$author;
                     $i++;
                 }
             }
@@ -218,13 +218,13 @@ if (isset($_GET["oai"])) {
             //    $body["doc"]["source"] = "Não preenchido";
             //}
 
-            $query["doc"]["artigoPublicado"]["issn"] = $_GET["set"];
+            $query["doc"]["isPartOf"]["issn"] = $_GET["set"];
             $query["doc"]["origin"] = "OAI-PHM";
             $query["doc"]["type"] = "article";
             $body["doc_as_upsert"] = true;
             unset($author);
             //print_r($body);
-            $resultado = elasticsearch::elastic_update($id, $type, $body);
+            $resultado = Elasticsearch::update($id, $body);
             //print_r($resultado);
             //print_r($body);
             unset($body);
@@ -259,7 +259,7 @@ if (isset($_GET["oai"])) {
                 if (isset($_GET["corrente"])) {
                     $query["doc"]["corrente"] = $_GET["corrente"];
                 }
-                $query["doc"]["tipo"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
+                $query["doc"]["originalType"] = (string)$rec->{'metadata'}->{'rfc1807'}->{'type'}[0];
                 $query["doc"]["name"] = str_replace('"', '', (string)$rec->{'metadata'}->{'rfc1807'}->{'title'});
                 $query["doc"]["datePublished"] = substr((string)$rec->{'metadata'}->{'rfc1807'}->{'date'}, 0, 4);
                 //$query["doc"]["doi"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'article-id'}[1];
@@ -290,7 +290,7 @@ if (isset($_GET["oai"])) {
                 }
                 $query["doc"]["numAutores"] = $i;
 
-                $query["doc"]["artigoPublicado"]["tituloDoPeriodicoOuRevista"] = (string)$identify->Identify->repositoryName;
+                $query["doc"]["isPartOf"]["name"] = (string)$identify->Identify->repositoryName;
                 //$query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
                 //$query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
                 //$query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
@@ -307,7 +307,7 @@ if (isset($_GET["oai"])) {
 
                 $query["doc_as_upsert"] = true;
 
-                $resultado = elasticsearch::elastic_update($sha256, $type, $query);
+                $resultado = Elasticsearch::update($sha256, $query);
                 print_r($resultado);
 
                 unset($query);
@@ -321,13 +321,13 @@ if (isset($_GET["oai"])) {
     echo '<br/>';
     echo $_GET["delete_name"];
 
-    $delete_repository = elasticsearch::elastic_delete($_GET["delete"], $type);
+    $delete_repository = Elasticsearch::delete($_GET["delete"], $type);
     print_r($delete_repository);
     echo '<br/>';
     $body["query"]["query_string"]["query"] = 'source.keyword:"'.$_GET["delete_name"].'"';
     print_r($body);
     echo '<br/><br/>';
-    $delete_records = elasticsearch::elastic_delete_by_query("journals", $body);
+    $delete_records = Elasticsearch::elastic_delete_by_query("journals", $body);
     print_r($delete_records);
 
 
