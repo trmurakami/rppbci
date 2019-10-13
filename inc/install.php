@@ -16,6 +16,7 @@ try {
 if (isset($testIndex) && $testIndex == false) {
     ElasticsearchInstall::createIndex($index, $client);
     ElasticsearchInstall::mappingsIndex($index, $client);
+    ElasticsearchInstall::createIndex($indexAdm, $client);
 }
 
 

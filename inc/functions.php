@@ -264,28 +264,33 @@ class Admin
     static function sources($field) 
     {
         global $index;
+        global $indexAdm;
         global $type;
         global $client;
+
+        $query["query"]["bool"]["must"]["query_string"]["query"] = "*";
+
+        $params = [];
+        $params["index"] = $index;
+        $params["body"] = $query;
+        
+        
+        $cursorTotal = $client->count($params);
+        $total = $cursorTotal["count"];
 
         $query["aggs"]["counts"]["terms"]["field"] = "$field.keyword";
         $query["aggs"]["counts"]["terms"]["order"]["_term"] = "asc";
         $query["aggs"]["counts"]["terms"]["size"] = 10000;
+        $query["sort"]["name.keyword"] = "asc";       
 
-        $query["sort"]["name.keyword"] = "asc";
-
-        $query["query"]["bool"]["must"]["query_string"]["query"] = "type:journal";
-
-        $params = [];
-        $params["index"] = $index;
-        $params["type"] = $type;
+        $params["index"] = $indexAdm;
         $params["size"] = 1000;
-        $params["body"] = $query;           
 
         $data = $client->search($params);
 
         //print_r($data);
 
-        echo '<table class="uk-table">';
+        echo '<table class="table">';
         echo '<thead>';
         echo '<tr>';
         echo '<th>Periódico</th>';
@@ -307,7 +312,7 @@ class Admin
                 echo '<td>Sem informação</td>';
             }
             echo  '<td>'.$repository['_source']['date'].'</td><td>';
-	        echo Admin::countRecords($repository['_source']['name']);
+	        echo $total;
 	        echo '</td><td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&qualis2015='.$repository['_source']['qualis2015'].'&metadataFormat='.$repository['_source']['metadataFormat'].'">Update</a></td>';
             echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
@@ -315,19 +320,6 @@ class Admin
         echo '</tbody>';
         echo '</table>';
 
-    }
-
-    /** 
-     * Count records
-     * 
-     * @param Name $name Name
-     */    
-    static function countRecords($name) 
-    {
-        global $type;
-        $body["query"]["query_string"]["query"] = 'source.keyword:"'.$name.'"';
-        $result = elasticsearch::elastic_search($type, null, 0, $body); 
-        return $result["hits"]["total"];
     }
 
     /** 
