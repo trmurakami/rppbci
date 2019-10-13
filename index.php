@@ -107,6 +107,7 @@ require 'inc/functions.php';
     
 
     <hr>
+    <h1>Registros com mais interações</h1>
 
     <?php Homepage::getLastRecords();?>
 

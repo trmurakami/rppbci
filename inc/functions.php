@@ -1048,11 +1048,12 @@ class Homepage
                     if (!empty($r["_source"]['author'])) {
                         foreach ($r["_source"]['author'] as $autores) {
                             $autArray[] = '<a href="result.php?filter[]=author.person.name:&quot;'.$autores["person"]["name"].'&quot;">'.$autores["person"]["name"].'</a>';
-                            unset($orcidLink);
                         }
                         echo '<p class="card-text"><small class="text-muted">'.implode(" | ", $autArray).'</small></p>';
-                        unset($autArray);
                     };
+                    if (!empty($r["_source"]['facebook'])) {
+                        echo '<p class="card-text"><small class="text-muted">Total de interações no Facebook: '.$r["_source"]['facebook']['facebook_total'].'</small></p>';
+                    };                    
 
                     echo '
                     </div></div>
