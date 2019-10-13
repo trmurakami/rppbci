@@ -1003,10 +1003,8 @@ class Homepage
         $params["index"] = $index;
         $params["size"] = 0;
         $query["query"]["bool"]["must"]["query_string"]["query"] = "*";
-        $query["sort"]["_uid"]["unmapped_type"] = "long";
-        $query["sort"]["_uid"]["missing"] = "_last";
-        $query["sort"]["_uid"]["order"] = "desc";
-        $query["sort"]["_uid"]["mode"] = "max";         
+        $query["sort"]["facebook.facebook_total"] = "desc"; 
+        $query["sort"]["datePublished.keyword"] = "desc";        
         $params["body"] = $query; 
         $response = Elasticsearch::search(null, 10, $query);
 
