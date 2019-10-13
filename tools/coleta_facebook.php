@@ -31,10 +31,9 @@
         Facebook::facebook_data($r["_source"]['relation'], $r["_id"]);
         sleep(13);
 
-    }   
+    }
 
-
-    //header("Refresh: 0");
+    header("Refresh: 0");
     
 
 
