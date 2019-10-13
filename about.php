@@ -9,8 +9,11 @@
         <title>Sobre o RPPBCI</title>
     </head>    
     <body>
-        <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+    <main role="main">
+        <div class="container">       
+        
             <?php require 'inc/navbar.php' ?>
+            <br/><br/><br/><br/>
 
             <h2>Sobre o Portal Periódicos Científicos Alagoas</h2>
 
@@ -43,7 +46,8 @@
             
             </p>
             
-            <?php require 'inc/offcanvas.php'?>
-        </div>    
+            <?php require 'inc/footer.php'?>
+        </div>
+        </main>  
     </body>
 </html>

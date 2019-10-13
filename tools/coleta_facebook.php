@@ -5,7 +5,7 @@
     require '../inc/functions.php';
     $query["query"]["query_string"]["query"] = "-_exists_:facebook";
     $query['sort'] = [
-        ['datePublished' => ['order' => 'desc']],
+        ['datePublished.keyword' => ['order' => 'desc']],
     ];      
 
     $params = [];

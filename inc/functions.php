@@ -1008,13 +1008,11 @@ class Homepage
             <div class="card-header">'.$r["_source"]['source'].' | '.$r["_source"]['type'].'</div>
             <div class="card-body">
                 <div class="row no-gutters">
-                <div class="col-md-1">
-                </div>
-                <div class="col-md-11">
+                <div class="col-md-12">
                     <div class="card-body">';
 
                     if (!empty($r["_source"]['name'])) {
-                        echo '<h5 class="card-title"><a href="item/'.$r['_id'].'">'.$r["_source"]['name'].'';
+                        echo '<h5 class="card-title"><a href="'.$r["_source"]['url'].'">'.$r["_source"]['name'].'';
                         if (!empty($r["_source"]['datePublished'])) {
                             echo ' ('.$r["_source"]['datePublished'].')';
                         }
@@ -1023,12 +1021,7 @@ class Homepage
 
                     if (!empty($r["_source"]['author'])) {
                         foreach ($r["_source"]['author'] as $autores) {
-                            if (!empty($autores["person"]["orcid"])) {
-                                $orcidLink = '<a href="'.$autores["person"]["orcid"].'"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"></a>';
-                            } else {
-                                $orcidLink = '';
-                            }
-                            $autArray[] = '<a href="result.php?filter[]=author.person.name:&quot;'.$autores["person"]["name"].'&quot;">'.$autores["person"]["name"].'</a> '.$orcidLink.'';
+                            $autArray[] = '<a href="result.php?filter[]=author.person.name:&quot;'.$autores["person"]["name"].'&quot;">'.$autores["person"]["name"].'</a>';
                             unset($orcidLink);
                         }
                         echo '<p class="card-text"><small class="text-muted">'.implode(" | ", $autArray).'</small></p>';
@@ -1047,7 +1040,6 @@ class Homepage
     
     static function fieldAgg($field)
     {
-        global $type;
         $query = '{
             "aggs": {
                 "group_by_state": {
@@ -1062,7 +1054,24 @@ class Homepage
         foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
             echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
         }
-    }    
+    }
+    
+    static function sumFieldAgg($field)
+    {
+        $query = '{
+            "aggs" : {
+                "facebook_total" : { "sum" : { "field" : "facebook.facebook_total" } },
+                "facebook_reaction_count" : { "sum" : { "field" : "facebook.reaction_count" } },
+                "facebook_share_count" : { "sum" : { "field" : "facebook.share_count" } },
+                "facebook_comment_count" : { "sum" : { "field" : "facebook.comment_count" } }
+            }
+        }';
+        $response = Elasticsearch::search(null, 0, $query);
+        echo '<p>Total de reactions no facebook: '.$response["aggregations"]["facebook_reaction_count"]["value"].'</p>';
+        echo '<p>Total de compartilhamentos no facebook: '.$response["aggregations"]["facebook_share_count"]["value"].'</p>';
+        echo '<p>Total de comentários no facebook: '.$response["aggregations"]["facebook_comment_count"]["value"].'</p>';
+        echo '<p>Total de interações no facebook: '.$response["aggregations"]["facebook_total"]["value"].'</p>';    
+    }       
 }
 
 ?>

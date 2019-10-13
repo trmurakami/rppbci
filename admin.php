@@ -14,6 +14,7 @@
         <div class="container">    
         
             <?php include('inc/navbar.php')?>
+            <br/><br/><br/><br/>
 
             <h2>Administração</h2>
 
@@ -50,6 +51,7 @@
 
 
             <?php Admin::sources("source"); ?>
+            <?php require 'inc/footer.php'?>
         </div>
 
     </main>
