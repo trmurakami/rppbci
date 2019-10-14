@@ -17,7 +17,10 @@ if (isset($_GET["oai"])) {
 
     // Store repository data - Início
 
-    $body_repository["doc"]["name"] = (string)$identify->Identify->repositoryName;
+    $repositoryName = (string)$identify->Identify->repositoryName;
+    $repositoryName = str_replace(":", " ", $repositoryName);
+
+    $body_repository["doc"]["name"] = $repositoryName;
 
     $body_repository["doc"]["metadataFormat"] = $_GET["metadataFormat"];
     if (isset($_GET["qualis2015"])) {
@@ -184,12 +187,7 @@ if (isset($_GET["oai"])) {
             }
 
             if (isset($rows->source)) {
-                if (isset($_GET["title"])) {
-                    $body["doc"]["isPartOf"]["name"] = mb_convert_encoding($_GET["title"], "UTF-8", "HTML-ENTITIES");
-                } else {
-                    $body["doc"]["isPartOf"]["name"] = (string)$rows->source;
-                }
-
+                $body["doc"]["isPartOf"]["name"] = $repositoryName;
             }
 
 
@@ -210,15 +208,8 @@ if (isset($_GET["oai"])) {
                 $body["doc"]["relation"][] = "https://dx.doi.org/" . (string)$rows->relation;
             }
             $id = (string)$rec->header->identifier;
-            //if (!empty((string)$rec->header->setSpec)) {
-            //    $body["doc"]["source"] = (string)$rec->header->setSpec;
-            //} elseif (isset($_GET["title"])) {
-                $body["doc"]["source"] = mb_convert_encoding($_GET["title"], "UTF-8", "HTML-ENTITIES");
-            //} else {
-            //    $body["doc"]["source"] = "Não preenchido";
-            //}
 
-            $query["doc"]["isPartOf"]["issn"] = $_GET["set"];
+            $body["doc"]["source"] = $repositoryName;
             $query["doc"]["origin"] = "OAI-PHM";
             $query["doc"]["type"] = "article";
             $body["doc_as_upsert"] = true;
@@ -229,27 +220,21 @@ if (isset($_GET["oai"])) {
             //print_r($body);
             unset($body);
 
-
-
         }
 
-
-
-    } else {
+    } elseif ($_GET["metadataFormat"] == "rfc1807") {
 
         $recs = $myEndpoint->listRecords('rfc1807');
-        var_dump($recs);
         foreach ($recs as $rec) {
             if ($rec->{'header'}->attributes()->{'status'} != "deleted") {
 
+                //var_dump($rec);
+
                 $sha256 = hash('sha256', ''.$rec->{'header'}->{'identifier'}.'');
 
-                $query["doc"]["source"] = (string)$identify->Identify->repositoryName;
+                $query["doc"]["source"] = $repositoryName;
                 $query["doc"]["set"] = str_replace("xviiienancib:ENANCIB:", "", (string)$rec->{'header'}->{'setSpec'});
                 $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
-                if (isset($_GET["qualis2015"])) {
-                    $query["doc"]["qualis2015"] = $_GET["qualis2015"];
-                }
                 if (isset($_GET["area"])) {
                     $query["doc"]["area"] = $_GET["area"];
                 }
@@ -290,9 +275,9 @@ if (isset($_GET["oai"])) {
                 }
                 $query["doc"]["numAutores"] = $i;
 
-                $query["doc"]["isPartOf"]["name"] = (string)$identify->Identify->repositoryName;
+                $query["doc"]["isPartOf"]["name"] = $repositoryName;
                 //$query["doc"]["artigoPublicado"]["nomeDaEditora"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
-                //$query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
+                $query["doc"]["artigoPublicado"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
                 //$query["doc"]["artigoPublicado"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
                 //$query["doc"]["artigoPublicado"]["fasciculo"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue'};
                 //$query["doc"]["artigoPublicado"]["paginaInicial"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-id'};
@@ -315,6 +300,8 @@ if (isset($_GET["oai"])) {
 
             }
         }
+    } else {
+        echo "Formato de metadados não definido"; 
     }
 } elseif (isset($_GET["delete"])) {
     echo $_GET["delete"];
