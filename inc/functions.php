@@ -1068,7 +1068,7 @@ class Homepage
                 "group_by_state": {
                     "terms": {
                         "field": "'.$field.'.keyword",
-                        "size" : 5
+                        "size" : 50
                     }
                 }
             }
