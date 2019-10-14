@@ -70,11 +70,8 @@ if (isset($_GET["oai"])) {
                 $sha256 = hash('sha256', ''.$rec->{'header'}->{'identifier'}.'');
 
 
-                $query["doc"]["source"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'};
+                $query["doc"]["source"] = $repositoryName;
                 $query["doc"]["harvester_id"] = (string)$rec->{'header'}->{'identifier'};
-                if (isset($_GET["qualis2015"])) {
-                    $query["doc"]["qualis2015"] = $_GET["qualis2015"];
-                }
                 if (isset($_GET["area"])) {
                     $query["doc"]["area"] = $_GET["area"];
                 }
@@ -125,7 +122,7 @@ if (isset($_GET["oai"])) {
                 }
                 $query["doc"]["numAutores"] = $i;
 
-                $query["doc"]["isPartOf"]["name"] = str_replace('"', '', (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'journal-title'});
+                $query["doc"]["isPartOf"]["name"] = $repositoryName;
                 $query["doc"]["isPartOf"]["publisher"]["organization"]["name"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
                 $query["doc"]["isPartOf"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
                 $query["doc"]["isPartOf"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
