@@ -1031,7 +1031,7 @@ class Homepage
             echo '
             
             <div class="card bg-light mb-3">
-            <div class="card-header">'.$r["_source"]['source'].' | '.$r["_source"]['type'].'</div>
+            <div class="card-header">'.$r["_source"]['source'].'</div>
             <div class="card-body">
                 <div class="row no-gutters">
                 <div class="col-md-12">
