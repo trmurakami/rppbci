@@ -81,18 +81,24 @@ require 'inc/functions.php';
         <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
       </div>
       -->
-      <div class="col-md-4">
-        <h2>Periódicos indexados</h2>
-        <ul class="list-group">
-            <?php Homepage::fieldAgg("source"); ?>
-        </ul>
-      </div>
-      <div class="col-md-4">
-        <h2>Interações no facebook</h2>
-        <ul class="list-group">
-            <?php Homepage::sumFieldAgg("source"); ?>
-        </ul>
-      </div> 
+        <div class="col-md-4">
+          <h2>Periódicos indexados</h2>
+          <ul class="list-group">
+              <?php Homepage::fieldAgg("source"); ?>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h2>Estatísticas</h2>
+          <ul class="list-group">
+              Total de registros: <?php echo Admin::totalRecords(); ?>
+          </ul>
+        </div>        
+        <div class="col-md-4">
+          <h2>Interações no facebook</h2>
+          <ul class="list-group">
+              <?php Homepage::sumFieldAgg("source"); ?>
+          </ul>
+        </div> 
       </div>
 
         <br/><br/><br/><br/>

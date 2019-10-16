@@ -64,9 +64,11 @@
                     <button class="btn btn-primary">Inserir</button>  
 
                 </form>
+
+            <h3>Estatísticas</h3>
+            <p>Total de registros: <?php echo Admin::totalRecords(); ?></p>                
             <h3>Status da coleta do Facebook</h3>
-            <?php $totalFacebook = Admin::facebookStatus(); ?>
-            <p>Registros coletados no Facebook: <?php echo $totalFacebook; ?></p>
+            <p>Registros coletados no Facebook: <?php echo Admin::facebookStatus(); ?></p>
             <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
             <h3>Fontes coletadas</h3>
