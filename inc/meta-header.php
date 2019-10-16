@@ -10,7 +10,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>     
 
 <?php
-    if (file_exists("analyticstracking.php")) {
-        include_once "analyticstracking.php";
+    if (file_exists("inc/analyticstracking.php")) {
+        include_once "inc/analyticstracking.php";
     }
 ?>  
