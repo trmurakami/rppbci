@@ -1,8 +1,9 @@
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://revistas.ufpr.br/atoz/oai&qualis2015=B2&metadataFormat=nlm"
-wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://periodicos.ufpb.br/ojs2/index.php/biblio/oai&qualis2015=B5&metadataFormat=nlm"
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://www.seer.furg.br/biblos/oai&qualis2015=B3&metadataFormat=nlm"
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://seer.ufmg.br/index.php/revistarbu/oai&qualis2015=C&metadataFormat=rfc1807"
-wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://www2.marilia.unesp.br/revistas/index.php/bjis/oai&qualis2015=B1&metadataFormat=nlm"
+wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://www2.marilia.unesp.br/revistas/index.php/bjis/oai&qualis2015=B1&metadataFormat=rfc1807"
+
+
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://www.cajur.com.br/index.php/cajur/oai&qualis2015=B5&metadataFormat=nlm"
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://www.seer.ufal.br/index.php/cir/oai&qualis2015=B5&metadataFormat=nlm"
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://periodicos.unb.br/index.php/rici/oai&qualis2015=B1&metadataFormat=nlm"
@@ -35,3 +36,5 @@ wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=htt
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://inseer.ibict.br/ancib/index.php/tpbci/oai&qualis2015=B1&metadataFormat=rfc1807"
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://periodicos.puc-campinas.edu.br/seer/index.php/transinfo/oai&qualis2015=A1&metadataFormat=rfc1807"
 wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://www.periodicoseletronicos.ufma.br/index.php/bibliomar/oai&qualis2015=NP&metadataFormat=rfc1807"
+
+wget -O /dev/null -o /dev/null "http://35.239.2.201/rppbci/harvester.php?oai=http://periodicos.ufpb.br/ojs2/index.php/biblio/oai&qualis2015=B5&metadataFormat=nlm"

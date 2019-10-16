@@ -1,4 +1,5 @@
 inc/config.php
+inc/analyticstracking.php
 vendor/
 composer.phar
 composer.lock
