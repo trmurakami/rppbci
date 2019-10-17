@@ -38,7 +38,8 @@ require 'inc/functions.php';
 
         .jumbotron {
           background-image: url("<?php echo $background_1 ?>");
-          background-size: cover;
+          background-size: 100%;
+          background-repeat: no-repeat;
         }        
     </style>
     <!-- Custom styles for this template -->
