@@ -88,7 +88,7 @@
 	    
                 <?php if (!empty($_SERVER["QUERY_STRING"])) : ?>                                    
                     <p class="uk-margin-top" uk-margin>
-                        <a class="uk-button uk-button-default uk-button-small" href="index.php"><?php echo $t->gettext('Começar novamente'); ?></a>	
+                        <a class="uk-button uk-button-default uk-button-small" href="index.php">Começar novamente</a>	
                         <?php 
                         
                             if (!empty($_GET["search"])){

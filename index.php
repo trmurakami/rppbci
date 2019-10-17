@@ -60,11 +60,11 @@ require 'inc/functions.php';
 
         <form action="result.php">
             <div class="form-group">
-                <label for="searchQuery"><?php echo $t->gettext('Termos de busca'); ?></label>
-                <input type="text" name="search[]" class="form-control" id="searchQuery" aria-describedby="searchHelp" placeholder="<?php echo $t->gettext('Pesquise por termo ou autor'); ?>">
-                <small id="searchHelp" class="form-text text-muted"><?php echo $t->gettext('Dica: Use * para busca por radical. Ex: biblio*.'); ?></small>
+                <label for="searchQuery">Termos de busca</label>
+                <input type="text" name="search[]" class="form-control" id="searchQuery" aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
+                <small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por radical. Ex: biblio*.</small>
             </div>                       
-            <button type="submit" class="btn btn-primary"><?php echo $t->gettext('Pesquisar'); ?></button>
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
             
         </form>
         <br/><br/>
