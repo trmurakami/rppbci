@@ -89,7 +89,6 @@ $mode = "reference";
 
                     <!-- Resultados -->
                         <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
-                        <?php print_r($r); ?>                   
 
                         <div class="card">
                             <div class="card-body">

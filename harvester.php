@@ -111,7 +111,7 @@ if (isset($_GET["oai"])) {
                         $query["doc"]["author"][$i]["person"]["name"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if (isset($autores->{'aff'})) {
-                            $query["doc"]["author"][$i]["organization"]["name"] = strip_tags((string)$autores->{'aff'});
+                            $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autores->{'aff'}));
                         }
 
                         if (isset($autores->{'uri'})) {
@@ -266,7 +266,7 @@ if (isset($_GET["oai"])) {
                     $query["doc"]["author"][$i]["person"]["completeName"] = $autor_nome_array[1].' '.ucwords(strtolower($autor_nome_array[0]));
                     $query["doc"]["author"][$i]["person"]["name"] = (string)$autor_array[0];
                     if (isset($autor_array[1])) {
-                        $query["doc"]["author"][$i]["organization"]["name"] = strip_tags((string)$autor_array[1]);
+                        $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autor_array[1]));
                     }
                     $i++;
                 }
