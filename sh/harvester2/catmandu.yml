@@ -1,8 +1,0 @@
-# in your catmandu.yml
-store:
-  rppbci2:
-    package: ElasticSearch
-    options:
-      # use my_id instead of _id
-      key_prefix: rppbci_
-      index_name: rppbci      
