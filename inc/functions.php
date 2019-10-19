@@ -914,19 +914,57 @@ class Homepage
     
     static function fieldAgg($field)
     {
-        $query = '{
-            "aggs": {
-                "group_by_state": {
-                    "terms": {
-                        "field": "'.$field.'.keyword",
-                        "size" : 50
-                    }
-                }
-            }
-        }';
+        $query["aggs"]["group_by_state"]["terms"]["field"] = "$field.keyword";
+        $query["aggs"]["group_by_state"]["terms"]["size"] = 50;
+
         $response = Elasticsearch::search(null, 0, $query);
-        foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
-            echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
+        $result_count = count($response["aggregations"]["group_by_state"]["buckets"]);
+
+        if ($result_count == 0) {
+
+        } elseif (($result_count != 0) && ($result_count < 5)) {
+            
+            foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
+                echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
+            }
+
+        } else {
+
+            $i = 0;
+            while ($i < 5) {
+                echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$response["aggregations"]["group_by_state"]["buckets"][$i]['key'].'&quot;">'.$response["aggregations"]["group_by_state"]["buckets"][$i]['key'].' ('.number_format($response["aggregations"]["group_by_state"]["buckets"][$i]['doc_count'], 0, ',', '.').')</a></li>';
+                $i++;                
+            }
+
+
+            echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+            echo '<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#'.str_replace(".", "", $field).'Modal">ver todos >>></button>  ';
+            echo '</li>';
+            echo '</ul>';
+            echo '<div class="modal fade" id="'.str_replace(".", "", $field).'Modal" tabindex="-1" role="dialog" aria-labelledby="'.str_replace(".", "", $field).'ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="'.$field.'ModalLabel">'.$field.'</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush">';
+                    foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
+                        echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
+                    }
+            echo '</ul>';
+             echo '
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+                </div>
+            </div></div></div>
+            ';
+           
+
         }
     }
     
