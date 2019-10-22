@@ -1,0 +1,3 @@
+[submodule "elasticfind"]
+	path = elasticfind
+	url = https://github.com/trmurakami/elasticfind.git
