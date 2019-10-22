@@ -11,7 +11,7 @@
             </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="result.php">
-            <input class="form-control mr-sm-2" type="text" placeholder="Pesquisar" aria-label="Pesquisar" name="search[]">
+            <input class="form-control mr-sm-2" type="text" placeholder="Pesquisar" aria-label="Pesquisar" name="search">
             <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Pesquisar</button>
             </form>              
             <li class="nav-item navbar-nav">
