@@ -1,9 +1,9 @@
 <?php
 
-if (file_exists('uspfind_core/uspfind_core.php')) {
-    include 'uspfind_core/uspfind_core.php';
+if (file_exists('elasticfind/elasticfind.php')) {
+    include 'elasticfind/elasticfind.php';
 } else {
-    include '../uspfind_core/uspfind_core.php';
+    include '../elasticfind/elasticfind.php';
 }
 
 
