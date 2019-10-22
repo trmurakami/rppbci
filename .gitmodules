@@ -1,6 +1,0 @@
-[submodule "functions_core"]
-	path = functions_core
-	url = https://github.com/SIBiUSP/functions_core.git
-[submodule "uspfind_core"]
-	path = uspfind_core
-	url = https://github.com/SIBiUSP/uspfind_core
