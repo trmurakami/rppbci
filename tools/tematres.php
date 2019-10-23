@@ -22,7 +22,7 @@ $params["body"] = $query;
 
 $cursor = $client->search($params);
 
-echo 'Registros faltantes: '.$cursor["hits"]["total"]["value"].'<br/><br/>';
+echo 'Registros: '.$cursor["hits"]["total"]["value"].'<br/><br/>';
 
 foreach ($cursor["hits"]["hits"] as $r) {
 
