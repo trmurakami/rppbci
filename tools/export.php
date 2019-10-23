@@ -16,7 +16,6 @@ error_reporting(0);
 
 
 $query["query"]["bool"]["must"]["query_string"]["query"] = "*";
-$query["query"]["bool"]["must_not"]["term"]["type.keyword"] = "journal";
 
 $params = [];
 $params["index"] = $index;
@@ -32,8 +31,8 @@ $content[] = "Periódico\tSet\tID\tTítulo\tAutores\tNúm. de autores\tAno\tURL 
 
 foreach ($cursor["hits"]["hits"] as $r) {
 
-    foreach ($r["_source"]['autores'] as $autor) {
-        $autores_array[]= $autor["nomeCompletoDoAutor"];
+    foreach ($r["_source"]['author'] as $autor) {
+        $autores_array[]= $autor["person"]["name"];
     }
 
     $fields[] = $r["_source"]['source'];
@@ -43,7 +42,7 @@ foreach ($cursor["hits"]["hits"] as $r) {
         $fields[] = "";
     }   
     $fields[] = $r["_source"]['harvester_id'];
-    $fields[] = $r["_source"]['titulo'];
+    $fields[] = $r["_source"]['name'];
     $fields[] = implode("|", $autores_array);
     $fields[] = $r["_source"]['numAutores'];
     $fields[] = $r["_source"]['datePublished'];
