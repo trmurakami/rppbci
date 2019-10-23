@@ -14,10 +14,12 @@ try {
 }
 /* Create index if not exists */
 if (isset($testIndex) && $testIndex == false) {
-    ElasticsearchInstall::createIndex($index, $client);
-    ElasticsearchInstall::mappingsIndex($index, $client);
-    ElasticsearchInstall::createIndex($indexAdm, $client);
+    Elasticsearch::createIndex($index, $client);
+    Elasticsearch::mappingsIndex($index, $client);
+    Elasticsearch::createIndex($indexAdm, $client);
 }
+
+header("Location: ../index.php"); die();
 
 
 ?>
