@@ -204,7 +204,34 @@ if (isset($_GET["oai"])) {
             }
 
             if (isset($rows->subject)) {
-                $body["doc"]["about"][] = (string)$rows->subject;
+                $subjectString = (string)$rows->subject;
+                $subjectArray = explode(";", $subjectString);
+                if (is_array($subjectArray)) {
+                    $body["doc"]["about"] = $subjectArray;
+                } else {
+                    $body["doc"]["about"][] = $subjectArray;
+                }
+
+                if (isset($rows->subject[1])) {
+                    $subjectString = (string)$rows->subject[1];
+                    $subjectArray = explode(";", $subjectString);
+                    if (is_array($subjectArray)) {
+                        $body["doc"]["about"] = array_merge($body["doc"]["about"], $subjectArray);
+                    } else {
+                        $body["doc"]["about"][] = $subjectArray;
+                    }
+                }
+                
+                if (isset($rows->subject[2])) {
+                    $subjectString = (string)$rows->subject[2];
+                    $subjectArray = explode(";", $subjectString);
+                    if (is_array($subjectArray)) {
+                        $body["doc"]["about"] = array_merge($body["doc"]["about"], $subjectArray);
+                    } else {
+                        $body["doc"]["about"][] = $subjectArray;
+                    }
+                }                   
+                
             }            
 
 
