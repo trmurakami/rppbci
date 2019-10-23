@@ -168,24 +168,45 @@ if (isset($_GET["oai"])) {
             }
 
             if (isset($rows->title)) {
-                $body["doc"]["name"] = (string)$rows->title[0];
-            }
-
-            if (isset($rows->relation)) {
-                $body["doc"]["doi"] = (string)$rows->relation;
-            }
-
-            if (isset($rows->identifier)) {
-                $body["doc"]["url"] = (string)$rows->identifier;
+                if (!isset($body["doc"]["name"])) {
+                    $body["doc"]["name"] = (string)$rows->title[0];
+                } else {
+                    $body["doc"]["alternateName"] = (string)$rows->title[0];
+                }
             }
 
             if (isset($rows->identifier)) {
-                $body["doc"]["relation"][] = (string)$rows->identifier;
+                $identifierString = (string)$rows->identifier[1];
+                if (substr($identifierString, 0, 2) == "10"){
+                    $body["doc"]["doi"] = (string)$rows->identifier[1];
+                }                
             }
+
+            if (isset($rows->identifier)) {
+                if (substr((string)$rows->identifier, 0, 4) === "http"){
+                    $body["doc"]["url"] = (string)$rows->identifier;
+                }
+            }
+
+            if (isset($rows->identifier)) {
+                if (substr((string)$rows->identifier, 0, 4) === "http"){
+                    $body["doc"]["relation"][] = (string)$rows->identifier;
+                }
+            }
+
+            if (isset($rows->description)) {
+                if (!isset($body["doc"]["description"])) {
+                    $body["doc"]["description"] = (string)$rows->description[0];
+                }
+            }            
 
             if (isset($rows->source)) {
                 $body["doc"]["isPartOf"]["name"] = $repositoryName;
             }
+
+            if (isset($rows->subject)) {
+                $body["doc"]["about"][] = (string)$rows->subject;
+            }            
 
 
             if (isset($rows->creator)) {
@@ -202,7 +223,7 @@ if (isset($_GET["oai"])) {
             }
 
             if (isset($rows->relation)) {
-                $body["doc"]["relation"][] = "https://dx.doi.org/" . (string)$rows->relation;
+                $body["doc"]["relation"][] = (string)$rows->relation;
             }
             $id = (string)$rec->header->identifier;
 
