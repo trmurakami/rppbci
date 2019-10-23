@@ -3,7 +3,8 @@
     "facebook/graph-sdk" : "~5.0",
     "elasticsearch/elasticsearch": "~7.2",
     "caseyamcl/phpoaipmh": "~2.0",
-    "guzzlehttp/guzzle":   "~5.0",
-    "gettext/gettext": "^4.1"  
+    "guzzlehttp/guzzle":   "~6.0",
+    "gettext/gettext": "^4.1",
+    "renanbr/crossref-client": "^1"  
   }
 }
