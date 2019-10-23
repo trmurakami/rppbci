@@ -98,6 +98,9 @@ $mode = "reference";
                                 <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p.".$r["_source"]["isPartOf"]["initialPage"]) : "") ?>
                                 </h6>
                                 <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
+                                <?php if (!empty($r["_source"]["alternateName"])) : ?>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['alternateName']; ?></h6>
+                                <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]["author"])) : ?>
                                     <?php 

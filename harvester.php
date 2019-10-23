@@ -168,10 +168,9 @@ if (isset($_GET["oai"])) {
             }
 
             if (isset($rows->title)) {
-                if (!isset($body["doc"]["name"])) {
-                    $body["doc"]["name"] = (string)$rows->title[0];
-                } else {
-                    $body["doc"]["alternateName"] = (string)$rows->title[0];
+                $body["doc"]["name"] = (string)$rows->title[0];
+                if (isset($rows->title[1])) {
+                    $body["doc"]["alternateName"] = (string)$rows->title[1];
                 }
             }
 
