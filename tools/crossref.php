@@ -11,7 +11,7 @@ ini_set('display_startup_errors', 0);
 error_reporting(0);
 
 
-$query["query"]["query_string"]["query"] = '_exists_:doi doi:1*';
+$query["query"]["query_string"]["query"] = '_exists_:doi doi:1* -_exists_:crossref';
 
 $params = [];
 $params["index"] = $index;
@@ -32,7 +32,7 @@ foreach ($cursor["hits"]["hits"] as $r) {
         $work = $clientCrossref->request('works/'.$r["_source"]["doi"].'');
         print("<pre>".print_r($work, true)."</pre>");
         echo "<br/><br/><br/><br/>";
-        $body["doc"]["USP"]["crossref"] = $work;
+        $body["doc"]["crossref"] = $work;
         $body["doc_as_upsert"] = true;
         //$resultado_crossref = Elasticsearch::update($r["_id"], $body);
         //print_r($resultado_crossref);
@@ -40,7 +40,7 @@ foreach ($cursor["hits"]["hits"] as $r) {
         ob_flush();
         flush();          
     } else {
-        $body["doc"]["USP"]["crossref"]["notFound"] = true;
+        $body["doc"]["crossref"]["notFound"] = true;
         $body["doc_as_upsert"] = true;
         //$resultado_crossref = Elasticsearch::update($r["_id"], $body);
         //print_r($resultado_crossref);
