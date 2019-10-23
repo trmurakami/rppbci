@@ -28,7 +28,7 @@
         $body["doc"]["metrics"]["dimensions"] = $dimensionsData;
         $body["doc"]["metrics"]["dimensions"]["date"] = date("Ymd");
         $body["doc_as_upsert"] = true;      
-        $resultado_dimensions = elasticsearch::store_record($r["_id"], $type, $body);
+        $resultado_dimensions = Elasticsearch::update($r["_id"], $body);
         print_r($resultado_dimensions);
     }
 ?>
