@@ -178,7 +178,7 @@ class Inicio
             echo '<dd>';
             if (!empty($r["_source"]['autores'])) {                  
                 foreach ($r["_source"]['autores'] as $autores) {
-                    echo '<a href="result.php?search[]=creator.keyword:&quot;'.$autores["nomeCompletoDoAutor"].'&quot;">'.$autores["nomeCompletoDoAutor"].'</a>, ';
+                    echo '<a href="result.php?search=creator.keyword:&quot;'.$autores["nomeCompletoDoAutor"].'&quot;">'.$autores["nomeCompletoDoAutor"].'</a>, ';
                 }
             }
             echo '</dd>';

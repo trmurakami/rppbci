@@ -173,7 +173,7 @@ $mode = "reference";
 
                         <div class="uk-grid-divider uk-padding-small" uk-grid>
                             <div class="uk-width-1-5@m">
-                                <a href="result.php?search[]=source.keyword:&quot;< ?php echo $r["_source"]['source'];?>&quot;">< ?php echo $r["_source"]['source'];?></a>
+                                <a href="result.php?search=source.keyword:&quot;< ?php echo $r["_source"]['source'];?>&quot;">< ?php echo $r["_source"]['source'];?></a>
                             </div>
                             <div class="uk-width-4-5@m">
                                 <article class="uk-article">
@@ -186,7 +186,7 @@ $mode = "reference";
 
                                         < ?php if (isset($_GET["papel"])) : ?>
                                             < ?php if ($_GET["papel"] == "admin") : ?>
-                                                <form class="uk-form uk-form-stacked" action="result.php?search[]=" method="POST">
+                                                <form class="uk-form uk-form-stacked" action="result.php?search=" method="POST">
 
                                                     <fieldset data-uk-margin>
                                                         <legend>Inserir URL de divulgação científica</legend>
