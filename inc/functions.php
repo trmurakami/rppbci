@@ -6,6 +6,15 @@ if (file_exists('elasticfind/elasticfind.php')) {
     include '../elasticfind/elasticfind.php';
 }
 
+require 'config.php';
+
+if ($debug) {
+    /* Exibir erros */
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+
 
 class ElasticsearchInstall {
 
