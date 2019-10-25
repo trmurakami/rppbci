@@ -65,7 +65,7 @@ require 'inc/functions.php';
                 <input type="text" name="search" class="form-control" id="searchQuery" aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
                 <small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por radical. Ex: biblio*.</small>
                 <small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas, coloque entre ""</small>
-                <small id="searchHelp" class="form-text text-muted">Dica 3: Use operadores booleanos: AND, OR</small>
+                <small id="searchHelp" class="form-text text-muted">Dica 3: Você também pode usar operadores booleanos: AND, OR</small>
             </div>                       
             <button type="submit" class="btn btn-primary">Pesquisar</button>
             
