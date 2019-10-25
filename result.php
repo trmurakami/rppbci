@@ -81,11 +81,34 @@ $mode = "reference";
             <div class="container">
 
             <div class="row">
-                <div class="col-8">                
+                <div class="col-8">
+
+                                 
                     <!-- PAGINATION -->
                     <?php UI::pagination($page, $total, $limit); ?>
                     <!-- /PAGINATION --> 
-                    <br/>  
+                    <br/> 
+                    
+                    <?php if($total == 0) : ?>
+
+                        <div class="alert alert-warning" role="alert">
+                        Sua busca não obteve resultado. Você pode refazer sua busca abaixo:
+                        </div>
+
+                        <form action="result.php">
+                            <div class="form-group">
+                                <label for="searchQuery">Termos de busca</label>
+                                <input type="text" name="search" class="form-control" id="searchQuery" aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
+                                <small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por radical. Ex: biblio*.</small>
+                                <small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas, coloque entre ""</small>
+                                <small id="searchHelp" class="form-text text-muted">Dica 3: Você também pode usar operadores booleanos: AND, OR</small>
+                            </div>                       
+                            <button type="submit" class="btn btn-primary">Pesquisar</button>
+                            
+                        </form>
+                        <br/><br/>                        
+                    
+                    <?php endif; ?>
 
                     <!-- Resultados -->
                         <?php foreach ($cursor["hits"]["hits"] as $r) : ?>
