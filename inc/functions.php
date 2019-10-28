@@ -394,8 +394,12 @@ class Facebook
         $fb_comment_plugin_count = 0;
         $fb_total = 0;
         $i = 0;
+        
         foreach ($responses as $key => $response) {
             $response_array = json_decode($response->getBody());
+            if (isset($response_array->{"error"})) {
+                die("Limite do facebook atingido");
+            }
             //echo '<a class="uk-button" href="'.(string)$response_array->{"id"}.'">Link</a>';
             if (isset($response_array->{"engagement"})) {
                 
@@ -414,32 +418,11 @@ class Facebook
                 $fb_share_count+= 0;
                 $fb_comment_plugin_count+= 0;
                 $fb_total+= 0;
-                ${"fb" . $i} = 0;
-                //echo '<div class="uk-badge uk-badge-notification">Nenhuma interação no facebook</div><br/>';
+                ${"fb" . $i} = 0;                
             }
             $i++;
 
         }
-        
-    
-            // echo '<table class="uk-table"><caption>Interações no Facebook</caption>';        
-            // echo '<thead>
-            //         <tr>
-            //             <th>Reactions</th>
-            //             <th>Comentários</th>
-            //             <th>Compartilhamentos</th>                        
-            //             <th>Total</th>
-            //         </tr>
-            //     </thead>';
-            // echo '<tbody>
-            //         <tr>
-            //             <td>'.$fb_reaction_count.'</td>
-            //             <td>'.$fb_comment_count.'</td>
-            //             <td>'.$fb_share_count.'</td>
-            //             <td>'.$fb_total.'</td>
-            //         </tr>
-            //       </tbody>';   
-            // echo '</table><br/>';
         
         $f = 0;
         while ($f < $i):
