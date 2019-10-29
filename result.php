@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <?php
+session_start();
+
+$errorMsg = "";
+$validUser = $_SESSION["login"] === true;
+if(isset($_POST["username"])) {
+  $validUser = $_POST["username"] == "rppbci_admin" && $_POST["password"] == "rppbci_admin";
+  if(!$validUser) $errorMsg = "Usuário ou senha inválidos.";
+    else $_SESSION["login"] = true;
+}
+
 
 require 'inc/config.php';
 require 'inc/functions.php';
@@ -187,7 +197,22 @@ $mode = "reference";
                                         <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
                                         <div data-badge-details="right" data-badge-type="2" data-doi="<?php echo $r["_source"]['doi'];?>" data-condensed="true" data-hide-no-mentions="true" class="altmetric-embed"></div>
                                         <div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
-                                <?php endif; ?>                                                                                                                           
+                                <?php endif; ?>
+
+                                <?php if (isset($_SESSION["login"])) : ?>
+
+                                    <form class="form-signin" method="post" action="editor/index.php">
+                                        <?php
+                                            $jsonRecord = json_encode($r["_source"]);                                        
+                                        ?>
+                                        <input type="hidden" id="record" name="record" value="<?php echo urlencode($jsonRecord) ?>">
+                                        <button class="btn btn-lg btn-warning btn-block" type="submit">Editar registro</button>
+                                        <p class="mt-5 mb-3 text-muted"><?= $errorMsg ?></p>
+                                    </form>
+
+                                <?php endif; ?>
+
+                                                                                                                                                    
                             
                             </div>
                         </div>
