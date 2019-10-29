@@ -1,3 +1,6 @@
 [submodule "elasticfind"]
 	path = elasticfind
 	url = https://github.com/trmurakami/elasticfind.git
+[submodule "editor"]
+	path = editor
+	url = https://github.com/trmurakami/metadataEditor.git
