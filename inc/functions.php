@@ -860,7 +860,7 @@ class Homepage
         }
     }
     
-    static function sumFieldAgg($field)
+    static function sumFieldAggFacebook()
     {
         $query = '{
             "aggs" : {
@@ -875,7 +875,18 @@ class Homepage
         echo '<p>Total de compartilhamentos no facebook: '.$response["aggregations"]["facebook_share_count"]["value"].'</p>';
         echo '<p>Total de comentários no facebook: '.$response["aggregations"]["facebook_comment_count"]["value"].'</p>';
         echo '<p>Total de interações no facebook: '.$response["aggregations"]["facebook_total"]["value"].'</p>';    
-    }       
+    }  
+    
+    static function sumFieldAggCrossref()
+    {
+        $query = '{
+            "aggs" : {
+                "total" : { "sum" : { "field" : "crossref.message.is-referenced-by-count" } }
+            }
+        }';
+        $response = Elasticsearch::search(null, 0, $query);
+        return $response["aggregations"]["total"]["value"];
+    }      
 }
 
 ?>

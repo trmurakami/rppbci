@@ -125,11 +125,14 @@ require 'inc/functions.php';
           <ul class="list-group">
               Total de registros: <?php echo Admin::totalRecords(); ?>
           </ul>
+          <ul class="list-group">
+              Citações obtidas na API da Crossref: <?php echo Homepage::sumFieldAggCrossref(); ?>
+          </ul>          
         </div>        
         <div class="col-md-4">
           <h2>Interações no facebook</h2>
           <ul class="list-group">
-              <?php Homepage::sumFieldAgg("source"); ?>
+              <?php Homepage::sumFieldAggFacebook(); ?>
           </ul>
         </div> 
       </div>
