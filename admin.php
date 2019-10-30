@@ -80,6 +80,10 @@ if(!$_SESSION["login"]) {
             <p>Registros coletados no Facebook: <?php echo Admin::facebookStatus(); ?></p>
             <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
+            <h3>Crossref</h3>
+
+            <p><a href="tools/crossref.php">Coletar Crossref</a></p>
+
             <h3>Fontes coletadas</h3>
             <div class="uk-alert-primary" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
