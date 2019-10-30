@@ -376,6 +376,8 @@ $mode = "reference";
                                 $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET["search"]);
+                                $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET["search"]);
+                                $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET["search"]);
                             ?>
                             </ul>
                             <hr>
