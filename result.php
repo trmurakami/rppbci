@@ -68,7 +68,7 @@ $mode = "reference";
         <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
 
         <!-- PlumX Script -->
-        <script type="text/javascript" src="//d39af2mgp1pqhg.cloudfront.net/widget-popup.js"></script>
+        <script type="text/javascript" src="//cdn.plu.mx/widget-details.js"></script>
 
 
     </head>
@@ -211,7 +211,7 @@ $mode = "reference";
 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                         <div data-badge-popover="right" data-badge-type="1" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
-                                        <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-plum-print-popup" data-hide-when-empty="true" data-badge="true"></a>
+                                        <a href="https://plu.mx/plum/a/?doi=<?php echo $r["_source"]['doi'];?>" class="plumx-details" data-hide-when-empty="true" data-badge="true"></a>
                                         <div data-badge-details="right" data-badge-type="2" data-doi="<?php echo $r["_source"]['doi'];?>" data-condensed="true" data-hide-no-mentions="true" class="altmetric-embed"></div>
                                         <div><span class="__dimensions_badge_embed__" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-zero-citations="true" data-style="small_rectangle"></span></div></li>
                                 <?php endif; ?>
