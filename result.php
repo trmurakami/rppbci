@@ -205,6 +205,7 @@ $mode = "reference";
                                         <?php
                                             $jsonRecord = json_encode($r["_source"]);                                        
                                         ?>
+                                        <input type="hidden" id="_id" name="_id" value="<?php echo $r["_id"] ?>">
                                         <input type="hidden" id="record" name="record" value="<?php echo urlencode($jsonRecord) ?>">
                                         <button class="btn btn-lg btn-warning btn-block" type="submit">Editar registro</button>
                                         <p class="mt-5 mb-3 text-muted"><?= $errorMsg ?></p>
