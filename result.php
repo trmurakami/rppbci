@@ -201,6 +201,41 @@ $mode = "reference";
                                     </table><br/>
                                 <?php endif; ?>
 
+<?php if (!empty($r["_source"]['references'])) : ?>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#<?php echo substr($r["_id"], 1, 6) ?>">
+  Ver referências
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="<?php echo substr($r["_id"], 1, 6) ?>" tabindex="-1" role="dialog" aria-labelledby="<?php echo $r["_id"] ?>Title" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="<?php echo $r["_id"] ?>Title">Referências</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <?php
+            foreach ($r["_source"]['references'] as $ref) {
+                echo ''.$ref["type"].': '.implode("; ", $ref["authors"]).'. '.$ref["name"].'. '.$ref["publisher"].', '.$ref["datePublished"].'.<br/>';
+                //print_r($ref);
+                //echo "<br/><br/>";
+            } 
+        ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php endif; ?>
+                                
+
                                 <?php if (!empty($r["_source"]['crossref']['message']['is-referenced-by-count'])) : ?>
                                     
                                 <div class="alert alert-success" role="alert">
