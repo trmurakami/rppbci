@@ -123,11 +123,14 @@ $mode = "reference";
 
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?>
-                                <?php (isset($r["_source"]["isPartOf"]["volume"]) ?  print_r(" - v.".$r["_source"]["isPartOf"]["volume"]) : "") ?>
-                                <?php (isset($r["_source"]["isPartOf"]["issue"]) ? print_r(" - n.".$r["_source"]["isPartOf"]["issue"]) : "") ?>
-                                <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p.".$r["_source"]["isPartOf"]["initialPage"]) : "") ?>
-                                </h6>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['type'];?>
+                                <?php if (!empty($r["_source"]['source'])) : ?>
+                                    <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['source'];?>
+                                    <?php (isset($r["_source"]["isPartOf"]["volume"]) ?  print_r(" - v.".$r["_source"]["isPartOf"]["volume"]) : "") ?>
+                                    <?php (isset($r["_source"]["isPartOf"]["issue"]) ? print_r(" - n.".$r["_source"]["isPartOf"]["issue"]) : "") ?>
+                                    <?php (isset($r["_source"]["isPartOf"]["initialPage"]) ? print_r(" - p.".$r["_source"]["isPartOf"]["initialPage"]) : "") ?>
+                                    </h6>
+                                <?php endif; ?>
                                 <h5 class="card-title"><a class="text-dark" href="<?php echo $r['_source']['url']; ?>"><?php echo $r["_source"]['name']; ?> (<?php echo $r["_source"]['datePublished'];?>)</a></h5>
                                 <?php if (!empty($r["_source"]["alternateName"])) : ?>
                                 <h6 class="card-subtitle mb-2 text-muted"><?php echo $r["_source"]['alternateName']; ?></h6>
@@ -161,10 +164,16 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['description'])) : ?>
-                                    <?php 
-                                        echo '<p class="text-muted"><b>Resumo:</b> '.''. $r["_source"]['description'].'</p>';
-                                    ?>
-                                <?php endif; ?>                                
+                                    <p class="text-muted"><b>Resumo:</b> <?php echo $r["_source"]['description'] ?></p>
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['publisher']['organization']['name'])) : ?>
+                                    <p>Editora: <?php echo $r["_source"]['publisher']['organization']['name'];?></p>
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['ISBN'])) : ?>
+                                    <p>ISBN: <?php echo $r["_source"]['ISBN'][0];?></p>
+                                <?php endif; ?>                                                                                                 
                                 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                     <p>DOI: <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
@@ -208,7 +217,7 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (isset($_SESSION["login"])) : ?>
-
+                                    <br/><br/>
                                     <form class="form-signin" method="post" action="editor/index.php">
                                         <?php
                                             $jsonRecord = json_encode($r["_source"]);                                        
@@ -319,6 +328,7 @@ $mode = "reference";
                                     $_GET["search"] = null;
                                 }
 
+                                $facets->facet("type", 100, "Tipo", null, "_term", $_GET["search"]);
                                 $facets->facet("source", 100, "Título do periódico", null, "_term", $_GET["search"]);
                                 $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET["search"]);
                                 $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET["search"]);
@@ -326,7 +336,8 @@ $mode = "reference";
                                 //$facets->facet_range("numAutores", 100, "Número de autores - Range", $_GET["search"]);                                
                                 $facets->facet("originalType", 10, "Seções", null, "_term", $_GET["search"]);                                
                                 $facets->facet("about", 100, "Assuntos", null, "_term", $_GET["search"]);
-                                $facets->facet("isPartOf.name", 100, "Editora", null, "_term", $_GET["search"]);
+                                $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET["search"]);
+                                $facets->facet("isPartOf.name", 100, "Nome do periódico", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET["search"]);

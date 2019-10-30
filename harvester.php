@@ -132,7 +132,7 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["url"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'}->attributes('http://www.w3.org/1999/xlink');
 
                 $query["doc"]["origin"] = "OAI-PHM";
-                $query["doc"]["type"] = "article";
+                $query["doc"]["type"] = "Artigo";
                 $query["doc_as_upsert"] = true;
 
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'} as $self_uri) {
@@ -242,7 +242,7 @@ if (isset($_GET["oai"])) {
                     $i++;
                 }
             }
-            $query["doc"]["numAutores"] = $i;
+            $body["doc"]["numAutores"] = $i;
 
             if (isset($rows->date)) {
                 $body["doc"]["datePublished"] = substr((string)$rows->date, 0, 4);
@@ -254,8 +254,8 @@ if (isset($_GET["oai"])) {
             $id = (string)$rec->header->identifier;
 
             $body["doc"]["source"] = $repositoryName;
-            $query["doc"]["origin"] = "OAI-PHM";
-            $query["doc"]["type"] = "article";
+            $body["doc"]["origin"] = "OAI-PHM";
+            $body["doc"]["type"] = "Artigo";
             $body["doc_as_upsert"] = true;
             unset($author);
             //print_r($body);
@@ -332,7 +332,7 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["relation"][]=(string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
 
                 $query["doc"]["origin"] = "OAI-PHM";
-                $query["doc"]["type"] = "article";
+                $query["doc"]["type"] = "Artigo";
 
                 $query["doc_as_upsert"] = true;
 
