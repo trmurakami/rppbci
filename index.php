@@ -3,6 +3,17 @@
 <head>
 
 <?php
+
+session_start();
+
+$errorMsg = "";
+$validUser = $_SESSION["login"] === true;
+if(isset($_POST["username"])) {
+  $validUser = $_POST["username"] == "rppbci_admin" && $_POST["password"] == "rppbci_admin";
+  if(!$validUser) $errorMsg = "Usuário ou senha inválidos.";
+    else $_SESSION["login"] = true;
+}
+
 require 'inc/config.php';
 require 'inc/meta-header.php';
 require 'inc/functions.php';
@@ -77,6 +88,30 @@ require 'inc/functions.php';
 
   <div class="container">
     <!-- Example row of columns -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form class="form-signin" method="post" action="index.php">
+                <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+                <label for="inputUser" class="sr-only">Usuário</label>
+                <input type="text" id="inputUser" class="form-control" name="username" placeholder="Usuário" required autofocus>
+                <label for="inputPassword" class="sr-only">Senha</label>
+                <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Senha" required>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>                   
+            </form>
+            </div>
+            </div>
+        </div>
+    </div>     
      
     <div class="row">
         <div class="col-md-4">
