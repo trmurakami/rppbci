@@ -168,15 +168,15 @@ $mode = "reference";
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['publisher']['organization']['name'])) : ?>
-                                    <p>Editora: <?php echo $r["_source"]['publisher']['organization']['name'];?></p>
+                                    <p class="text-muted"><b>Editora:</b> <?php echo $r["_source"]['publisher']['organization']['name'];?></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['ISBN'])) : ?>
-                                    <p>ISBN: <?php echo $r["_source"]['ISBN'][0];?></p>
+                                    <p class="text-muted"><b>ISBN:</b> <?php echo $r["_source"]['ISBN'][0];?></p>
                                 <?php endif; ?>                                                                                                 
                                 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
-                                    <p>DOI: <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
+                                    <p class="text-muted"><b>DOI:</b> <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
                                 <?php endif; ?>
 
                                 <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
