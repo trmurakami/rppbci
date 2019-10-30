@@ -126,7 +126,7 @@ require 'inc/functions.php';
               Total de registros: <?php echo Admin::totalRecords(); ?>
           </ul>
           <ul class="list-group">
-              Citações obtidas na API da Crossref: <?php echo Homepage::sumFieldAggCrossref(); ?>
+              Citações via Crossref API: <a href="result.php?search=crossref.message.is-referenced-by-count:[1 TO *]"><?php echo Homepage::sumFieldAggCrossref(); ?></a>
           </ul>          
         </div>        
         <div class="col-md-4">

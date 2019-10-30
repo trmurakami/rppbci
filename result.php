@@ -190,7 +190,15 @@ $mode = "reference";
                                             </tr>
                                         </tbody>   
                                     </table><br/>
-                                <?php endif; ?> 
+                                <?php endif; ?>
+
+                                <?php if (!empty($r["_source"]['crossref']['message']['is-referenced-by-count'])) : ?>
+                                    
+                                <div class="alert alert-success" role="alert">
+                                    Quantidade de vezes em que o artigo foi citado: <?php echo $r["_source"]['crossref']['message']['is-referenced-by-count'] ?> (Fonte: Crossref API)
+                                </div>
+
+                                <?php endif; ?>                                  
 
                                 <?php if (!empty($r["_source"]['doi'])) : ?>
                                         <div data-badge-popover="right" data-badge-type="1" data-doi="<?php echo $r["_source"]['doi'];?>" data-hide-no-mentions="true" class="altmetric-embed"></div>
