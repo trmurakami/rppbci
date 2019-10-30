@@ -124,7 +124,7 @@ if (isset($_GET["oai"])) {
 
                 $query["doc"]["isPartOf"]["name"] = $repositoryName;
                 $query["doc"]["isPartOf"]["publisher"]["organization"]["name"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'publisher'}->{'publisher-name'};
-                $query["doc"]["isPartOf"]["issn"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
+                $query["doc"]["isPartOf"]["ISSN"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'journal-meta'}->{'issn'};
                 $query["doc"]["isPartOf"]["volume"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'volume'};
                 $query["doc"]["isPartOf"]["issue"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue'};
                 $query["doc"]["isPartOf"]["initialPage"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'issue-id'};

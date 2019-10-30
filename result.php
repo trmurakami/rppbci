@@ -320,7 +320,7 @@ $mode = "reference";
                                 $facets->facet("isPartOf.name", 100, "Editora", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.volume", 100, "Volume", null, "_term", $_GET["search"]);
                                 $facets->facet("isPartOf.issue", 100, "Fascículo", null, "_term", $_GET["search"]);
-                                $facets->facet("isPartOf.issn", 100, "ISSN", null, "_term", $_GET["search"]);
+                                $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET["search"]);
                             ?>
                             </ul>
                             <hr>
