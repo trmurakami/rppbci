@@ -50,4 +50,6 @@ foreach ($cursor["hits"]["hits"] as $r) {
 
 }
 
+header("Refresh: 0");
+
 ?>
