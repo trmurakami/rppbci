@@ -17,6 +17,11 @@ $query["query"]["query_string"]["query"] = "_exists_:author.organization.name";
 $params = [];
 $params["index"] = $index;
 $params["size"] = $_GET["size"];
+
+if (isset($_GET["skip"])) {
+    $params["skip"] = $_GET["skip"];
+}
+
 $params["_source"] = ["_id","author"];
 $params["body"] = $query;
 
