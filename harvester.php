@@ -238,7 +238,11 @@ if (isset($_GET["oai"])) {
             if (isset($rows->creator)) {
                 $i = 0;
                 foreach ($rows->creator as $author) {
-                    $body["doc"]["author"][$i]["person"]["name"] = (string)$author;
+                    $authorArray = explode(";", (string)$author);
+                    $body["doc"]["author"][$i]["person"]["name"] = $authorArray[0];
+                    if (!empty($authorArray[1])) {
+                        $body["doc"]["author"][$i]["organization"]["name"] = $authorArray[1];
+                    }
                     $i++;
                 }
             }
