@@ -41,13 +41,13 @@ if(!$_SESSION["login"]) {
                         <small id="setHelp" class="form-text text-muted">Incluir um SET-OAI. Em branco por padrão</small>
                     </div>
 
-                    <!--
                     <div class="form-group">
-                        <label for="area">Área de Conhecimento</label>
-                        <input type="text" class="form-control" id="area" aria-describedby="areaHelp" name="area" placeholder="Informe a Área de Conhecimento">
-                        <small id="areaHelp" class="form-text text-muted">Informe a Área de Conhecimento</small>
+                        <label for="repositoryName">Nome alternativo para a fonte</label>
+                        <input type="text" class="form-control" id="repositoryName" aria-describedby="repositoryNameHelp" name="repositoryName" placeholder="Nome alternativo da fonte">
+                        <small id="repositoryNameHelp" class="form-text text-muted">Informe o nome alternativo para a fonte. Opcional</small>
                     </div>
 
+                    <!--
                     <div class="form-group">
                         <label for="areaChild">Área de Conhecimento - Nível 2</label>
                         <input type="text" class="form-control" id="areaChild" aria-describedby="areaChildHelp" name="areaChild" placeholder="Informe a Área de Conhecimento - Nível 2">
