@@ -83,7 +83,7 @@ if(!$_SESSION["login"]) {
             <h3>Crossref</h3>
             <p>Total de registros com doi: <?php echo Admin::harvestStatus("doi"); ?></p>
             <p>Registros coletados na Crossref: <?php echo Admin::harvestStatus("crossref"); ?></p>
-            <p><a href="tools/crossref.php">Coletar Crossref</a></p>
+            <p><a href="tools/crossref.php?size=10">Coletar Crossref</a></p>
 
             <h3>Fontes coletadas</h3>
             <div class="uk-alert-primary" uk-alert>
