@@ -47,10 +47,8 @@ if (isset($_GET["oai"])) {
     $body_repository["doc"]["type"] = "journal";
     $body_repository["doc_as_upsert"] = true;
 
-    print_r($body_repository);
     $insert_repository_result = Elasticsearch::update($body_repository["doc"]["url"], $body_repository, $indexAdm);
-    print_r($insert_repository_result);
-
+    
     // Store repository data - Fim
 
     // Results will be iterator of SimpleXMLElement objects
@@ -59,9 +57,6 @@ if (isset($_GET["oai"])) {
     foreach ($results as $item) {
         $metadata_formats[] = $item->{"metadataPrefix"};
     }
-
-    print("<pre>".print_r($_GET,true)."</pre>");
-
 
     if ($_GET["metadataFormat"] == "nlm") {
 
