@@ -117,8 +117,12 @@ require 'inc/functions.php';
         <div class="col-md-4">
           <h2>Periódicos indexados</h2>
           <ul class="list-group">
-              <?php Homepage::fieldAgg("source"); ?>
+              <?php Homepage::fieldAgg("source", "Artigo"); ?>
           </ul>
+          <h2>Eventos indexados</h2>
+          <ul class="list-group">
+              <?php Homepage::fieldAgg("source", "Trabalho em evento"); ?>
+          </ul>          
         </div>
         <div class="col-md-4">
           <h2>Estatísticas</h2>

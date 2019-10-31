@@ -811,8 +811,9 @@ class Homepage
 
     }
     
-    static function fieldAgg($field)
+    static function fieldAgg($field, $typeOfContent)
     {
+        $query["query"]["bool"]["filter"][0]["term"]["type.keyword"] = $typeOfContent;
         $query["aggs"]["group_by_state"]["terms"]["field"] = "$field.keyword";
         $query["aggs"]["group_by_state"]["terms"]["size"] = 50;
 
