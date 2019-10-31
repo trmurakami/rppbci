@@ -261,11 +261,11 @@ class Admin
      * Status da Coleta do Facebook
      * 
      */      
-    static function facebookStatus()
+    static function harvestStatus($field)
     {
         global $index;
         global $client;
-        $querySum["query"]["bool"]["must"]["query_string"]["query"] = "_exists_:facebook";
+        $querySum["query"]["bool"]["must"]["query_string"]["query"] = "_exists_:$field";
         $paramsSum = [];
         $paramsSum["index"] = $index;
         $paramsSum["body"] = $querySum;

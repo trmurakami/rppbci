@@ -77,11 +77,11 @@ if(!$_SESSION["login"]) {
             <h3>Estatísticas</h3>
             <p>Total de registros: <?php echo Admin::totalRecords(); ?></p>                
             <h3>Status da coleta do Facebook</h3>
-            <p>Registros coletados no Facebook: <?php echo Admin::facebookStatus(); ?></p>
+            <p>Registros coletados no Facebook: <?php echo Admin::harvestStatus("facebook"); ?></p>
             <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
             <h3>Crossref</h3>
-
+            <p>Registros coletados na Crossref: <?php echo Admin::harvestStatus("crossref"); ?></p>
             <p><a href="tools/crossref.php">Coletar Crossref</a></p>
 
             <h3>Fontes coletadas</h3>
