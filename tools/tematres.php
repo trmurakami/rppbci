@@ -18,8 +18,8 @@ $params = [];
 $params["index"] = $index;
 $params["size"] = $_GET["size"];
 
-if (isset($_GET["skip"])) {
-    $params["skip"] = $_GET["skip"];
+if (isset($_GET["from"])) {
+    $params["from"] = $_GET["from"];
 }
 
 $params["_source"] = ["_id","author"];
