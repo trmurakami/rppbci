@@ -81,6 +81,7 @@ if(!$_SESSION["login"]) {
             <p><a href="tools/coleta_facebook.php">Coletar facebook</a></p>
 
             <h3>Crossref</h3>
+            <p>Total de registros com doi: <?php echo Admin::harvestStatus("doi"); ?></p>
             <p>Registros coletados na Crossref: <?php echo Admin::harvestStatus("crossref"); ?></p>
             <p><a href="tools/crossref.php">Coletar Crossref</a></p>
 
