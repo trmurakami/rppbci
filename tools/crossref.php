@@ -15,7 +15,7 @@ $query["query"]["query_string"]["query"] = '_exists_:doi doi:1* -_exists_:crossr
 
 $params = [];
 $params["index"] = $index;
-$params["size"] = 10;
+$params["size"] = $_GET["size"];
 $params["body"] = $query;
 
 $cursor = $client->search($params);
