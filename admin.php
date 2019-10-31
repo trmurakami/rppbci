@@ -70,6 +70,14 @@ if(!$_SESSION["login"]) {
                         </select>
                     </div>
 
+                    <div class="form-group">
+                        <label for="typeOfContent">Tipo de conteúdo</label>
+                        <select class="form-control" id="typeOfContent" name="typeOfContent">
+                            <option value="Artigo">Artigo</option>
+                            <option value="Trabalho em evento">Trabalho em evento</option>
+                        </select>
+                    </div>                    
+
                     <button class="btn btn-primary">Inserir</button>  
 
                 </form>

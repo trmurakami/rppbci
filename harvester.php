@@ -35,6 +35,9 @@ if (isset($_GET["oai"])) {
     if (isset($_GET["corrente"])) {
         $body_repository["doc"]["corrente"] = $_GET["corrente"];
     }
+    if (isset($_GET["typeOfContent"])) {
+        $body_repository["doc"]["typeOfContent"] = $_GET["typeOfContent"];
+    }    
     $body_repository["doc"]["date"] = (string)$identify->responseDate;
     $body_repository["doc"]["url"] = (string)$identify->request;
     $body_repository["doc"]["type"] = "journal";
@@ -132,7 +135,13 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["url"] = (string)$rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'}->attributes('http://www.w3.org/1999/xlink');
 
                 $query["doc"]["origin"] = "OAI-PHM";
-                $query["doc"]["type"] = "Artigo";
+
+                if (isset($_GET["typeOfContent"])) {
+                    $query["doc"]["type"] = $_GET["typeOfContent"];
+                } else {
+                    $query["doc"]["type"] = "Artigo";
+                }
+                
                 $query["doc_as_upsert"] = true;
 
                 foreach ($rec->{'metadata'}->{'article'}->{'front'}->{'article-meta'}->{'self-uri'} as $self_uri) {
@@ -259,7 +268,11 @@ if (isset($_GET["oai"])) {
 
             $body["doc"]["source"] = $repositoryName;
             $body["doc"]["origin"] = "OAI-PHM";
-            $body["doc"]["type"] = "Artigo";
+            if (isset($_GET["typeOfContent"])) {
+                $body["doc"]["type"] = $_GET["typeOfContent"];
+            } else {
+                $body["doc"]["type"] = "Artigo";
+            }
             $body["doc_as_upsert"] = true;
             unset($author);
             //print_r($body);
@@ -336,8 +349,11 @@ if (isset($_GET["oai"])) {
                 $query["doc"]["relation"][]=(string)$rec->{'metadata'}->{'rfc1807'}->{'id'};
 
                 $query["doc"]["origin"] = "OAI-PHM";
-                $query["doc"]["type"] = "Artigo";
-
+                if (isset($_GET["typeOfContent"])) {
+                    $query["doc"]["type"] = $_GET["typeOfContent"];
+                } else {
+                    $query["doc"]["type"] = "Artigo";
+                }
                 $query["doc_as_upsert"] = true;
 
                 $resultado = Elasticsearch::update($sha256, $query);
