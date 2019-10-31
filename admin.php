@@ -41,6 +41,7 @@ if(!$_SESSION["login"]) {
                         <small id="setHelp" class="form-text text-muted">Incluir um SET-OAI. Em branco por padrão</small>
                     </div>
 
+                    <!--
                     <div class="form-group">
                         <label for="area">Área de Conhecimento</label>
                         <input type="text" class="form-control" id="area" aria-describedby="areaHelp" name="area" placeholder="Informe a Área de Conhecimento">
@@ -60,6 +61,7 @@ if(!$_SESSION["login"]) {
                             <option value="não corrente">não corrente</option>
                         </select>
                     </div>
+                    -->
 
                     <div class="form-group">
                         <label for="metadataFormat">Formato de metadados</label>

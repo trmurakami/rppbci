@@ -224,14 +224,14 @@ class Admin
 
             echo '<tr><td><a href="'.$repository['_id'].'">'.$repository['_source']['name'].'</a></td><td>'.$repository['_source']['metadataFormat'].'</td>';
             if (isset($repository['_source']['typeOfContent'])){
-                echo '<td>'.$repository['_source']['typeOfContent'].'</td><td>';
+                echo '<td>'.$repository['_source']['typeOfContent'].'</td>';
             } else {
-                echo '<td>Artigo</td><td>';
+                echo '<td>Artigo</td>';
             }
             
-            echo '<td>'.$repository['_source']['date'].'</td><td>';
-	        echo $totalSum;
-	        echo '</td><td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&metadataFormat='.$repository['_source']['metadataFormat'].'&typeOfContent='.((isset($repository['_source']['typeOfContent'])? $repository['_source']['typeOfContent'] : '')).'">Update</a></td>';
+            echo '<td>'.$repository['_source']['date'].'</td>';
+	        echo '<td>'.$totalSum.'</td>';
+	        echo '<td><a class="uk-button uk-button-success" href="harvester.php?oai='.$repository['_source']['url'].'&metadataFormat='.$repository['_source']['metadataFormat'].'&typeOfContent='.((isset($repository['_source']['typeOfContent'])? $repository['_source']['typeOfContent'] : '')).'">Update</a></td>';
             echo '<td><a class="uk-button uk-button-danger" href="harvester.php?delete='.$repository['_id'].'&delete_name='.htmlentities(urlencode($repository['_source']['name'])).'">Excluir</a></td></tr>';
             
 	}
