@@ -258,7 +258,7 @@ if (isset($_GET["oai"])) {
                     $authorArray = explode(";", (string)$author);
                     $query["doc"]["author"][$i]["person"]["name"] = $authorArray[0];
                     if (!empty($authorArray[1])) {
-                        $query["doc"]["author"][$i]["organization"]["name"] = $authorArray[1];
+                        $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
                     }
                     $i++;
                 }
