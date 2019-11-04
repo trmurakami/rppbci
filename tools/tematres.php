@@ -12,7 +12,9 @@ error_reporting(0);
 
 
 $query["query"]["query_string"]["query"] = "_exists_:author.organization.name";
-//$query["query"]["query_string"]["query"] = "-_exists_:author.organization.tematres";
+if ($_GET["notCompleted"] == true) {
+    $query["query"]["query_string"]["query"] = "-_exists_:author.organization.tematres";
+}
 
 $params = [];
 $params["index"] = $index;
