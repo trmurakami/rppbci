@@ -47,6 +47,10 @@ if(!$_SESSION["login"]) {
                         <small id="repositoryNameHelp" class="form-text text-muted">Informe o nome alternativo para a fonte. Opcional</small>
                     </div>
 
+                    <?php if ($useTematres == true) : ?>
+                        <input type="hidden" name="useTematres" value="true">
+                    <?php endif ?>
+
                     <!--
                     <div class="form-group">
                         <label for="areaChild">Área de Conhecimento - Nível 2</label>

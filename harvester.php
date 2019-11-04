@@ -122,7 +122,18 @@ if (isset($_GET["oai"])) {
                         $query["doc"]["author"][$i]["person"]["name"] = (string)$autores->{'name'}->{'surname'}.', '.$autores->{'name'}->{'given-names'};
 
                         if (isset($autores->{'aff'})) {
-                            $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autores->{'aff'}));
+                            if ($_GET["useTematres"] == true) {
+                                $resultTematres = Authorities::tematresQuery(trim(strip_tags((string)$autores->{'aff'})), $tematres_url); 
+                                if ($resultTematres['foundTerm'] != "ND") {
+                                    $query["doc"]["author"][$i]["organization"]["name"] = $resultTematres['foundTerm'];
+                                    $query["doc"]["author"][$i]["organization"]["tematres"] = true;
+                                } else {
+                                    $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autores->{'aff'}));
+                                }
+                            } else {
+                                $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autores->{'aff'}));
+                            }
+                            
                         }
 
                         if (isset($autores->{'uri'})) {
@@ -258,7 +269,17 @@ if (isset($_GET["oai"])) {
                     $authorArray = explode(";", (string)$author);
                     $query["doc"]["author"][$i]["person"]["name"] = $authorArray[0];
                     if (!empty($authorArray[1])) {
-                        $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
+                        if ($_GET["useTematres"] == true) {
+                            $resultTematres = Authorities::tematresQuery(trim(strip_tags($authorArray[1])), $tematres_url);
+                            if ($resultTematres['foundTerm'] != "ND") {
+                                $query["doc"]["author"][$i]["organization"]["name"] = $resultTematres['foundTerm'];
+                                $query["doc"]["author"][$i]["organization"]["tematres"] = true;
+                            } else {
+                                $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
+                            }
+                        } else {
+                            $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags($authorArray[1]));
+                        }                        
                     }
                     $i++;
                 }
@@ -347,7 +368,17 @@ if (isset($_GET["oai"])) {
                     $query["doc"]["author"][$i]["person"]["completeName"] = $autor_nome_array[1].' '.ucwords(strtolower($autor_nome_array[0]));
                     $query["doc"]["author"][$i]["person"]["name"] = (string)$autor_array[0];
                     if (isset($autor_array[1])) {
-                        $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autor_array[1]));
+                        if ($_GET["useTematres"] == true) {
+                            $resultTematres = Authorities::tematresQuery(trim(strip_tags((string)$autor_array[1])), $tematres_url);
+                            if ($resultTematres['foundTerm'] != "ND") {
+                                $query["doc"]["author"][$i]["organization"]["name"] = $resultTematres['foundTerm'];
+                                $query["doc"]["author"][$i]["organization"]["tematres"] = true;
+                            } else {
+                                $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autor_array[1]));
+                            }
+                        } else {
+                            $query["doc"]["author"][$i]["organization"]["name"] = trim(strip_tags((string)$autor_array[1]));
+                        }
                     }
                     $i++;
                 }
