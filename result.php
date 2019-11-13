@@ -368,7 +368,7 @@ $mode = "reference";
                                 $facets->facet("datePublished", 120, "Ano de publicação", "desc", "_term", $_GET);
                                 $facets->facet("author.person.name", 120, "Autores", null, "_term", $_GET);
                                 $facets->facet("author.organization.name", 120, "Afiliação", null, "_term", $_GET);
-                                //$facets->facet_range("numAutores", 100, "Número de autores - Range", $_GET);                                
+                                $facets->facet_range("numAutores", 100, "Número de autores - Range", $_GET);                                
                                 $facets->facet("originalType", 10, "Seções", null, "_term", $_GET);                                
                                 $facets->facet("about", 100, "Assuntos", null, "_term", $_GET);
                                 $facets->facet("publisher.organization.name", 100, "Editora", null, "_term", $_GET);
@@ -378,6 +378,7 @@ $mode = "reference";
                                 $facets->facet("isPartOf.ISSN", 100, "ISSN", null, "_term", $_GET);
                                 $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
                                 $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
+                                $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
                             ?>
                             </ul>
                             <hr>
