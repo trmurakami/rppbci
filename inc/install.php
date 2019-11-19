@@ -15,7 +15,9 @@ try {
 /* Create index if not exists */
 if (isset($testIndex) && $testIndex == false) {
     Elasticsearch::createIndex($index, $client);
+    sleep(10);
     Elasticsearch::mappingsIndex($index, $client);
+    sleep(10);
     Elasticsearch::createIndex($indexAdm, $client);
 }
 
