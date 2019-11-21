@@ -293,6 +293,14 @@ if (isset($_GET["oai"])) {
             if (isset($rows->relation)) {
                 $query["doc"]["relation"][] = (string)$rows->relation;
             }
+            
+            if (isset($rows->relation)) {
+                $relationString = (string)$rows->relation;
+                if (substr($relationString, 0, 2) == "10"){
+                    $query["doc"]["doi"] = (string)$rows->relation;
+                }                
+            }
+
             $id = (string)$rec->header->identifier;
 
             if (!empty($_GET["repositoryName"])) {
