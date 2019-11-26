@@ -6,6 +6,11 @@ require 'inc/functions.php';
 
 if (isset($_GET["oai"])) {
 
+
+    if (!isset($_GET["useTematres"])) {
+        $_GET["useTematres"] = false;
+    }
+
     $oaiUrl = $_GET["oai"];
     $client_harvester = new \Phpoaipmh\Client(''.$oaiUrl.'');
     $myEndpoint = new \Phpoaipmh\Endpoint($client_harvester);
