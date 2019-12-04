@@ -179,6 +179,8 @@ $mode = "reference";
                                     <p class="text-muted"><b>DOI:</b> <a href="http://dx.doi.org/<?php echo $r["_source"]['doi'];?>" target="_blank"><?php echo $r["_source"]['doi'];?></a></p>
                                 <?php endif; ?>
 
+                                <p class="text-muted"><a href="node.php?_id=<?php echo $r["_id"];?>" target="_blank"><b>Ver no RPPBCI</b></a></p>
+
                                 <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
                                     
                                     <table class="table"><caption>Interações no Facebook</caption>        
