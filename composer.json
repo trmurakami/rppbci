@@ -1,10 +1,10 @@
 {
-  "require" : {
-    "facebook/graph-sdk" : "~5.0",
+  "require": {
+    "facebook/graph-sdk": "~5.0",
     "elasticsearch/elasticsearch": "~7.2",
-    "caseyamcl/phpoaipmh": "~2.0",
-    "guzzlehttp/guzzle":   "~6.0",
+    "caseyamcl/phpoaipmh": "^3.0",
+    "guzzlehttp/guzzle": "^6.3",
     "gettext/gettext": "^4.1",
-    "renanbr/crossref-client": "^1"  
+    "renanbr/crossref-client": "^1"
   }
 }
