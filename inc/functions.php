@@ -832,14 +832,14 @@ class Homepage
         } elseif (($result_count != 0) && ($result_count < 5)) {
             
             foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
-                echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
+                echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.urlencode($facets['key']).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
             }
 
         } else {
 
             $i = 0;
             while ($i < 5) {
-                echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$response["aggregations"]["group_by_state"]["buckets"][$i]['key'].'&quot;">'.$response["aggregations"]["group_by_state"]["buckets"][$i]['key'].' ('.number_format($response["aggregations"]["group_by_state"]["buckets"][$i]['doc_count'], 0, ',', '.').')</a></li>';
+                echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.urlencode($response["aggregations"]["group_by_state"]["buckets"][$i]['key']).'&quot;">'.$response["aggregations"]["group_by_state"]["buckets"][$i]['key'].' ('.number_format($response["aggregations"]["group_by_state"]["buckets"][$i]['doc_count'], 0, ',', '.').')</a></li>';
                 $i++;                
             }
 
@@ -860,7 +860,7 @@ class Homepage
                 <div class="modal-body">
                     <ul class="list-group list-group-flush">';
                     foreach ($response["aggregations"]["group_by_state"]["buckets"] as $facets) {
-                        echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.$facets['key'].'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
+                        echo '<li class="list-group-item"><a href="result.php?filter[]='.$field.':&quot;'.urlencode($facets['key']).'&quot;">'.$facets['key'].' ('.number_format($facets['doc_count'], 0, ',', '.').')</a></li>';
                     }
             echo '</ul>';
              echo '
