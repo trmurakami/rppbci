@@ -19,9 +19,7 @@ $query["aggs"]["counts"]["terms"]["field"] = "datePublished.keyword";
 if (!empty($_SESSION['oauthuserdata'])) {
     $query["aggs"]["counts"]["terms"]["missing"] = "Não preenchido";
 }
-if (isset($sort)) {
-    $query["aggs"]["counts"]["terms"]["order"][$sort_type] = $sort;
-}
+$query["aggs"]["counts"]["terms"]["order"]["_term"] = "desc";
 $query["aggs"]["counts"]["terms"]["size"] = 100;
 
 $response = Elasticsearch::search(null, 0, $query, $alternative_index);
