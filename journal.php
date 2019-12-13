@@ -16,19 +16,23 @@ if (isset($_GET["journal"])) {
 }
 
 $query["aggs"]["counts"]["terms"]["field"] = "datePublished.keyword";
-if (!empty($_SESSION['oauthuserdata'])) {
-    $query["aggs"]["counts"]["terms"]["missing"] = "Não preenchido";
-}
 $query["aggs"]["counts"]["terms"]["order"]["_term"] = "desc";
 $query["aggs"]["counts"]["terms"]["size"] = 100;
 
-$response = Elasticsearch::search(null, 0, $query, $alternative_index);
-
-//echo "<br/><br/><br/><br/><br/>";
-//print_r($response);
+$response = Elasticsearch::search(null, 0, $query, $alternative_index);  
 
 
-$result_count = count($response["aggregations"]["counts"]["buckets"]);    
+function queryElasticSubfield($subfield, $filter0, $filter1 = null) {
+
+    $query["query"]["bool"]["filter"][0]["term"][$filter0[0].".keyword"] = $filter0[1];
+    $query["aggs"]["counts"]["terms"]["field"] = "$subfield.keyword";
+    $query["aggs"]["counts"]["terms"]["order"]["_term"] = "desc";
+    $query["aggs"]["counts"]["terms"]["size"] = 100;   
+
+    $response = Elasticsearch::search(null, 0, $query, null);
+    return $response;
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -79,9 +83,16 @@ $result_count = count($response["aggregations"]["counts"]["buckets"]);
                                                 <div class="col-sm-6">
                                                     <div class="card">
                                                         <div class="card-body">
-                                                        <h5 class="card-title">'.$datePublished["key"].' ('.$datePublished["doc_count"].')</h5>
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        </div>
+                                                        <h5 class="card-title">'.$datePublished["key"].' ('.$datePublished["doc_count"].')</h5>';   
+                                                        $filter0[0] = "datePublished";
+                                                        $filter0[1] = $datePublished["key"];                                                      
+                                                        $volumes = queryElasticSubfield("isPartOf.volume", $filter0);
+                                                        print_r($volumes);
+                                                        foreach ($volumes["aggregations"]["counts"]["buckets"] as $volume) {
+                                                            print_r($volume);
+                                                        }
+                                            
+                                            echo '      </div>
                                                     </div>
                                                 </div>                                         
                                             
