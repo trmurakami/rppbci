@@ -72,7 +72,7 @@ require 'inc/functions.php';
 
         <form action="result.php">
             <div class="form-group">
-                <label for="searchQuery">Termos de busca</label>
+                <label for="searchQuery">Termos de busca ou <a href="result.php">ver todos os registros</a></label>
                 <input type="text" name="search" class="form-control" id="searchQuery" aria-describedby="searchHelp" placeholder="Pesquise por termo ou autor">
                 <small id="searchHelp" class="form-text text-muted">Dica: Use * para busca por radical. Ex: biblio*.</small>
                 <small id="searchHelp" class="form-text text-muted">Dica 2: Para buscas exatas, coloque entre ""</small>
@@ -113,6 +113,7 @@ require 'inc/functions.php';
         </div>
     </div>     
      
+    <?php if ($showInitialStats != false) : ?>
     <div class="row">
         <div class="col-md-4">
           <h2>Periódicos indexados</h2>
@@ -141,12 +142,13 @@ require 'inc/functions.php';
         </div> 
       </div>
 
-    <hr>
-    <h1>Registros com mais interações</h1>
+        <hr>
+        <h1>Registros com mais interações</h1>
 
-    <?php Homepage::getLastRecords();?>
+        <?php Homepage::getLastRecords();?>
 
-  </div>
+    </div>
+    <?php endif; ?>
 
 </main>
 
