@@ -8,3 +8,5 @@ Repertório da Produção Periódica em Biblioteconomia e Ciência da Informaç�
     php composer.phar install --no-dev
     git submodule init
     git submodule update
+
+    run inc/install.php
