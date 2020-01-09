@@ -381,6 +381,10 @@ $mode = "reference";
                                 $facets->facet("references.authors", 100, "Autores mais citados nas referências", null, "_term", $_GET);
                                 $facets->facet("references.datePublished", 100, "Ano de publicação das obras citadas nas referências", null, "_term", $_GET);
                                 $facets->facetExistsField("doi", 2, "Possui DOI preenchido?", null, "_term", $_GET);
+                                $facets->facet("bookEdition", 100, "Edição", null, "_term", $_GET);
+                                $facets->facet("itens.digitalizado", 100, "Digitalizado?", null, "_term", $_GET);
+                                $facets->facet("itens.location", 100, "Localização física", null, "_term", $_GET);
+                                $facets->facet("itens.organization", 100, "Institução em que se encontra o material", null, "_term", $_GET);
                             ?>
                             </ul>
                             <hr>
