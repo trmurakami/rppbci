@@ -25,5 +25,8 @@
             Login
             </button>           
         <?php endif; ?>
+        <?php if (isset($_SESSION["login"])) : ?>
+            <a class="nav-link" href="<?php echo "$url_base/"?>/editor">Criar registro</a>
+        <?php endif; ?>
     </div>
 </nav>
