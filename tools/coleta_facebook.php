@@ -29,7 +29,7 @@
         //Facebook::facebook_doi($dois, $r["_id"]); 
 
         Facebook::facebook_data($r["_source"]['relation'], $r["_id"]);
-        sleep(80);
+        sleep(100);
 
     }
 
