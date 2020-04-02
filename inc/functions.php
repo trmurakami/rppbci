@@ -796,6 +796,10 @@ class Homepage
                         echo '</a></h5>';
                     };
 
+                    if (!empty($r["_source"]['alternateName'])) {
+                        echo '<h7 class="card-title">'.$r["_source"]['alternateName'].'</h7>';
+                    };                    
+
                     if (!empty($r["_source"]['author'])) {
                         foreach ($r["_source"]['author'] as $autores) {
                             $autArray[] = '<a href="result.php?filter[]=author.person.name:&quot;'.$autores["person"]["name"].'&quot;">'.$autores["person"]["name"].'</a>';
