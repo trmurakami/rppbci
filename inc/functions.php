@@ -797,7 +797,7 @@ class Homepage
                     };
 
                     if (!empty($r["_source"]['alternateName'])) {
-                        echo '<h7>'.$r["_source"]['alternateName'].'</h7>';
+                        echo '<p class="card-text"><small class="text-muted">'.$r["_source"]['alternateName'].'</small></p>';
                     };                    
 
                     if (!empty($r["_source"]['author'])) {
