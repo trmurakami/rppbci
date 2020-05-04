@@ -64,10 +64,11 @@ require 'inc/functions.php';
 
 <main role="main">
 
-    <div class="jumbotron">
-        <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <div class="jumbotron">        
         <div class="container">
-        <h1 class="display-5"><?php echo $branch; ?></h1>
+        <br/>
+        <center><img src="inc/images/aton_logo.jpg" width="50%" height="50%"></center>
+        <br/>
         <p><?php echo $branch_description; ?></p>
 
         <form action="result.php">
