@@ -14,37 +14,40 @@
         
             <?php require 'inc/navbar.php' ?>
             <br/><br/><br/><br/>
-
-            <h2>Sobre o Portal Periódicos Científicos Alagoas</h2>
-
-            <p>O Portal Periódicos de Alagoas é um serviço de descoberta desenvolvimento no Grupo de Pesquisa: <a href="http://dgp.cnpq.br/dgp/espelhogrupo/205221">“Laboratório de Estudos Métricos da Informação na Web (Lab-iMetrics/UFAL)”</a> contemplado no Edital 04/2016 Chamada Universal da Fundação de Amparo à pesquisa de Alagoas (FAPEAL), pelo processo nº 600301057/2016, no âmbito do Projeto: “Atenção online e métricas alternativas da produção científica registrada em artigos de periódicos do Estado de Alagoas: áreas de conhecimento, instituições e pesquisadores”.</p>
-
-            <p>O projeto é coordenado pelo Prof. Ronaldo Ferreira de Araújo do Curso de Biblioteconomia do Instituto de Ciências Humanas, Comunicação e Artes da Universidade Federal de Alagoas (CB/ICHCA/UFAL) com colaboração do Tiago Rodrigo Marçal Murakami do Sistema Integrado de Bibliotecas da Universidade de São Paulo (USP) a participação de bolsistas e colaboradores de iniciação científica e de desenvolvimento tecnológico.</p>
-
-            <p>Bolsistas/Colaboradores do Projeto:</p>
-
-            <p>Programa Institucional de Bolsas de Iniciação Científica (PIBIC/UFAL) 2017-2018:</p>
-            <ul>    
-            <li>Carlina Rocha Leite (Biblioteconomia / UFAL)</li>
-            <li>Laysa Lorena Alves de Araujo (Biblioteconomia / UFAL)</li>
-            <li>Patricia Pedri (Biblioteconomia / UFAL)</li>
-            <li>Stephanie Silva Menezes (Biblioteconomia / UFAL)</li>
-            </ul>
-
-            <p>Programa Institucional de Bolsas de Iniciação em Desenvolvimento Tecnológico e Inovação (PIBITI/UFAL) 2018-2019: </p>
-            <ul> 
-            <li>Erycles Da Silva Santos (Ciência da Computação / UFAL)</li> 
-            <li>Laysa Lorena Alves de Araujo (Biblioteconomia / UFAL) </li>
-            <li>Richard Bryan Gomes Cavalcante (Comunicação Social - Jornalismo / UFAL) </li>
-            </ul>
-
-            <p>Contato:</p>
-
-            <p>Tel.: (82) 3214-1479</p>
-
-            <p>E-mail: ronaldo.araujo@ichca.ufal.br</p>
             
-            </p>
+            <h2>Sobre o AtOn</h2>
+
+
+            <p>AtOn é um serviço de descoberta desenvolvido no Grupo de Pesquisa: “Laboratório de Estudos Métricos da Informação na Web (Lab-iMetrics/UFAL)” contemplado no Edital Chamada Universal MCTI/CNPq Nº 01/2016, pelo processo nº 426777/2016-6, no âmbito do Projeto: “Monitoramento de Métricas Alternativas e Atenção Online de Artigos de Periódicos da Ciência da Informação”.</p>
+            <p>A solução foi desenvolvida utilizando tecnologias: PHP, Elasticsearch e APIs do Facebook e CrossRef.</p>
+            <p>Tendo o foco especial na Atenção Online, o AtOn se diferencia de outras bases referecniais da área por possíbiliar a identificação da visibilidade que artigos de periócicos de Ciência da Informação alcançam após a publicação e ordenar os resultados de busca a partir desse indicador.</p>
+            <p>O projeto é coordenado pelo Prof. Ronaldo Ferreira de Araújo do Curso de Biblioteconomia do Instituto de Ciências Humanas, Comunicação e Artes da Universidade Federal de Alagoas (CB/ICHCA/UFAL) com colaboração do Tiago Rodrigo Marçal Murakami do Sistema Integrado de Bibliotecas da Universidade de São Paulo (USP) a participação de bolsistas e colaboradores de iniciação científica e de desenvolvimento tecnológico.</p>
+            <br/>
+            <p>Bolsistas/Colaboradores do Projeto:</p>
+            <p><b>Programa Institucional de Bolsas de Iniciação em Desenvolvimento Tecnológico e Inovação (PIBITI/UFAL) 2017-2018:</b></p>
+            <ul>
+            <li>Leonardo Alexandre Ferreira da Silva (Ciência da Computação / UFAL)</li>
+            <li>Alexandre Carlos Santos Azevedo (Ciência da Computação / UFAL)</li>
+            <li>Laysa Lorena Alves de Araujo (Biblioteconomia / UFAL)</li>
+            </ul>
+            <p><b>Programa Institucional de Bolsas de Iniciação Científica (PIBIC/UFAL) 2018-2019:</b></p>
+            <ul>
+                <li>Jusmenne Jasao Melo da Silva (Biblioteconomia / UFAL)</li>
+                <li>Lais Santos Oliveira da Silva (Biblioteconomia / UFAL)</li>
+                <li>Miriely Silva dos Santos (Biblioteconomia / UFAL)</li>
+                <li>Patricia Pedri (Biblioteconomia / UFAL)</li>
+            </ul>
+            <p><b>Programa Institucional de Bolsas de Iniciação Científica (PIBIC/UFAL) 2019-2020:</b></p>
+            <ul>
+                <li>Jusmenne Jasao Melo da Silva (Biblioteconomia / UFAL)</li>
+                <li>Miriely Silva dos Santos (Biblioteconomia / UFAL)</li>
+                <li>Patricia Pedri (Biblioteconomia / UFAL)</li>
+                <li>Lais Santos Oliveira da Silva (Biblioteconomia / UFAL)</li>
+            </ul>
+ 
+            <p>Contato:</p>
+            <p>Tel.: (82) 3214-1479</p>
+            <p>E-mail: ronaldo.araujo@ichca.ufal.br</p>
             
             <?php require 'inc/footer.php'?>
         </div>
