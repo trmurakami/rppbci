@@ -43,14 +43,14 @@ $cursor = $client->search($params);
 
 
 /* Citeproc-PHP*/
-require 'inc/citeproc-php/CiteProc.php';
-$csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
-$csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
-$csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
-$csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
-$lang = "br";
-$citeproc_abnt = new citeproc($csl_abnt, $lang);
-$mode = "reference";
+// require 'inc/citeproc-php/CiteProc.php';
+// $csl_abnt = file_get_contents('inc/citeproc-php/style/abnt.csl');
+// $csl_apa = file_get_contents('inc/citeproc-php/style/apa.csl');
+// $csl_nlm = file_get_contents('inc/citeproc-php/style/nlm.csl');
+// $csl_vancouver = file_get_contents('inc/citeproc-php/style/vancouver.csl');
+// $lang = "br";
+// $citeproc_abnt = new citeproc($csl_abnt, $lang);
+// $mode = "reference";
 
 ?>
 <html>
@@ -183,12 +183,12 @@ $mode = "reference";
 
                                 <?php if (!empty($r["_source"]['facebook']['facebook_total'])) : ?>
                                     
-                                    <table class="table"><caption>Interações no Facebook</caption>        
+                                    <table class="table"><caption>Interações no Facebook</caption>
                                         <thead>
                                             <tr>
                                                 <th>Reactions</th>
                                                 <th>Comentários</th>
-                                                <th>Compartilhamentos</th>                        
+                                                <th>Compartilhamentos</th>
                                                 <th>Total</th>
                                             </tr>
                                         </thead>
@@ -199,7 +199,7 @@ $mode = "reference";
                                                 <td><?php echo $r["_source"]['facebook']['share_count'];?></td>
                                                 <td><?php echo $r["_source"]['facebook']['facebook_total'];?></td>
                                             </tr>
-                                        </tbody>   
+                                        </tbody>
                                     </table><br/>
                                 <?php endif; ?>
 
