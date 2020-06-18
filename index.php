@@ -67,7 +67,7 @@ require 'inc/functions.php';
     <div class="jumbotron">        
         <div class="container">
         <br/>
-        <center><img src="inc/images/aton_logo.jpg" width="50%" height="50%"></center>
+        <center><img src="inc/images/aton_logo_novo.jpg" width="50%" height="50%"></center>
         <br/>
         <p><?php echo $branch_description; ?></p>
 
