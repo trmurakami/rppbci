@@ -1,8 +1,6 @@
 <footer class="pt-4 my-md-5 pt-md-5 border-top container">
     <div class="row">
-        <div class="col-12 col-md">
-        <small class="d-block mb-3 text-muted">Desenvolvido usando software livre <a href="https://github.com/trmurakami/rppbci">RPPBCI</a></small>
-        </div>
+        <div class="col-12 col-md"></div>
         <!--
         <div class="col-6 col-md">
         <h5>Features</h5>

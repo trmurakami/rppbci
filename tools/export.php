@@ -1,6 +1,6 @@
 <?php
 
-$file = "export_rppbci.tsv";
+$file = "export_aton.tsv";
 header('Content-type: text/tab-separated-values; charset=utf-8');
 header("Content-Disposition: attachment; filename=$file");
 
@@ -55,7 +55,7 @@ foreach ($cursor["hits"]["hits"] as $r) {
 
     $content[] = implode("\t", $fields);
     unset($autores_array);
-    unset($fields);    
+    unset($fields);
 }
 
 while (isset($cursor['hits']['hits']) && count($cursor['hits']['hits']) > 0) {
@@ -69,8 +69,8 @@ while (isset($cursor['hits']['hits']) && count($cursor['hits']['hits']) > 0) {
 
     foreach ($cursor["hits"]["hits"] as $r) {
 
-        foreach ($r["_source"]['autores'] as $autor) {
-            $autores_array[]= $autor["nomeCompletoDoAutor"];
+        foreach ($r["_source"]['author'] as $autor) {
+            $autores_array[]= $autor["person"]["name"];
         }
     
         $fields[] = $r["_source"]['source'];
@@ -78,9 +78,9 @@ while (isset($cursor['hits']['hits']) && count($cursor['hits']['hits']) > 0) {
             $fields[] = $r["_source"]['set'];
         } else {
             $fields[] = "";
-        }        
+        }   
         $fields[] = $r["_source"]['harvester_id'];
-        $fields[] = $r["_source"]['titulo'];
+        $fields[] = $r["_source"]['name'];
         $fields[] = implode("|", $autores_array);
         $fields[] = $r["_source"]['numAutores'];
         $fields[] = $r["_source"]['datePublished'];
@@ -94,7 +94,6 @@ while (isset($cursor['hits']['hits']) && count($cursor['hits']['hits']) > 0) {
         $content[] = implode("\t", $fields);
         unset($autores_array);
         unset($fields);
-
     }
 }
 

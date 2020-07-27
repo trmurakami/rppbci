@@ -6,7 +6,7 @@
             require 'inc/functions.php';
             require 'inc/meta-header.php';
         ?>
-        <title>Sobre o RPPBCI</title>
+        <title>Sobre o AtOn</title>
     </head>    
     <body>
     <main role="main">
